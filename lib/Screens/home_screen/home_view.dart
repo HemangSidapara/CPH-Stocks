@@ -18,11 +18,73 @@ class HomeView extends GetView<HomeController> {
           await showExitDialog(context);
         }
       },
-      child: Scaffold(
-        body: Column(
-          children: [],
+      child: SafeArea(
+        child: Scaffold(
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: AppColors.SECONDARY_COLOR,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.MAIN_BORDER_COLOR.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 80,
+                )
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                for (int i = 0; i < controller.bottomItemWidgetList.length; i++)
+                  SizedBox(
+                    width: 100.w / controller.bottomItemWidgetList.length,
+                    child: AssetImages(
+                      index: i,
+                      iconName: controller.listOfImages[i],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          body: PageView(
+            controller: controller.pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: controller.bottomItemWidgetList,
+          ),
         ),
       ),
+    );
+  }
+
+  // ignore: non_constant_identifier_names
+  Widget AssetImages({
+    required int index,
+    required String iconName,
+  }) {
+    return InkWell(
+      onTap: () async {
+        await controller.onBottomItemChange(index: index);
+      },
+      child: StatefulBuilder(builder: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          state(() {});
+        });
+        return SizedBox(
+          height: 12.w,
+          width: 12.w,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Obx(() {
+                return Image.asset(
+                  iconName,
+                  width: 8.w,
+                  color: controller.bottomIndex.value == index ? AppColors.TERTIARY_COLOR : AppColors.WHITE_COLOR,
+                );
+              }),
+            ],
+          ),
+        );
+      }),
     );
   }
 

@@ -21,4 +21,26 @@ class AppStrings {
   static const String password = "Password";
   static const String enterPassword = "Enter password";
   static const String pleaseEnterPassword = "Please enter password";
+  static const String createOrder = "Create Order";
+  static const String itemName = "Item Name";
+  static const String enterItemName = "Enter item name";
+  static const String pleaseEnterItemName = "Please enter item name";
+  static const String pvdColor = "PVD Color";
+  static const String enterPVDColor = "Enter pvd color";
+  static const String pleaseEnterPVDColor = "Please enter pvd color";
+  static const String quantity = "Quantity";
+  static const String enterQuantity = "Enter quantity";
+  static const String pleaseEnterQuantity = "Please enter quantity";
+  static const String size = "Size";
+  static const String enterSize = "Enter size";
+  static const String pleaseEnterSize = "Please enter size";
+  static const String okPcs = "OK Pcs.";
+  static const String enterOkPcs = "Enter ok pcs.";
+  static const String pleaseEnterOkPcs = "Please enter ok pcs.";
+  static const String rejected = "Rejected";
+  static const String enterRejected = "Enter rejected";
+  static const String pleaseEnterRejected = "Please enter rejected";
+  static const String pending = "Pending";
+  static const String enterPending = "Enter pending";
+  static const String pleaseEnterPending = "Please enter pending";
 }

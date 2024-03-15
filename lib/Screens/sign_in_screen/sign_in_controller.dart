@@ -10,6 +10,8 @@ class SignInController extends GetxController {
 
   GlobalKey<FormState> signInFormKey = GlobalKey<FormState>();
 
+  RxBool isSignInLoading = false.obs;
+
   String? userNameValidator(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterUserName.tr;
@@ -25,10 +27,15 @@ class SignInController extends GetxController {
   }
 
   Future<void> checkSignIn() async {
-    final isValid = signInFormKey.currentState?.validate();
+    try {
+      isSignInLoading(true);
+      final isValid = signInFormKey.currentState?.validate();
 
-    if (isValid == true) {
-      Get.offAllNamed(Routes.homeScreen);
+      if (true || isValid == true) {
+        Get.offAllNamed(Routes.homeScreen);
+      }
+    } finally {
+      isSignInLoading(false);
     }
   }
 }

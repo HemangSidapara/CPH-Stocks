@@ -32,7 +32,7 @@ class SplashController extends GetxController {
       () async {
         SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle(
-            systemNavigationBarColor: AppColors.WHITE_COLOR,
+            systemNavigationBarColor: AppColors.SECONDARY_COLOR,
             systemNavigationBarIconBrightness: Brightness.dark,
             statusBarIconBrightness: Brightness.dark,
             statusBarColor: AppColors.TRANSPARENT,

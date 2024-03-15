@@ -7,6 +7,7 @@ class AppAssets {
   ///Images
   static const String splashImage = "assets/images/splash_image.png";
   static const String loginImage = "assets/images/login_image.png";
+  static const String createOrderImage = "assets/images/create_order_image.png";
 
   ///Icons
   static const String backIcon = "assets/icons/back_icon.png";
