@@ -7,4 +7,5 @@ class Routes {
   static const passwordScreen = '/password';
   static const homeScreen = '/home';
   static const createOrderScreen = '/createOrderScreen';
+  static const orderDetailsScreen = '/orderDetailsScreen';
 }

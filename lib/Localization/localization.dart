@@ -1,6 +1,6 @@
-import 'package:cph_stocks/Localization/en_IN.dart';
-import 'package:cph_stocks/Localization/gu_IN.dart';
-import 'package:cph_stocks/Localization/hi_IN.dart';
+import 'package:cph_stocks/Localization/en_in.dart';
+import 'package:cph_stocks/Localization/gu_in.dart';
+import 'package:cph_stocks/Localization/hi_in.dart';
 import 'package:get/get.dart';
 
 class Localization extends Translations {

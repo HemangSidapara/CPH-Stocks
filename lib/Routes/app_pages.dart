@@ -1,7 +1,11 @@
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_view.dart';
 import 'package:cph_stocks/Screens/home_screen/home_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/home_view.dart';
+import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_bindings.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_bindings.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_view.dart';
 import 'package:cph_stocks/Screens/splash_screen/splash_bindings.dart';
@@ -37,6 +41,10 @@ class AppPages {
       name: Routes.homeScreen,
       page: () => const HomeView(),
       binding: HomeBindings(),
+      bindings: [
+        DashboardBindings(),
+        SettingsBindings(),
+      ],
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),
@@ -46,6 +54,15 @@ class AppPages {
       name: Routes.createOrderScreen,
       page: () => const CreateOrderView(),
       binding: CreateOrderBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Order Details Screen
+    GetPage(
+      name: Routes.orderDetailsScreen,
+      page: () => const OrderDetailsView(),
+      binding: OrderDetailsBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

@@ -43,4 +43,5 @@ class AppStrings {
   static const String pending = "Pending";
   static const String enterPending = "Enter pending";
   static const String pleaseEnterPending = "Please enter pending";
+  static const String orderDetails = "Order Details";
 }

@@ -2,13 +2,12 @@ import 'package:cph_stocks/Constants/api_urls.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:cph_stocks/Network/response_model.dart';
 import 'package:cph_stocks/Utils/progress_dialog.dart';
 import 'package:cph_stocks/Utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide Response;
-
-import 'ResponseModel.dart';
 
 class ApiBaseHelper {
   static const String baseUrl = ApiUrls.baseUrl;

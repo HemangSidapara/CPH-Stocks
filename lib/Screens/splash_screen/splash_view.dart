@@ -39,7 +39,7 @@ class SplashView extends GetView<SplashController> {
           Text(
             AppStrings.poweredByMindwaveInfoway,
             style: TextStyle(
-              color: AppColors.PRIMARY_COLOR.withOpacity(0.25),
+              color: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.55),
               fontWeight: FontWeight.w700,
               fontSize: 14.sp,
             ),

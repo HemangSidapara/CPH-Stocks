@@ -27,11 +27,19 @@ class _HandShakenAnimationState extends State<HandShakenAnimation> with TickerPr
       _controller.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           Future.delayed(const Duration(milliseconds: 2500), () {
-            _controller.reverse();
+            try {
+              _controller.reverse();
+            } catch (e) {
+              debugPrint('HandShakenAnimation Exception :: $e');
+            }
           });
         } else if (status == AnimationStatus.dismissed) {
           Future.delayed(const Duration(milliseconds: 2500), () {
-            _controller.forward();
+            try {
+              _controller.forward();
+            } catch (e) {
+              debugPrint('HandShakenAnimation Exception :: $e');
+            }
           });
         }
       });
