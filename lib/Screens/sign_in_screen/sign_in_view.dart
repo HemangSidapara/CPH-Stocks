@@ -36,7 +36,7 @@ class SignInView extends GetView<SignInController> {
         bottomSheet: Material(
           color: AppColors.SECONDARY_COLOR,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
+            padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: keyboardPadding != 0 ? 2.h : 5.h),
             child: ButtonWidget(
               onPressed: () async {
                 await controller.checkSignIn();
@@ -60,12 +60,13 @@ class SignInView extends GetView<SignInController> {
                   ),
                   SizedBox(height: 5.h),
 
-                  ///Username
+                  ///Phone number
                   TextFieldWidget(
-                    controller: controller.userNameController,
-                    title: AppStrings.userName.tr,
-                    hintText: AppStrings.enterUserName.tr,
-                    validator: controller.userNameValidator,
+                    controller: controller.phoneController,
+                    title: AppStrings.phoneNumber.tr,
+                    hintText: AppStrings.enterPhoneNumber.tr,
+                    validator: controller.phoneValidator,
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(height: 2.h),
 
@@ -76,8 +77,8 @@ class SignInView extends GetView<SignInController> {
                     hintText: AppStrings.enterPassword.tr,
                     obscureText: controller.isPasswordVisible.isFalse,
                     validator: controller.passwordValidator,
+                    textInputAction: TextInputAction.next,
                   ),
-                  SizedBox(height: 5.h),
                 ],
               ),
             ),

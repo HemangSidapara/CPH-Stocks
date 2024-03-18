@@ -1,10 +1,11 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Network/services/auth_service.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SignInController extends GetxController {
-  TextEditingController userNameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   RxBool isPasswordVisible = false.obs;
 
@@ -12,9 +13,9 @@ class SignInController extends GetxController {
 
   RxBool isSignInLoading = false.obs;
 
-  String? userNameValidator(String? value) {
+  String? phoneValidator(String? value) {
     if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterUserName.tr;
+      return AppStrings.pleaseEnterPhoneNumber.tr;
     }
     return null;
   }
@@ -31,8 +32,15 @@ class SignInController extends GetxController {
       isSignInLoading(true);
       final isValid = signInFormKey.currentState?.validate();
 
-      if (true || isValid == true) {
-        Get.offAllNamed(Routes.homeScreen);
+      if (isValid == true) {
+        final response = await AuthService.loginService(
+          phone: phoneController.text,
+          password: passwordController.text,
+        );
+
+        if (response.isSuccess) {
+          Get.offAllNamed(Routes.homeScreen);
+        }
       }
     } finally {
       isSignInLoading(false);

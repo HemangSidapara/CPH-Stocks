@@ -15,9 +15,9 @@ class AppStrings {
   static const String logOut = "Log Out";
   static const String copyrightContext = "©2024 Mindwave Infoway";
   static const String poweredByMindwaveInfoway = "powered by Mindwave Infoway";
-  static const String userName = "Username";
-  static const String enterUserName = "Enter username";
-  static const String pleaseEnterUserName = "Please enter username";
+  static const String phoneNumber = "Phone Number";
+  static const String enterPhoneNumber = "Enter phone number";
+  static const String pleaseEnterPhoneNumber = "Please enter phone number";
   static const String password = "Password";
   static const String enterPassword = "Enter password";
   static const String pleaseEnterPassword = "Please enter password";
