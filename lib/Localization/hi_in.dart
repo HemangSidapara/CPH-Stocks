@@ -57,5 +57,5 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.add: "जोड़ना",
   AppStrings.invalidInputs: "अमान्य इनपुट",
   AppStrings.lastCycleLog: "अंतिम चक्र लॉग:",
-  AppStrings.viewCycles: "चक्र देखें",
+  AppStrings.challan: "चलान",
 };

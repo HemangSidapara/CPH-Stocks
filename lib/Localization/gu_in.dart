@@ -58,4 +58,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.invalidInputs: "અમાન્ય ઇનપુટ્સ",
   AppStrings.lastCycleLog: "છેલ્લો સાયકલ લોગ:",
   AppStrings.viewCycles: "સાયકલ જુઓ",
+  AppStrings.challan: "ચલણ",
 };

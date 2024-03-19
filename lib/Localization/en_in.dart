@@ -58,4 +58,5 @@ Map<String, String> enIN = <String, String>{
   AppStrings.invalidInputs: "Invalid inputs",
   AppStrings.lastCycleLog: "Last Cycle Log:",
   AppStrings.viewCycles: "View Cycles",
+  AppStrings.challan: "Challan",
 };

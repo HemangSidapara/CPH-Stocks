@@ -1,3 +1,5 @@
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_bindings.dart';
@@ -5,6 +7,8 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_sc
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_view.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_view.dart';
 import 'package:cph_stocks/Screens/home_screen/home_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/home_view.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_bindings.dart';
@@ -74,6 +78,24 @@ class AppPages {
       name: Routes.addOrderCycleScreen,
       page: () => const AddOrderCycleView(),
       binding: AddOrderCycleBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///View Cycles Screen
+    GetPage(
+      name: Routes.viewCyclesScreen,
+      page: () => const ViewCyclesView(),
+      binding: ViewCyclesBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Challan Screen
+    GetPage(
+      name: Routes.challanScreen,
+      page: () => const ChallanView(),
+      binding: ChallanBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

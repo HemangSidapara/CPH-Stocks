@@ -2,9 +2,11 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/order_models/item_id_model.dart';
 import 'package:cph_stocks/Network/models/order_models/pending_data_model.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
+import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
@@ -221,7 +223,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                           onPressed: () async {
                                             Get.toNamed(
                                               Routes.addOrderCycleScreen,
-                                              arguments: PendingDataModel(pending: 100),
+                                              arguments: PendingDataModel(pending: controller.searchedOrderList[index].modelMeta?[itemIndex].quantity?.toInt() ?? 0),
                                             );
                                           },
                                           style: IconButton.styleFrom(
@@ -396,7 +398,12 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
 
                                                       ///View Cycles
                                                       ElevatedButton(
-                                                        onPressed: () {},
+                                                        onPressed: () {
+                                                          Get.toNamed(
+                                                            Routes.viewCyclesScreen,
+                                                            arguments: ItemIdModel(itemId: controller.searchedOrderList[index].modelMeta?[itemIndex].orderMetaId),
+                                                          );
+                                                        },
                                                         style: ElevatedButton.styleFrom(
                                                           backgroundColor: AppColors.SECONDARY_COLOR,
                                                           shape: RoundedRectangleBorder(

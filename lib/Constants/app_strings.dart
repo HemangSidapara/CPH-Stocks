@@ -59,4 +59,5 @@ class AppStrings {
   static const String invalidInputs = "Invalid inputs";
   static const String lastCycleLog = "Last Cycle Log:";
   static const String viewCycles = "View Cycles";
+  static const String challan = "Challan";
 }

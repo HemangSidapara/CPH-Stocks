@@ -9,4 +9,6 @@ class Routes {
   static const createOrderScreen = '/createOrderScreen';
   static const orderDetailsScreen = '/orderDetailsScreen';
   static const addOrderCycleScreen = '/addOrderCycleScreen';
+  static const challanScreen = '/challanScreen';
+  static const viewCyclesScreen = '/viewCyclesScreen';
 }
