@@ -1,5 +1,6 @@
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -25,6 +26,7 @@ class TextFieldWidget extends StatefulWidget {
   final double? textFieldWidth;
   final bool readOnly;
   final BoxConstraints? suffixIconConstraints;
+  final List<TextInputFormatter>? inputFormatters;
 
   const TextFieldWidget({
     super.key,
@@ -49,6 +51,7 @@ class TextFieldWidget extends StatefulWidget {
     this.textFieldWidth,
     this.readOnly = false,
     this.suffixIconConstraints,
+    this.inputFormatters,
   });
 
   @override
@@ -63,7 +66,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.title != null)
+          if (widget.title != null) ...[
             Padding(
               padding: EdgeInsets.only(left: context.isPortrait ? 2.w : 1.w),
               child: Text(
@@ -75,7 +78,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                 ),
               ),
             ),
-          SizedBox(height: 1.h),
+            SizedBox(height: 1.h),
+          ],
           TextFormField(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: widget.controller,
@@ -97,6 +101,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             onSaved: widget.onSaved,
             onFieldSubmitted: widget.onFieldSubmitted,
             readOnly: widget.readOnly,
+            inputFormatters: widget.inputFormatters,
             decoration: InputDecoration(
               counter: const SizedBox(),
               counterStyle: TextStyle(color: AppColors.PRIMARY_COLOR),

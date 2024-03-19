@@ -44,4 +44,19 @@ class AppStrings {
   static const String enterPending = "Enter pending";
   static const String pleaseEnterPending = "Please enter pending";
   static const String orderDetails = "Order Details";
+  static const String woProcess = "W/O Process";
+  static const String enterWOProcess = "Enter w/o process";
+  static const String pleaseEnterWOProcess = "Please enter w/o process";
+  static const String partyName = "Party Name";
+  static const String enterPartyName = "Enter party name";
+  static const String pleaseEnterPartyName = "Please enter party name";
+  static const String searchParty = "Search party";
+  static const String selectParty = "Select party";
+  static const String pleaseSelectParty = "Please select party";
+  static const String reset = "Reset";
+  static const String orderCycle = "Order Cycle";
+  static const String add = "Add";
+  static const String invalidInputs = "Invalid inputs";
+  static const String lastCycleLog = "Last Cycle Log:";
+  static const String viewCycles = "View Cycles";
 }

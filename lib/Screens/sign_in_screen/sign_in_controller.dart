@@ -1,5 +1,5 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
-import 'package:cph_stocks/Network/services/auth_service.dart';
+import 'package:cph_stocks/Network/services/auth_services.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -33,7 +33,7 @@ class SignInController extends GetxController {
       final isValid = signInFormKey.currentState?.validate();
 
       if (isValid == true) {
-        final response = await AuthService.loginService(
+        final response = await AuthServices.loginService(
           phone: phoneController.text,
           password: passwordController.text,
         );

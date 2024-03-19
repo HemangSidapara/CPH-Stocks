@@ -7,9 +7,9 @@ class ResponseModel {
 
   ResponseModel({this.statusCode, this.response});
 
-  get data => response!.data['data'];
+  get data => response?.data['data'];
 
-  get message => response!.data['message'];
+  get message => response?.data['msg'];
 
   bool get isSuccess => response != null && response!.statusCode! >= 200 && response!.statusCode! <= 299 && response!.data['code'].toString().toInt() >= 200 && response!.data['code'].toString().toInt() <= 299;
 

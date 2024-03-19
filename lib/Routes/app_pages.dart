@@ -1,6 +1,8 @@
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_view.dart';
 import 'package:cph_stocks/Screens/home_screen/home_bindings.dart';
@@ -63,6 +65,15 @@ class AppPages {
       name: Routes.orderDetailsScreen,
       page: () => const OrderDetailsView(),
       binding: OrderDetailsBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Add Order Cycle Screen
+    GetPage(
+      name: Routes.addOrderCycleScreen,
+      page: () => const AddOrderCycleView(),
+      binding: AddOrderCycleBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

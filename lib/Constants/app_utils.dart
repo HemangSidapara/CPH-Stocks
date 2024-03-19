@@ -4,6 +4,11 @@ import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class Utils {
+  ///Unfocus
+  static void unfocus() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   ///showSnackBar
   static void handleMessage({
     String? message,

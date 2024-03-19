@@ -1,6 +1,7 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_controller.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
@@ -15,7 +16,7 @@ class SignInView extends GetView<SignInController> {
   Widget build(BuildContext context) {
     final keyboardPadding = MediaQuery.viewInsetsOf(context).bottom;
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: () => Utils.unfocus(),
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size(100.w, 10.h),
@@ -39,6 +40,7 @@ class SignInView extends GetView<SignInController> {
             padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: keyboardPadding != 0 ? 2.h : 5.h),
             child: ButtonWidget(
               onPressed: () async {
+                Utils.unfocus();
                 await controller.checkSignIn();
               },
               buttonTitle: AppStrings.login.tr,

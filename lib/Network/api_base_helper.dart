@@ -12,7 +12,7 @@ import 'package:get/get.dart' hide Response;
 class ApiBaseHelper {
   static const String baseUrl = ApiUrls.baseUrl;
   static bool showProgressDialog = true;
-  Stopwatch stopWatch = Stopwatch();
+  static Stopwatch stopWatch = Stopwatch();
 
   static BaseOptions opts = BaseOptions(
     baseUrl: baseUrl,
@@ -95,7 +95,7 @@ class ApiBaseHelper {
   static final dio = createDio();
   static final baseAPI = addInterceptors(dio);
 
-  Future<ResponseModel> postHTTP(
+  static Future<ResponseModel> postHTTP(
     String url, {
     dynamic params,
     bool showProgress = true,
@@ -119,7 +119,7 @@ class ApiBaseHelper {
     }
   }
 
-  Future<ResponseModel> deleteHTTP(
+  static Future<ResponseModel> deleteHTTP(
     String url, {
     dynamic params,
     bool showProgress = true,
@@ -141,7 +141,7 @@ class ApiBaseHelper {
     }
   }
 
-  Future<ResponseModel> getHTTP(
+  static Future<ResponseModel> getHTTP(
     String url, {
     dynamic params,
     bool showProgress = true,
@@ -160,7 +160,7 @@ class ApiBaseHelper {
     }
   }
 
-  Future<ResponseModel> putHTTP(
+  static Future<ResponseModel> putHTTP(
     String url, {
     dynamic data,
     bool showProgress = true,
@@ -179,7 +179,7 @@ class ApiBaseHelper {
     }
   }
 
-  Future<ResponseModel> patchHTTP(
+  static Future<ResponseModel> patchHTTP(
     String url, {
     dynamic params,
     bool showProgress = true,
@@ -203,7 +203,7 @@ class ApiBaseHelper {
     }
   }
 
-  handleResponse(
+  static handleResponse(
     Response response,
     Function(DioExceptions dioExceptions) onError,
     Function(ResponseModel res) onSuccess,

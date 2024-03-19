@@ -1,4 +1,7 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
+import 'package:cph_stocks/Network/services/order_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,15 +9,30 @@ import 'package:get/get.dart';
 class CreateOrderController extends GetxController {
   GlobalKey<FormState> createOrderFormKey = GlobalKey<FormState>();
 
+  TextEditingController partyNameController = TextEditingController();
   TextEditingController itemNameController = TextEditingController();
   TextEditingController pvdColorController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
-  TextEditingController okPcsController = TextEditingController();
-  TextEditingController rejectedController = TextEditingController();
-  TextEditingController pendingController = TextEditingController();
 
+  RxBool isGetPartiesLoading = true.obs;
+  RxList<get_parties.Data> partyList = RxList();
+  RxInt selectedParty = (-1).obs;
   RxBool isCreateOrderLoading = false.obs;
+
+  String? validatePartyName(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseEnterPartyName.tr;
+    }
+    return null;
+  }
+
+  String? validatePartyList(get_parties.Data? value) {
+    if (value == null && partyNameController.text.isEmpty) {
+      return AppStrings.pleaseSelectParty.tr;
+    }
+    return null;
+  }
 
   String? validateItemName(String? value) {
     if (value == null || value.isEmpty == true) {
@@ -44,33 +62,40 @@ class CreateOrderController extends GetxController {
     return null;
   }
 
-  String? validateOkPcs(String? value) {
-    if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterOkPcs.tr;
+  Future<RxList<get_parties.Data>> getPartiesApi() async {
+    try {
+      isGetPartiesLoading(true);
+      final response = await OrderServices.getPartiesService();
+      if (response.isSuccess) {
+        get_parties.GetPartiesModel getPartiesModel = get_parties.GetPartiesModel.fromJson(response.response?.data);
+        partyList.clear();
+        partyList.addAll(getPartiesModel.data ?? []);
+      }
+      return partyList;
+    } finally {
+      isGetPartiesLoading(false);
     }
-    return null;
-  }
-
-  String? validateRejected(String? value) {
-    if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterRejected.tr;
-    }
-    return null;
-  }
-
-  String? validatePending(String? value) {
-    if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterPending.tr;
-    }
-    return null;
   }
 
   Future<void> createOrderApi() async {
     try {
       isCreateOrderLoading(true);
-      final isValid = createOrderFormKey.currentState?.validate();
+      final isValidate = createOrderFormKey.currentState?.validate();
 
-      if (isValid == true) {}
+      if (isValidate == true) {
+        final response = await OrderServices.createOrderService(
+          partyName: partyNameController.text.trim(),
+          itemName: itemNameController.text.trim(),
+          pvdColor: pvdColorController.text.trim(),
+          quantity: quantityController.text.trim(),
+          size: sizeController.text.trim(),
+        );
+
+        if (response.isSuccess) {
+          Get.back();
+          Utils.handleMessage(message: response.message);
+        }
+      }
     } finally {
       isCreateOrderLoading(false);
     }
