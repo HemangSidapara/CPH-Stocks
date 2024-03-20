@@ -1,5 +1,5 @@
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
-import 'package:cph_stocks/Network/services/order_services.dart';
+import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

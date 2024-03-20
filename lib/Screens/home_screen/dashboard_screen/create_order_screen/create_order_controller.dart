@@ -1,7 +1,7 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
-import 'package:cph_stocks/Network/services/order_services.dart';
+import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

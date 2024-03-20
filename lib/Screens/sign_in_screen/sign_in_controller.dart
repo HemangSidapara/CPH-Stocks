@@ -1,5 +1,5 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
-import 'package:cph_stocks/Network/services/auth_services.dart';
+import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
