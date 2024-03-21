@@ -33,6 +33,7 @@ class OrderServices {
     required String pvdColor,
     required String quantity,
     required String size,
+    required String itemImage,
   }) async {
     final params = {
       ApiKeys.partyName: partyName,
@@ -42,6 +43,8 @@ class OrderServices {
           ApiKeys.pvdColor: pvdColor,
           ApiKeys.quantity: quantity,
           ApiKeys.size: size,
+          // ApiKeys.itemImage: '',
+          ApiKeys.itemImage: itemImage,
         },
       ],
     };
@@ -77,6 +80,62 @@ class OrderServices {
           debugPrint("getOrdersApi success :: ${res.message}");
         } else {
           debugPrint("getOrdersApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Create Order Cycle
+  static Future<ResponseModel> createOrderCycleService({
+    required String orderMetaId,
+    required String okPcs,
+    required String woProcess,
+  }) async {
+    final params = {
+      ApiKeys.orderMetaId: orderMetaId,
+      ApiKeys.okPcs: okPcs,
+      ApiKeys.woProcess: woProcess,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.createOrderCycleApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("createOrderCycleApi success :: ${res.message}");
+        } else {
+          debugPrint("createOrderCycleApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Get Order Cycles
+  static Future<ResponseModel> getOrderCyclesService({
+    required String orderMetaId,
+  }) async {
+    final params = {
+      ApiKeys.orderMetaId: orderMetaId,
+    };
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.getOrderCyclesApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("getOrderCyclesApi success :: ${res.message}");
+        } else {
+          debugPrint("getOrderCyclesApi error :: ${res.message}");
           Utils.handleMessage(message: res.message, isError: true);
         }
       },

@@ -60,4 +60,12 @@ class AppStrings {
   static const String lastCycleLog = "Last Cycle Log:";
   static const String viewCycles = "View Cycles";
   static const String challan = "Challan";
+  static const String itemImage = "Item Image";
+  static const String selectOrCaptureAImage = "Select or Capture a Image";
+  static const String select = "Select";
+  static const String camera = "Camera";
+  static const String gallery = "Gallery";
+  static const String pleaseAddItemImage = "Please add item image";
+  static const String remove = "Remove";
+  static const String viewChallan = "View Challan";
 }

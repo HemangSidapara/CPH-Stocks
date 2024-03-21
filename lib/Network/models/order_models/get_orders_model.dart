@@ -128,12 +128,20 @@ class ModelMeta {
     String? size,
     String? quantity,
     String? pvdColor,
+    String? itemImage,
+    String? pending,
+    String? okPcs,
+    String? woProcess,
   }) {
     _orderMetaId = orderMetaId;
     _itemName = itemName;
     _size = size;
     _quantity = quantity;
     _pvdColor = pvdColor;
+    _itemImage = itemImage;
+    _pending = pending;
+    _okPcs = okPcs;
+    _woProcess = woProcess;
   }
 
   ModelMeta.fromJson(dynamic json) {
@@ -142,18 +150,30 @@ class ModelMeta {
     _size = json['size'];
     _quantity = json['quantity'];
     _pvdColor = json['pvdColor'];
+    _itemImage = json['itemImage'];
+    _pending = json['pending'];
+    _okPcs = json['okPcs'];
+    _woProcess = json['woProcess'];
   }
   String? _orderMetaId;
   String? _itemName;
   String? _size;
   String? _quantity;
   String? _pvdColor;
+  String? _itemImage;
+  String? _pending;
+  String? _okPcs;
+  String? _woProcess;
   ModelMeta copyWith({
     String? orderMetaId,
     String? itemName,
     String? size,
     String? quantity,
     String? pvdColor,
+    String? itemImage,
+    String? pending,
+    String? okPcs,
+    String? woProcess,
   }) =>
       ModelMeta(
         orderMetaId: orderMetaId ?? _orderMetaId,
@@ -161,12 +181,20 @@ class ModelMeta {
         size: size ?? _size,
         quantity: quantity ?? _quantity,
         pvdColor: pvdColor ?? _pvdColor,
+        itemImage: itemImage ?? _itemImage,
+        pending: pending ?? _pending,
+        okPcs: okPcs ?? _okPcs,
+        woProcess: woProcess ?? _woProcess,
       );
   String? get orderMetaId => _orderMetaId;
   String? get itemName => _itemName;
   String? get size => _size;
   String? get quantity => _quantity;
   String? get pvdColor => _pvdColor;
+  String? get itemImage => _itemImage;
+  String? get pending => _pending;
+  String? get okPcs => _okPcs;
+  String? get woProcess => _woProcess;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -175,6 +203,10 @@ class ModelMeta {
     map['size'] = _size;
     map['quantity'] = _quantity;
     map['pvdColor'] = _pvdColor;
+    map['itemImage'] = _itemImage;
+    map['pending'] = _pending;
+    map['okPcs'] = _okPcs;
+    map['woProcess'] = _woProcess;
     return map;
   }
 }

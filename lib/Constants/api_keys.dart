@@ -9,4 +9,8 @@ class ApiKeys {
   static const quantity = "quantity";
   static const size = "size";
   static const meta = "meta";
+  static const itemImage = "itemImage";
+  static const orderMetaId = "orderMetaId";
+  static const okPcs = "okPcs";
+  static const woProcess = "woProcess";
 }

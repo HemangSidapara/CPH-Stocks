@@ -59,4 +59,12 @@ Map<String, String> enIN = <String, String>{
   AppStrings.lastCycleLog: "Last Cycle Log:",
   AppStrings.viewCycles: "View Cycles",
   AppStrings.challan: "Challan",
+  AppStrings.itemImage: "Item Image",
+  AppStrings.selectOrCaptureAImage: "Select or Capture a Image",
+  AppStrings.select: "Select",
+  AppStrings.camera: "Camera",
+  AppStrings.gallery: "Gallery",
+  AppStrings.pleaseAddItemImage: "Please add item image",
+  AppStrings.remove: "Remove",
+  AppStrings.viewChallan: "View Challan",
 };

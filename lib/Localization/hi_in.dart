@@ -58,4 +58,12 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.invalidInputs: "अमान्य इनपुट",
   AppStrings.lastCycleLog: "अंतिम चक्र लॉग:",
   AppStrings.challan: "चलान",
+  AppStrings.itemImage: "आइटम छवि",
+  AppStrings.selectOrCaptureAImage: "इस छवि को चुनें या कैप्चर करें",
+  AppStrings.select: "चुनना",
+  AppStrings.camera: "कैमरा",
+  AppStrings.gallery: "गैलरी",
+  AppStrings.pleaseAddItemImage: "कृपया आइटम छवि जोड़ें",
+  AppStrings.remove: "चयन हटाएँं",
+  AppStrings.viewChallan: "चलान देखें",
 };

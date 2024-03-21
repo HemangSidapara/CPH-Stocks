@@ -40,7 +40,7 @@ class ButtonWidget extends StatelessWidget {
               height: 5.w,
               width: 5.w,
               child: CircularProgressIndicator(
-                color: AppColors.WHITE_COLOR,
+                color: AppColors.SECONDARY_COLOR,
                 strokeWidth: 1.6,
               ),
             )

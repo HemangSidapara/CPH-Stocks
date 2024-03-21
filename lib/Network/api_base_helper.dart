@@ -87,6 +87,7 @@ class ApiBaseHelper {
 
     options.headers.addAll({
       "Authorization": "Bearer ${getData(AppConstance.authorizationToken)}",
+      "content-type": "application/json",
     });
 
     return handler.next(options);

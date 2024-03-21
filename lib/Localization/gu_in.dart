@@ -59,4 +59,12 @@ Map<String, String> guIN = <String, String>{
   AppStrings.lastCycleLog: "છેલ્લો સાયકલ લોગ:",
   AppStrings.viewCycles: "સાયકલ જુઓ",
   AppStrings.challan: "ચલણ",
+  AppStrings.itemImage: "આઇટમની છબી",
+  AppStrings.selectOrCaptureAImage: "છબી પસંદ કરો અથવા કેપ્ચર કરો",
+  AppStrings.select: "પસંદ કરો",
+  AppStrings.camera: "કેમેરા",
+  AppStrings.gallery: "ગેલેરી",
+  AppStrings.pleaseAddItemImage: "કૃપા કરીને આઇટમની છબી ઉમેરો",
+  AppStrings.remove: "નાપસંદ કરો",
+  AppStrings.viewChallan: "ચલણ જુઓ",
 };

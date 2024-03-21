@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ImagePickerService {
-  Future<String?> pickImage({required ImageSource source, bool isShowLoader = true, int imageQuality = 100}) async {
+  static Future<(String, File)?> pickImage({required ImageSource source, bool isShowLoader = true, int imageQuality = 100}) async {
     bool isGranted = false;
     if (source == ImageSource.camera) {
       if (await Permission.camera.request().isGranted) {
@@ -66,13 +66,13 @@ class ImagePickerService {
           Get.back();
         }
 
-        return file.path;
+        return (file.path, file);
       }
     }
     return null;
   }
 
-  Future<List<String>> pickMultiImage({bool isShowLoader = true, int imageQuality = 100}) async {
+  static Future<List<String>> pickMultiImage({bool isShowLoader = true, int imageQuality = 100}) async {
     if (await Permission.storage.request().isGranted || await Permission.photos.request().isGranted) {
       List<XFile> pickedFileList = await ImagePicker().pickMultiImage(imageQuality: imageQuality);
 

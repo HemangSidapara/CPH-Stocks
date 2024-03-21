@@ -14,11 +14,13 @@ class CreateOrderController extends GetxController {
   TextEditingController pvdColorController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
+  RxString base64Image = ''.obs;
 
   RxBool isGetPartiesLoading = true.obs;
   RxList<get_parties.Data> partyList = RxList();
   RxInt selectedParty = (-1).obs;
   RxBool isCreateOrderLoading = false.obs;
+  RxBool isImageSelected = false.obs;
 
   String? validatePartyName(String? value) {
     if (value == null || value.isEmpty == true) {
@@ -83,17 +85,22 @@ class CreateOrderController extends GetxController {
       final isValidate = createOrderFormKey.currentState?.validate();
 
       if (isValidate == true) {
-        final response = await OrderServices.createOrderService(
-          partyName: partyNameController.text.trim(),
-          itemName: itemNameController.text.trim(),
-          pvdColor: pvdColorController.text.trim(),
-          quantity: quantityController.text.trim(),
-          size: sizeController.text.trim(),
-        );
+        if (isImageSelected.value) {
+          final response = await OrderServices.createOrderService(
+            partyName: partyNameController.text.trim(),
+            itemName: itemNameController.text.trim(),
+            pvdColor: pvdColorController.text.trim(),
+            quantity: quantityController.text.trim(),
+            size: sizeController.text.trim(),
+            itemImage: base64Image.value,
+          );
 
-        if (response.isSuccess) {
-          Get.back();
-          Utils.handleMessage(message: response.message);
+          if (response.isSuccess) {
+            Get.back();
+            Utils.handleMessage(message: response.message);
+          }
+        } else {
+          Utils.handleMessage(message: AppStrings.pleaseAddItemImage.tr, isError: true);
         }
       }
     } finally {

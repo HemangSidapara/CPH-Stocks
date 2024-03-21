@@ -68,19 +68,38 @@ class SignInView extends GetView<SignInController> {
                     title: AppStrings.phoneNumber.tr,
                     hintText: AppStrings.enterPhoneNumber.tr,
                     validator: controller.phoneValidator,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
+                    maxLength: 10,
                   ),
                   SizedBox(height: 2.h),
 
                   ///Password
-                  TextFieldWidget(
-                    controller: controller.passwordController,
-                    title: AppStrings.password.tr,
-                    hintText: AppStrings.enterPassword.tr,
-                    obscureText: controller.isPasswordVisible.isFalse,
-                    validator: controller.passwordValidator,
-                    textInputAction: TextInputAction.next,
-                  ),
+                  Obx(() {
+                    return TextFieldWidget(
+                      controller: controller.passwordController,
+                      title: AppStrings.password.tr,
+                      hintText: AppStrings.enterPassword.tr,
+                      obscureText: controller.isPasswordVisible.isFalse,
+                      validator: controller.passwordValidator,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.next,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          controller.isPasswordVisible.toggle();
+                        },
+                        style: IconButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        icon: Icon(
+                          controller.isPasswordVisible.isTrue ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                          color: controller.isPasswordVisible.isTrue ? AppColors.SECONDARY_COLOR : AppColors.HINT_GREY_COLOR,
+                          size: 5.5.w,
+                        ),
+                      ),
+                      suffixIconConstraints: BoxConstraints(minWidth: 12.w),
+                    );
+                  }),
                 ],
               ),
             ),

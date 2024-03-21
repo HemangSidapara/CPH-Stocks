@@ -120,13 +120,16 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                 SizedBox(height: 2.h),
 
                 ///Add Order Cycle Button
-                ButtonWidget(
-                  onPressed: () async {
-                    await controller.addOrderCycleApi();
-                  },
-                  isLoading: controller.isAddOrderCycleLoading.value,
-                  buttonTitle: AppStrings.add.tr,
-                ),
+                Obx(() {
+                  return ButtonWidget(
+                    onPressed: () async {
+                      Utils.unfocus();
+                      await controller.addOrderCycleApi();
+                    },
+                    isLoading: controller.isAddOrderCycleLoading.value,
+                    buttonTitle: AppStrings.add.tr,
+                  );
+                }),
               ],
             ),
           ),

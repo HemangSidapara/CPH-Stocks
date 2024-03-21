@@ -13,7 +13,7 @@ class Logger {
 
   static var logIcon = '✏️';
 
-  static void printLog({var tag = 'RedjoyTV', var printLog = '', var logIcon = 'ℹ️', bool isTimer = false}) {
+  static void printLog({var tag = 'CPH Stocks', var printLog = '', var logIcon = 'ℹ️', bool isTimer = false}) {
     if (isTimer) {
       Logger.logIcon = timer;
       log('|------------------------------>${Logger.logIcon} Response Time: $printLog seconds ${Logger.logIcon}<------------------------------|');

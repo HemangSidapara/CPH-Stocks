@@ -6,4 +6,6 @@ class ApiUrls {
   static const String createOrderApi = '${_apiPath}createOrder';
   static const String getOrdersApi = '${_apiPath}getOrders';
   static const String getPartiesApi = '${_apiPath}getParties';
+  static const String createOrderCycleApi = '${_apiPath}createOrderCycle';
+  static const String getOrderCyclesApi = '${_apiPath}getOrderCycles';
 }

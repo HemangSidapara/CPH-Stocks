@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class OrderDetailsController extends GetxController {
+  GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+
   TextEditingController searchController = TextEditingController();
   RxList<get_orders.Data> searchedOrderList = RxList();
   RxList<get_orders.Data> orderList = RxList();
@@ -15,9 +17,9 @@ class OrderDetailsController extends GetxController {
     await getOrdersApi();
   }
 
-  Future<void> getOrdersApi() async {
+  Future<void> getOrdersApi({bool isLoading = true}) async {
     try {
-      isGetOrdersLoading(true);
+      isGetOrdersLoading(isLoading);
       final response = await OrderServices.getOrdersService();
 
       if (response.isSuccess) {

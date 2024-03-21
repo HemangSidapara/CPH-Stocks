@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({super.key});
+  final Color? loaderColor;
+  const LoadingWidget({super.key, this.loaderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class LoadingWidget extends StatelessWidget {
           height: context.isPortrait ? 8.w : 6.h,
           width: context.isPortrait ? 8.w : 6.h,
           child: CircularProgressIndicator(
-            color: AppColors.PRIMARY_COLOR,
+            color: loaderColor ?? AppColors.PRIMARY_COLOR,
             strokeWidth: 3,
           ),
         ),

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
@@ -209,7 +212,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                             SizedBox(
                                               width: 15.w,
                                               child: Text(
-                                                '100',
+                                                controller.searchedOrderList[index].modelMeta?[itemIndex].pending ?? '',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w700,
                                                   fontSize: 16.sp,
@@ -223,7 +226,10 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                           onPressed: () async {
                                             Get.toNamed(
                                               Routes.addOrderCycleScreen,
-                                              arguments: PendingDataModel(pending: controller.searchedOrderList[index].modelMeta?[itemIndex].quantity?.toInt() ?? 0),
+                                              arguments: PendingDataModel(
+                                                itemId: controller.searchedOrderList[index].modelMeta?[itemIndex].orderMetaId,
+                                                pending: controller.searchedOrderList[index].modelMeta?[itemIndex].pending?.toInt() ?? 0,
+                                              ),
                                             );
                                           },
                                           style: IconButton.styleFrom(
@@ -362,7 +368,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            controller.searchedOrderList[index].modelMeta?[itemIndex].quantity ?? '',
+                                                            controller.searchedOrderList[index].modelMeta?[itemIndex].okPcs ?? '',
                                                             style: TextStyle(
                                                               fontSize: 16.sp,
                                                               fontWeight: FontWeight.w700,
@@ -385,7 +391,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            controller.searchedOrderList[index].modelMeta?[itemIndex].quantity ?? '',
+                                                            controller.searchedOrderList[index].modelMeta?[itemIndex].woProcess ?? '',
                                                             style: TextStyle(
                                                               fontSize: 16.sp,
                                                               fontWeight: FontWeight.w700,
@@ -425,7 +431,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  height: 25.h,
+                                                  height: 26.h,
                                                   child: VerticalDivider(
                                                     color: AppColors.HINT_GREY_COLOR,
                                                     thickness: 1,
@@ -433,9 +439,50 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                 ),
 
                                                 ///Item Image
-                                                Flexible(
-                                                  child: Image.asset(
-                                                    AppAssets.splashImage,
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        AppStrings.itemImage.tr,
+                                                        style: TextStyle(
+                                                          color: AppColors.SECONDARY_COLOR,
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 16.sp,
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 1.h),
+                                                      Image.memory(
+                                                        controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage != null || controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage?.isNotEmpty == true ? base64Decode(controller.searchedOrderList[index].modelMeta![itemIndex].itemImage!) : Uint8List(0),
+                                                        fit: BoxFit.contain,
+                                                        errorBuilder: (context, error, stackTrace) {
+                                                          return SizedBox(
+                                                            height: 15.h,
+                                                            width: double.maxFinite,
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.error_rounded,
+                                                                  size: 6.w,
+                                                                  color: AppColors.ERROR_COLOR,
+                                                                ),
+                                                                Text(
+                                                                  error.toString().replaceAll('Exception: ', ''),
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    color: AppColors.SECONDARY_COLOR,
+                                                                    fontSize: 15.sp,
+                                                                    fontWeight: FontWeight.w600,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                      SizedBox(height: 1.h),
+                                                    ],
                                                   ),
                                                 ),
                                               ],

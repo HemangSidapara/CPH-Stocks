@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
+import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_controller.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
@@ -11,6 +15,7 @@ import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CreateOrderView extends GetView<CreateOrderController> {
@@ -166,8 +171,10 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 loadingBuilder: (context, searchEntry) {
-                                  return const Center(
-                                    child: LoadingWidget(),
+                                  return Center(
+                                    child: LoadingWidget(
+                                      loaderColor: AppColors.SECONDARY_COLOR,
+                                    ),
                                   );
                                 },
                                 emptyBuilder: (context, searchEntry) {
@@ -292,6 +299,99 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             keyboardType: TextInputType.number,
                             maxLength: 10,
                           ),
+                          SizedBox(height: 2.h),
+
+                          ///Image
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: context.isPortrait ? 2.w : 1.w),
+                              child: Text(
+                                AppStrings.itemImage.tr,
+                                style: TextStyle(
+                                  color: AppColors.PRIMARY_COLOR,
+                                  fontSize: context.isPortrait ? 16.sp : 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          InkWell(
+                            onTap: () async {
+                              Utils.unfocus();
+                              await showSelectImageBottomSheet();
+                            },
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: EdgeInsets.symmetric(vertical: 3.h),
+                              decoration: BoxDecoration(
+                                color: AppColors.PRIMARY_COLOR,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: AppColors.LIGHT_BLUE_COLOR,
+                                  width: 2.5,
+                                ),
+                              ),
+                              child: Obx(() {
+                                if (controller.isImageSelected.isTrue) {
+                                  return Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 25.h,
+                                        child: Image.memory(
+                                          base64Decode(controller.base64Image.value),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          controller.base64Image.value = '';
+                                          controller.isImageSelected(false);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.SECONDARY_COLOR.withOpacity(0.9),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          fixedSize: Size(40.w, 5.h),
+                                        ),
+                                        child: Text(
+                                          AppStrings.remove.tr,
+                                          style: TextStyle(
+                                            color: AppColors.PRIMARY_COLOR,
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Column(
+                                    children: [
+                                      Icon(
+                                        Icons.image_rounded,
+                                        size: 8.5.w,
+                                        color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                                      ),
+                                      Text(
+                                        AppStrings.selectOrCaptureAImage.tr,
+                                        style: TextStyle(
+                                          color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              }),
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
                         ],
                       ),
                     ),
@@ -300,18 +400,159 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 SizedBox(height: 2.h),
 
                 ///Create Order Button
-                ButtonWidget(
-                  onPressed: () async {
-                    await controller.createOrderApi();
-                  },
-                  isLoading: controller.isCreateOrderLoading.value,
-                  buttonTitle: AppStrings.createOrder.tr,
-                ),
+                Obx(() {
+                  return ButtonWidget(
+                    onPressed: () async {
+                      Utils.unfocus();
+                      await controller.createOrderApi();
+                    },
+                    isLoading: controller.isCreateOrderLoading.value,
+                    buttonTitle: AppStrings.createOrder.tr,
+                  );
+                }),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> showSelectImageBottomSheet() async {
+    await showModalBottomSheet(
+      context: Get.context!,
+      constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 90.h, minHeight: 0.h),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      isScrollControlled: true,
+      useRootNavigator: true,
+      clipBehavior: Clip.hardEdge,
+      backgroundColor: AppColors.WHITE_COLOR,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ///Back & Title
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppStrings.select.tr,
+                    style: TextStyle(
+                      color: AppColors.SECONDARY_COLOR,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    style: IconButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: AppColors.SECONDARY_COLOR,
+                      size: 6.w,
+                    ),
+                  ),
+                ],
+              ),
+              Divider(
+                color: AppColors.HINT_GREY_COLOR,
+                thickness: 1,
+              ),
+              SizedBox(height: 3.h),
+
+              ///Select Method
+              SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ///Gallery
+                    InkWell(
+                      onTap: () async {
+                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.gallery, imageQuality: 50);
+                        if (selectedImage != null) {
+                          controller.base64Image.value = base64Encode(selectedImage.$2.readAsBytesSync()).replaceAll('\n', '').replaceAll('=', '');
+                          controller.isImageSelected(true);
+                          Get.back();
+                        } else {
+                          controller.isImageSelected(false);
+                        }
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_rounded,
+                            color: AppColors.MAIN_BORDER_COLOR,
+                            size: 12.w,
+                          ),
+                          SizedBox(height: 1.h),
+                          Text(
+                            AppStrings.gallery.tr,
+                            style: TextStyle(
+                              color: AppColors.SECONDARY_COLOR,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ///Camera
+                    InkWell(
+                      onTap: () async {
+                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.camera, imageQuality: 50);
+                        if (selectedImage != null) {
+                          controller.base64Image.value = base64Encode(Uint8List.fromList(selectedImage.$2.readAsBytesSync()));
+                          controller.isImageSelected(true);
+                          Get.back();
+                        } else if (controller.base64Image.value.isEmpty) {
+                          controller.isImageSelected(false);
+                        }
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.photo_camera_rounded,
+                            color: AppColors.MAIN_BORDER_COLOR,
+                            size: 12.w,
+                          ),
+                          SizedBox(height: 1.h),
+                          Text(
+                            AppStrings.camera.tr,
+                            style: TextStyle(
+                              color: AppColors.SECONDARY_COLOR,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 2.h),
+            ],
+          ),
+        );
+      },
     );
   }
 }
