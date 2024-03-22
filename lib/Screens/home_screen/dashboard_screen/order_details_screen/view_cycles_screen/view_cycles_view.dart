@@ -42,7 +42,11 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                     ),
                     IconButton(
                       onPressed: () async {
-                        await showChallanBottomSheet(pdfUrl: controller.challanUrl.value);
+                        if (controller.challanUrl.value.isNotEmpty) {
+                          await showChallanBottomSheet(pdfUrl: controller.challanUrl.value);
+                        } else {
+                          Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
+                        }
                       },
                       style: IconButton.styleFrom(
                         backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),

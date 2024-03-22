@@ -225,11 +225,15 @@ class ChallanView extends GetView<ChallanController> {
                                               ///Download
                                               IconButton(
                                                 onPressed: () async {
-                                                  await showChallanBottomSheet(
-                                                    pdfUrl: controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice ?? '',
-                                                    fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].itemName?.replaceAll(' ', '')}.pdf",
-                                                    contactNumber: controller.searchedInvoiceList[index].contactNumber ?? '',
-                                                  );
+                                                  if (controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice != null && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.isNotEmpty == true) {
+                                                    await showChallanBottomSheet(
+                                                      pdfUrl: controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice ?? '',
+                                                      fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].itemName?.replaceAll(' ', '')}.pdf",
+                                                      contactNumber: controller.searchedInvoiceList[index].contactNumber ?? '',
+                                                    );
+                                                  } else {
+                                                    Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
+                                                  }
                                                 },
                                                 icon: Icon(
                                                   Icons.download_rounded,
