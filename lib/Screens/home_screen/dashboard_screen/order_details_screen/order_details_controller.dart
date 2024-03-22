@@ -10,6 +10,8 @@ class OrderDetailsController extends GetxController {
   RxList<get_orders.Data> searchedOrderList = RxList();
   RxList<get_orders.Data> orderList = RxList();
   RxBool isGetOrdersLoading = false.obs;
+  RxBool isRefreshing = false.obs;
+  RxDouble ceilValueForRefresh = 0.0.obs;
 
   @override
   void onInit() async {
@@ -19,6 +21,7 @@ class OrderDetailsController extends GetxController {
 
   Future<void> getOrdersApi({bool isLoading = true}) async {
     try {
+      isRefreshing(!isLoading);
       isGetOrdersLoading(isLoading);
       final response = await OrderServices.getOrdersService();
 
@@ -30,6 +33,7 @@ class OrderDetailsController extends GetxController {
         searchedOrderList.addAll(ordersModel.data ?? []);
       }
     } finally {
+      isRefreshing(false);
       isGetOrdersLoading(false);
     }
   }

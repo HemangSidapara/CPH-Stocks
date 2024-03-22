@@ -44,6 +44,8 @@ dependencies:
   dropdown_search: ^5.0.6
   image_picker: ^1.0.7
   permission_handler: ^11.3.0
+  flutter_image_compress: ^2.2.0
+  syncfusion_flutter_pdfviewer: ^25.1.35
 
 dev_dependencies:
   flutter_test:

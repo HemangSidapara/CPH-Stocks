@@ -83,8 +83,6 @@ class ApiBaseHelper {
   }
 
   static dynamic requestInterceptor(RequestOptions options, RequestInterceptorHandler handler) async {
-    // Get your JWT token
-
     options.headers.addAll({
       "Authorization": "Bearer ${getData(AppConstance.authorizationToken)}",
       "content-type": "application/json",
@@ -114,6 +112,7 @@ class ApiBaseHelper {
       );
       stopWatch.stop();
       Logger.printLog(isTimer: true, printLog: stopWatch.elapsed.inMilliseconds / 1000);
+      stopWatch.reset();
       return handleResponse(response, onError!, onSuccess!);
     } on DioException catch (e) {
       return handleError(e, onError!, onSuccess!);
@@ -136,6 +135,7 @@ class ApiBaseHelper {
       );
       stopWatch.stop();
       Logger.printLog(isTimer: true, printLog: stopWatch.elapsed.inMilliseconds / 1000);
+      stopWatch.reset();
       return handleResponse(response, onError!, onSuccess!);
     } on DioException catch (e) {
       return handleError(e, onError!, onSuccess!);
@@ -155,6 +155,7 @@ class ApiBaseHelper {
       Response response = await baseAPI.get(url, queryParameters: params);
       stopWatch.stop();
       Logger.printLog(isTimer: true, printLog: stopWatch.elapsed.inMilliseconds / 1000);
+      stopWatch.reset();
       return handleResponse(response, onError!, onSuccess!);
     } on DioException catch (e) {
       return handleError(e, onError!, onSuccess!);
@@ -174,6 +175,7 @@ class ApiBaseHelper {
       Response response = await baseAPI.put(url, data: data);
       stopWatch.stop();
       Logger.printLog(isTimer: true, printLog: stopWatch.elapsed.inMilliseconds / 1000);
+      stopWatch.reset();
       return handleResponse(response, onError!, onSuccess!);
     } on DioException catch (e) {
       return handleError(e, onError!, onSuccess!);
@@ -198,6 +200,7 @@ class ApiBaseHelper {
       );
       stopWatch.stop();
       Logger.printLog(isTimer: true, printLog: stopWatch.elapsed.inMilliseconds / 1000);
+      stopWatch.reset();
       return handleResponse(response, onError!, onSuccess!);
     } on DioException catch (e) {
       return handleError(e, onError!, onSuccess!);

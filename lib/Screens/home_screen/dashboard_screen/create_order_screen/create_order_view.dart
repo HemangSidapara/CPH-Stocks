@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
@@ -14,6 +13,7 @@ import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -483,12 +483,20 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     ///Gallery
                     InkWell(
                       onTap: () async {
-                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.gallery, imageQuality: 50);
+                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.gallery);
                         if (selectedImage != null) {
-                          controller.base64Image.value = base64Encode(selectedImage.$2.readAsBytesSync()).replaceAll('\n', '').replaceAll('=', '');
-                          controller.isImageSelected(true);
+                          XFile? result = await FlutterImageCompress.compressAndGetFile(
+                            selectedImage.$2.absolute.path,
+                            "${selectedImage.$2.path.split(selectedImage.$2.path.split('/').last).first}optimize_${selectedImage.$2.path.split('/').last}",
+                            quality: 50,
+                            inSampleSize: 4,
+                          );
+                          if (result != null) {
+                            controller.base64Image.value = base64Encode(await result.readAsBytes());
+                            controller.isImageSelected(true);
+                          }
                           Get.back();
-                        } else {
+                        } else if (controller.base64Image.value.isEmpty) {
                           controller.isImageSelected(false);
                         }
                       },
@@ -516,10 +524,18 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     ///Camera
                     InkWell(
                       onTap: () async {
-                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.camera, imageQuality: 50);
+                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.camera);
                         if (selectedImage != null) {
-                          controller.base64Image.value = base64Encode(Uint8List.fromList(selectedImage.$2.readAsBytesSync()));
-                          controller.isImageSelected(true);
+                          XFile? result = await FlutterImageCompress.compressAndGetFile(
+                            selectedImage.$2.absolute.path,
+                            "${selectedImage.$2.path.split(selectedImage.$2.path.split('/').last).first}optimize_${selectedImage.$2.path.split('/').last}",
+                            quality: 50,
+                            inSampleSize: 4,
+                          );
+                          if (result != null) {
+                            controller.base64Image.value = base64Encode(await result.readAsBytes());
+                            controller.isImageSelected(true);
+                          }
                           Get.back();
                         } else if (controller.base64Image.value.isEmpty) {
                           controller.isImageSelected(false);

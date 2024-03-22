@@ -31,12 +31,52 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
             child: Column(
               children: [
                 ///Header
-                CustomHeaderWidget(
-                  title: AppStrings.orderDetails.tr,
-                  titleIcon: AppAssets.orderDetailsIcon,
-                  onBackPressed: () {
-                    Get.back();
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomHeaderWidget(
+                      title: AppStrings.orderDetails.tr,
+                      titleIcon: AppAssets.orderDetailsIcon,
+                      onBackPressed: () {
+                        Get.back();
+                      },
+                    ),
+                    Obx(() {
+                      return IconButton(
+                        onPressed: controller.isRefreshing.value
+                            ? () {}
+                            : () async {
+                                await controller.getOrdersApi(isLoading: false);
+                              },
+                        style: IconButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: EdgeInsets.zero,
+                        ),
+                        icon: Obx(() {
+                          return TweenAnimationBuilder(
+                            duration: Duration(seconds: controller.isRefreshing.value ? 45 : 1),
+                            tween: Tween(begin: 0.0, end: controller.isRefreshing.value ? 45.0 : controller.ceilValueForRefresh.value),
+                            onEnd: () {
+                              controller.isRefreshing.value = false;
+                            },
+                            builder: (context, value, child) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                controller.ceilValueForRefresh(value.toDouble().ceilToDouble());
+                              });
+                              return Transform.rotate(
+                                angle: value * 2 * 3.141592653589793,
+                                child: Icon(
+                                  Icons.refresh_rounded,
+                                  color: AppColors.PRIMARY_COLOR,
+                                  size: context.isPortrait ? 6.w : 6.h,
+                                ),
+                              );
+                            },
+                          );
+                        }),
+                      );
+                    }),
+                  ],
                 ),
                 SizedBox(height: 2.h),
 
@@ -452,34 +492,42 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                         ),
                                                       ),
                                                       SizedBox(height: 1.h),
-                                                      Image.memory(
-                                                        controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage != null || controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage?.isNotEmpty == true ? base64Decode(controller.searchedOrderList[index].modelMeta![itemIndex].itemImage!) : Uint8List(0),
-                                                        fit: BoxFit.contain,
-                                                        errorBuilder: (context, error, stackTrace) {
-                                                          return SizedBox(
-                                                            height: 15.h,
-                                                            width: double.maxFinite,
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Icon(
-                                                                  Icons.error_rounded,
-                                                                  size: 6.w,
-                                                                  color: AppColors.ERROR_COLOR,
-                                                                ),
-                                                                Text(
-                                                                  error.toString().replaceAll('Exception: ', ''),
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                    color: AppColors.SECONDARY_COLOR,
-                                                                    fontSize: 15.sp,
-                                                                    fontWeight: FontWeight.w600,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
+                                                      GestureDetector(
+                                                        onLongPress: () async {
+                                                          await showItemImageDialog(
+                                                            itemName: controller.searchedOrderList[index].modelMeta?[itemIndex].itemName ?? AppStrings.itemImage.tr,
+                                                            itemImage: controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage != null || controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage?.isNotEmpty == true ? controller.searchedOrderList[index].modelMeta![itemIndex].itemImage! : '',
                                                           );
                                                         },
+                                                        child: Image.memory(
+                                                          controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage != null || controller.searchedOrderList[index].modelMeta?[itemIndex].itemImage?.isNotEmpty == true ? base64Decode(controller.searchedOrderList[index].modelMeta![itemIndex].itemImage!) : Uint8List(0),
+                                                          fit: BoxFit.contain,
+                                                          errorBuilder: (context, error, stackTrace) {
+                                                            return SizedBox(
+                                                              height: 15.h,
+                                                              width: double.maxFinite,
+                                                              child: Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons.error_rounded,
+                                                                    size: 6.w,
+                                                                    color: AppColors.ERROR_COLOR,
+                                                                  ),
+                                                                  Text(
+                                                                    error.toString().replaceAll('Exception: ', ''),
+                                                                    textAlign: TextAlign.center,
+                                                                    style: TextStyle(
+                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                      fontSize: 15.sp,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
                                                       ),
                                                       SizedBox(height: 1.h),
                                                     ],
@@ -512,6 +560,116 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> showItemImageDialog({
+    required String itemName,
+    required String itemImage,
+  }) async {
+    final imageData = itemImage.isNotEmpty ? base64Decode(itemImage) : Uint8List(0);
+    await showGeneralDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      barrierColor: AppColors.SECONDARY_COLOR,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return SafeArea(
+          child: Material(
+            color: AppColors.SECONDARY_COLOR,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+              child: Column(
+                children: [
+                  ///ItemName
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            itemName,
+                            style: TextStyle(
+                              color: AppColors.PRIMARY_COLOR,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20.sp,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 2.w),
+                        IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          style: IconButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,
+                          ),
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: AppColors.PRIMARY_COLOR,
+                            size: 7.w,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  ///Item Image
+                  Center(
+                    child: SizedBox(
+                      height: 80.h,
+                      child: Image.memory(
+                        imageData,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return SizedBox(
+                            height: 15.h,
+                            width: double.maxFinite,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_rounded,
+                                  size: 6.w,
+                                  color: AppColors.ERROR_COLOR,
+                                ),
+                                Text(
+                                  error.toString().replaceAll('Exception: ', ''),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: AppColors.SECONDARY_COLOR,
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOut,
+          ),
+          child: FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
+            ),
+            child: child,
+          ),
+        );
+      },
     );
   }
 }
