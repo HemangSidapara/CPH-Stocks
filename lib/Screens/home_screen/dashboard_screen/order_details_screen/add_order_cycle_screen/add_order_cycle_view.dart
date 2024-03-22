@@ -30,7 +30,7 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                   titleIcon: AppAssets.addOrderCycleIcon,
                   titleIconSize: 10.w,
                   onBackPressed: () {
-                    Get.back();
+                    Get.back(closeOverlays: true);
                   },
                 ),
                 SizedBox(height: 4.h),

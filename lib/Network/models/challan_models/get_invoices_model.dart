@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 /// code : "200"
-/// msg : "Get Orders Successfully"
-/// Data : [{"orderId":"1","partyName":"Test","model_meta":[{"orderMetaId":"1","itemName":"Handle","size":"4","quantity":"12","pvdColor":"Silver"},{"orderMetaId":"2","itemName":"Nut Ball","size":"4","quantity":"12","pvdColor":"Black"},{"orderMetaId":"4","itemName":"Handle","size":"4","quantity":"12","pvdColor":"Silver"},{"orderMetaId":"5","itemName":"Nut Ball","size":"4","quantity":"12","pvdColor":"Black"}]},{"orderId":"2","partyName":"Test1","model_meta":[{"orderMetaId":"3","itemName":"gauge","size":"8","quantity":"100","pvdColor":"rose"}]}]
+/// msg : "Get Invoices Successfully"
+/// Data : [{"orderId":"1","partyName":"Test","model_meta":[{"orderMetaId":"1","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"2","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"4","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"5","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]},{"orderId":"2","partyName":"Test1","model_meta":[{"orderMetaId":"3","itemName":"gauge","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]},{"orderId":"3","partyName":"IMP","model_meta":[{"orderMetaId":"24","itemName":"fr","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"31","itemName":"xhn","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]}]
 
-GetOrdersModel getOrdersModelFromJson(String str) => GetOrdersModel.fromJson(json.decode(str));
-String getOrdersModelToJson(GetOrdersModel data) => json.encode(data.toJson());
+GetInvoicesModel getInvoicesModelFromJson(String str) => GetInvoicesModel.fromJson(json.decode(str));
+String getInvoicesModelToJson(GetInvoicesModel data) => json.encode(data.toJson());
 
-class GetOrdersModel {
-  GetOrdersModel({
+class GetInvoicesModel {
+  GetInvoicesModel({
     String? code,
     String? msg,
     List<Data>? data,
@@ -18,7 +18,7 @@ class GetOrdersModel {
     _data = data;
   }
 
-  GetOrdersModel.fromJson(dynamic json) {
+  GetInvoicesModel.fromJson(dynamic json) {
     _code = json['code'];
     _msg = json['msg'];
     if (json['Data'] != null) {
@@ -31,12 +31,12 @@ class GetOrdersModel {
   String? _code;
   String? _msg;
   List<Data>? _data;
-  GetOrdersModel copyWith({
+  GetInvoicesModel copyWith({
     String? code,
     String? msg,
     List<Data>? data,
   }) =>
-      GetOrdersModel(
+      GetInvoicesModel(
         code: code ?? _code,
         msg: msg ?? _msg,
         data: data ?? _data,
@@ -58,7 +58,7 @@ class GetOrdersModel {
 
 /// orderId : "1"
 /// partyName : "Test"
-/// model_meta : [{"orderMetaId":"1","itemName":"Handle","size":"4","quantity":"12","pvdColor":"Silver"},{"orderMetaId":"2","itemName":"Nut Ball","size":"4","quantity":"12","pvdColor":"Black"},{"orderMetaId":"4","itemName":"Handle","size":"4","quantity":"12","pvdColor":"Silver"},{"orderMetaId":"5","itemName":"Nut Ball","size":"4","quantity":"12","pvdColor":"Black"}]
+/// model_meta : [{"orderMetaId":"1","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"2","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"4","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"5","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]
 
 Data dataFromJson(String str) => Data.fromJson(json.decode(str));
 String dataToJson(Data data) => json.encode(data.toJson());
@@ -94,6 +94,7 @@ class Data {
   Data copyWith({
     String? orderId,
     String? partyName,
+    String? contactNumber,
     List<ModelMeta>? modelMeta,
   }) =>
       Data(
@@ -121,9 +122,7 @@ class Data {
 
 /// orderMetaId : "1"
 /// itemName : "Handle"
-/// size : "4"
-/// quantity : "12"
-/// pvdColor : "Silver"
+/// invoice : "https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"
 
 ModelMeta modelMetaFromJson(String str) => ModelMeta.fromJson(json.decode(str));
 String modelMetaToJson(ModelMeta data) => json.encode(data.toJson());
@@ -132,88 +131,40 @@ class ModelMeta {
   ModelMeta({
     String? orderMetaId,
     String? itemName,
-    String? size,
-    String? quantity,
-    String? pvdColor,
-    String? itemImage,
-    String? pending,
-    String? okPcs,
-    String? woProcess,
+    String? invoice,
   }) {
     _orderMetaId = orderMetaId;
     _itemName = itemName;
-    _size = size;
-    _quantity = quantity;
-    _pvdColor = pvdColor;
-    _itemImage = itemImage;
-    _pending = pending;
-    _okPcs = okPcs;
-    _woProcess = woProcess;
+    _invoice = invoice;
   }
 
   ModelMeta.fromJson(dynamic json) {
     _orderMetaId = json['orderMetaId'];
     _itemName = json['itemName'];
-    _size = json['size'];
-    _quantity = json['quantity'];
-    _pvdColor = json['pvdColor'];
-    _itemImage = json['itemImage'];
-    _pending = json['pending'];
-    _okPcs = json['okPcs'];
-    _woProcess = json['woProcess'];
+    _invoice = json['invoice'];
   }
   String? _orderMetaId;
   String? _itemName;
-  String? _size;
-  String? _quantity;
-  String? _pvdColor;
-  String? _itemImage;
-  String? _pending;
-  String? _okPcs;
-  String? _woProcess;
+  String? _invoice;
   ModelMeta copyWith({
     String? orderMetaId,
     String? itemName,
-    String? size,
-    String? quantity,
-    String? pvdColor,
-    String? itemImage,
-    String? pending,
-    String? okPcs,
-    String? woProcess,
+    String? invoice,
   }) =>
       ModelMeta(
         orderMetaId: orderMetaId ?? _orderMetaId,
         itemName: itemName ?? _itemName,
-        size: size ?? _size,
-        quantity: quantity ?? _quantity,
-        pvdColor: pvdColor ?? _pvdColor,
-        itemImage: itemImage ?? _itemImage,
-        pending: pending ?? _pending,
-        okPcs: okPcs ?? _okPcs,
-        woProcess: woProcess ?? _woProcess,
+        invoice: invoice ?? _invoice,
       );
   String? get orderMetaId => _orderMetaId;
   String? get itemName => _itemName;
-  String? get size => _size;
-  String? get quantity => _quantity;
-  String? get pvdColor => _pvdColor;
-  String? get itemImage => _itemImage;
-  String? get pending => _pending;
-  String? get okPcs => _okPcs;
-  String? get woProcess => _woProcess;
+  String? get invoice => _invoice;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['orderMetaId'] = _orderMetaId;
     map['itemName'] = _itemName;
-    map['size'] = _size;
-    map['quantity'] = _quantity;
-    map['pvdColor'] = _pvdColor;
-    map['itemImage'] = _itemImage;
-    map['pending'] = _pending;
-    map['okPcs'] = _okPcs;
-    map['woProcess'] = _woProcess;
+    map['invoice'] = _invoice;
     return map;
   }
 }

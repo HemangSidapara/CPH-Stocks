@@ -8,4 +8,8 @@ class ApiUrls {
   static const String getPartiesApi = '${_apiPath}getParties';
   static const String createOrderCycleApi = '${_apiPath}createOrderCycle';
   static const String getOrderCyclesApi = '${_apiPath}getOrderCycles';
+  static const String getInvoicesApi = '${_apiPath}getInvoices';
+  static const String updatePartyApi = '${_apiPath}updateParty';
+  static const String deletePartyApi = '${_apiPath}deleteParty';
+  static const String deleteOrderApi = '${_apiPath}deleteOrder';
 }

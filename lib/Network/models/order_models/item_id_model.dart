@@ -1,7 +1,13 @@
-class ItemIdModel {
+class ItemDetailsModel {
+  String? partyName;
+  String? itemName;
   String? itemId;
+  int? pending;
 
-  ItemIdModel({
+  ItemDetailsModel({
+    this.partyName,
+    this.itemName,
     this.itemId,
+    this.pending,
   });
 }

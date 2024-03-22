@@ -10,6 +10,7 @@ class CreateOrderController extends GetxController {
   GlobalKey<FormState> createOrderFormKey = GlobalKey<FormState>();
 
   TextEditingController partyNameController = TextEditingController();
+  TextEditingController contactNumberController = TextEditingController();
   TextEditingController itemNameController = TextEditingController();
   TextEditingController pvdColorController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
@@ -32,6 +33,13 @@ class CreateOrderController extends GetxController {
   String? validatePartyList(get_parties.Data? value) {
     if (value == null && partyNameController.text.isEmpty) {
       return AppStrings.pleaseSelectParty.tr;
+    }
+    return null;
+  }
+
+  String? validateContactNumber(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseEnterContactNumber.tr;
     }
     return null;
   }
@@ -88,6 +96,7 @@ class CreateOrderController extends GetxController {
         if (isImageSelected.value) {
           final response = await OrderServices.createOrderService(
             partyName: partyNameController.text.trim(),
+            contactNumber: contactNumberController.text.trim(),
             itemName: itemNameController.text.trim(),
             pvdColor: pvdColorController.text.trim(),
             quantity: quantityController.text.trim(),

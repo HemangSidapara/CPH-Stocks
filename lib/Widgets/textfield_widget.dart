@@ -27,6 +27,8 @@ class TextFieldWidget extends StatefulWidget {
   final bool readOnly;
   final BoxConstraints? suffixIconConstraints;
   final List<TextInputFormatter>? inputFormatters;
+  final Color? primaryColor;
+  final Color? secondaryColor;
 
   const TextFieldWidget({
     super.key,
@@ -52,6 +54,8 @@ class TextFieldWidget extends StatefulWidget {
     this.readOnly = false,
     this.suffixIconConstraints,
     this.inputFormatters,
+    this.primaryColor,
+    this.secondaryColor,
   });
 
   @override
@@ -72,7 +76,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               child: Text(
                 widget.title!,
                 style: TextStyle(
-                  color: AppColors.PRIMARY_COLOR,
+                  color: widget.primaryColor ?? AppColors.PRIMARY_COLOR,
                   fontSize: context.isPortrait ? 16.sp : 12.sp,
                   fontWeight: FontWeight.w600,
                 ),
@@ -86,7 +90,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             validator: widget.validator,
             focusNode: widget.focusNode,
             style: TextStyle(
-              color: AppColors.SECONDARY_COLOR,
+              color: widget.secondaryColor ?? AppColors.SECONDARY_COLOR,
               fontWeight: FontWeight.w600,
               fontSize: context.isPortrait ? 15.sp : 9.sp,
             ),
@@ -94,7 +98,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             textInputAction: widget.textInputAction,
             keyboardType: widget.keyboardType,
             maxLength: widget.maxLength,
-            cursorColor: AppColors.SECONDARY_COLOR,
+            cursorColor: widget.secondaryColor ?? AppColors.SECONDARY_COLOR,
             enabled: widget.isDisable == false,
             onTap: widget.onTap,
             onChanged: widget.onChanged,
@@ -104,16 +108,16 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             inputFormatters: widget.inputFormatters,
             decoration: InputDecoration(
               counter: const SizedBox(),
-              counterStyle: TextStyle(color: AppColors.PRIMARY_COLOR),
+              counterStyle: TextStyle(color: widget.primaryColor ?? AppColors.PRIMARY_COLOR),
               filled: true,
               prefixIconConstraints: widget.prefixIconConstraints,
               prefixIcon: widget.prefixIcon,
-              fillColor: AppColors.WHITE_COLOR,
+              fillColor: widget.primaryColor ?? AppColors.PRIMARY_COLOR,
               hintText: widget.hintText,
               suffixIconConstraints: widget.suffixIconConstraints,
               suffixIcon: widget.suffixIcon,
               hintStyle: TextStyle(
-                color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                color: widget.secondaryColor ?? AppColors.SECONDARY_COLOR.withOpacity(0.5),
                 fontSize: context.isPortrait ? 15.sp : 9.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -139,21 +143,21 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: AppColors.PRIMARY_COLOR,
+                  color: widget.primaryColor ?? AppColors.PRIMARY_COLOR,
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: AppColors.PRIMARY_COLOR,
+                  color: widget.primaryColor ?? AppColors.PRIMARY_COLOR,
                   width: 1,
                 ),
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: AppColors.PRIMARY_COLOR,
+                  color: widget.primaryColor ?? AppColors.PRIMARY_COLOR,
                   width: 1,
                 ),
               ),

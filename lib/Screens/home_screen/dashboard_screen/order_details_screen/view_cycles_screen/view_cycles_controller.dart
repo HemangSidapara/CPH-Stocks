@@ -4,10 +4,12 @@ import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:get/get.dart';
 
 class ViewCyclesController extends GetxController {
-  ItemIdModel arguments = ItemIdModel();
+  ItemDetailsModel arguments = ItemDetailsModel();
 
   RxBool isGetOrderCycleLoading = false.obs;
 
+  RxString challanUrl = ''.obs;
+  RxString contactNumber = ''.obs;
   RxList<get_order_cycles.Data> orderCycleList = RxList();
 
   @override
@@ -24,6 +26,8 @@ class ViewCyclesController extends GetxController {
 
       if (response.isSuccess) {
         get_order_cycles.GetOrderCyclesModel getOrderCyclesModel = get_order_cycles.GetOrderCyclesModel.fromJson(response.response?.data);
+        challanUrl.value = getOrderCyclesModel.invoice ?? '';
+        contactNumber.value = getOrderCyclesModel.contactNumber ?? '';
         orderCycleList.clear();
         orderCycleList.addAll(getOrderCyclesModel.data ?? []);
       }

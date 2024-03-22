@@ -6,6 +6,7 @@ class ButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
   final Widget? child;
   final String buttonTitle;
+  final Color? buttonTitleColor;
   final Size? fixedSize;
   final OutlinedBorder? shape;
   final bool isLoading;
@@ -20,6 +21,7 @@ class ButtonWidget extends StatelessWidget {
     this.shape,
     this.isLoading = false,
     this.buttonColor,
+    this.buttonTitleColor,
   });
 
   @override
@@ -27,13 +29,13 @@ class ButtonWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: isLoading ? () {} : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.PRIMARY_COLOR,
+        backgroundColor: buttonColor ?? AppColors.PRIMARY_COLOR,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
         elevation: 4,
         surfaceTintColor: AppColors.PRIMARY_COLOR,
-        fixedSize: Size(double.maxFinite, 5.h),
+        fixedSize: fixedSize ?? Size(double.maxFinite, 5.h),
       ),
       child: isLoading
           ? SizedBox(
@@ -48,7 +50,7 @@ class ButtonWidget extends StatelessWidget {
               Text(
                 buttonTitle,
                 style: TextStyle(
-                  color: AppColors.SECONDARY_COLOR,
+                  color: buttonTitleColor ?? AppColors.SECONDARY_COLOR,
                   fontWeight: FontWeight.w600,
                   fontSize: 16.sp,
                 ),

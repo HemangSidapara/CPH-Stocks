@@ -29,6 +29,7 @@ class OrderServices {
   /// Create Order
   static Future<ResponseModel> createOrderService({
     required String partyName,
+    required String contactNumber,
     required String itemName,
     required String pvdColor,
     required String quantity,
@@ -37,13 +38,13 @@ class OrderServices {
   }) async {
     final params = {
       ApiKeys.partyName: partyName,
+      ApiKeys.contactNumber: contactNumber,
       ApiKeys.meta: [
         {
           ApiKeys.itemName: itemName,
           ApiKeys.pvdColor: pvdColor,
           ApiKeys.quantity: quantity,
           ApiKeys.size: size,
-          // ApiKeys.itemImage: '',
           ApiKeys.itemImage: itemImage,
         },
       ],
@@ -136,6 +137,88 @@ class OrderServices {
           debugPrint("getOrderCyclesApi success :: ${res.message}");
         } else {
           debugPrint("getOrderCyclesApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Update Party
+  static Future<ResponseModel> updatePartyService({
+    required String orderId,
+    required String partyName,
+    required String contactNumber,
+  }) async {
+    final params = {
+      ApiKeys.orderId: orderId,
+      ApiKeys.partyName: partyName,
+      ApiKeys.contactNumber: contactNumber,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.updatePartyApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("updatePartyApi success :: ${res.message}");
+        } else {
+          debugPrint("updatePartyApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Update Party
+  static Future<ResponseModel> deletePartyService({
+    required String orderId,
+  }) async {
+    final params = {
+      ApiKeys.orderId: orderId,
+    };
+    final response = await ApiBaseHelper.deleteHTTP(
+      ApiUrls.deletePartyApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("deletePartyApi success :: ${res.message}");
+        } else {
+          debugPrint("deletePartyApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Update Party
+  static Future<ResponseModel> deleteOrderService({
+    required String orderMetaId,
+  }) async {
+    final params = {
+      ApiKeys.orderMetaId: orderMetaId,
+    };
+    final response = await ApiBaseHelper.deleteHTTP(
+      ApiUrls.deleteOrderApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("deleteOrderApi success :: ${res.message}");
+        } else {
+          debugPrint("deleteOrderApi error :: ${res.message}");
           Utils.handleMessage(message: res.message, isError: true);
         }
       },

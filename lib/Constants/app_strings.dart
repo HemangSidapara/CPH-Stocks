@@ -68,4 +68,17 @@ class AppStrings {
   static const String pleaseAddItemImage = "Please add item image";
   static const String remove = "Remove";
   static const String viewChallan = "View Challan";
+  static const String successfullyDownloadedAtDownloadFolder = "Successfully downloaded at 'Download' folder.";
+  static const String downloadFailedPleaseTryAgain = "Download failed, Please try again.";
+  static const String contact = "Contact";
+  static const String contactNumber = "Contact Number";
+  static const String enterContactNumber = "Enter contact number";
+  static const String pleaseEnterContactNumber = "Please enter contact number";
+  static const String editPartyDetails = "Edit Party Details";
+  static const String whatsappNotInstalled = "Whatsapp not installed";
+  static const String edit = "Edit";
+  static const String cancel = "Cancel";
+  static const String delete = "Delete";
+  static const String deletePartyText = "Are you sure? You want to delete 'Party'? After deleting all data will be lost under this party.";
+  static const String deleteItemText = "Are you sure? You want to delete 'Item'? After deleting all cycles will be lost under this order.";
 }

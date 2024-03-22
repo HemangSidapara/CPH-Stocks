@@ -1,6 +1,6 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
-import 'package:cph_stocks/Network/models/order_models/pending_data_model.dart';
+import 'package:cph_stocks/Network/models/order_models/item_id_model.dart';
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class AddOrderCycleController extends GetxController {
-  PendingDataModel arguments = PendingDataModel();
+  ItemDetailsModel arguments = ItemDetailsModel();
 
   GlobalKey<FormState> addOrderCycleFormKey = GlobalKey<FormState>();
 

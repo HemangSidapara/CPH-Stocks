@@ -13,6 +13,7 @@ import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,7 +37,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                   title: AppStrings.createOrder.tr,
                   titleIcon: AppAssets.createOrderImage,
                   onBackPressed: () {
-                    Get.back();
+                    Get.back(closeOverlays: true);
                   },
                 ),
                 SizedBox(height: 4.h),
@@ -64,8 +65,10 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    controller.createOrderFormKey.currentState?.reset();
+                                    controller.partyNameController.clear();
+                                    controller.contactNumberController.clear();
                                     controller.selectedParty(-1);
+                                    controller.createOrderFormKey.currentState?.reset();
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
@@ -196,6 +199,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                       controller.selectedParty.value = controller.partyList.indexWhere((element) => element.orderId == item.orderId);
                                       if (controller.selectedParty.value != -1) {
                                         controller.partyNameController.text = controller.partyList[controller.selectedParty.value].partyName ?? '';
+                                        controller.contactNumberController.text = controller.partyList[controller.selectedParty.value].contactNumber ?? '';
                                       }
                                     },
                                     style: TextButton.styleFrom(
@@ -252,6 +256,27 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             textInputAction: TextInputAction.next,
                             maxLength: 30,
                             isDisable: controller.selectedParty.value != -1,
+                          ),
+                          SizedBox(height: 2.h),
+
+                          ///Contact Number
+                          TextFieldWidget(
+                            controller: controller.contactNumberController,
+                            title: AppStrings.contactNumber,
+                            hintText: AppStrings.enterContactNumber,
+                            validator: controller.validateContactNumber,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              TextInputFormatter.withFunction((oldValue, newValue) {
+                                if (!newValue.text.isNumericOnly && newValue.text.isNotEmpty) {
+                                  return oldValue;
+                                } else {
+                                  return newValue;
+                                }
+                              })
+                            ],
+                            maxLength: 10,
                           ),
                           SizedBox(height: 2.h),
 
@@ -433,139 +458,157 @@ class CreateOrderView extends GetView<CreateOrderController> {
       clipBehavior: Clip.hardEdge,
       backgroundColor: AppColors.WHITE_COLOR,
       builder: (context) {
-        return Container(
+        return DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ///Back & Title
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppStrings.select.tr,
-                    style: TextStyle(
-                      color: AppColors.SECONDARY_COLOR,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    style: IconButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: AppColors.SECONDARY_COLOR,
-                      size: 6.w,
-                    ),
-                  ),
-                ],
-              ),
-              Divider(
-                color: AppColors.HINT_GREY_COLOR,
-                thickness: 1,
-              ),
-              SizedBox(height: 3.h),
-
-              ///Select Method
-              SizedBox(
-                width: double.maxFinite,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ///Back & Title
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ///Gallery
-                    InkWell(
-                      onTap: () async {
-                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.gallery);
-                        if (selectedImage != null) {
-                          XFile? result = await FlutterImageCompress.compressAndGetFile(
-                            selectedImage.$2.absolute.path,
-                            "${selectedImage.$2.path.split(selectedImage.$2.path.split('/').last).first}optimize_${selectedImage.$2.path.split('/').last}",
-                            quality: 50,
-                            inSampleSize: 4,
-                          );
-                          if (result != null) {
-                            controller.base64Image.value = base64Encode(await result.readAsBytes());
-                            controller.isImageSelected(true);
-                          }
-                          Get.back();
-                        } else if (controller.base64Image.value.isEmpty) {
-                          controller.isImageSelected(false);
-                        }
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.image_rounded,
-                            color: AppColors.MAIN_BORDER_COLOR,
-                            size: 12.w,
-                          ),
-                          SizedBox(height: 1.h),
-                          Text(
-                            AppStrings.gallery.tr,
-                            style: TextStyle(
-                              color: AppColors.SECONDARY_COLOR,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      AppStrings.select.tr,
+                      style: TextStyle(
+                        color: AppColors.SECONDARY_COLOR,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18.sp,
                       ),
                     ),
-
-                    ///Camera
-                    InkWell(
-                      onTap: () async {
-                        final selectedImage = await ImagePickerService.pickImage(source: ImageSource.camera);
-                        if (selectedImage != null) {
-                          XFile? result = await FlutterImageCompress.compressAndGetFile(
-                            selectedImage.$2.absolute.path,
-                            "${selectedImage.$2.path.split(selectedImage.$2.path.split('/').last).first}optimize_${selectedImage.$2.path.split('/').last}",
-                            quality: 50,
-                            inSampleSize: 4,
-                          );
-                          if (result != null) {
-                            controller.base64Image.value = base64Encode(await result.readAsBytes());
-                            controller.isImageSelected(true);
-                          }
-                          Get.back();
-                        } else if (controller.base64Image.value.isEmpty) {
-                          controller.isImageSelected(false);
-                        }
+                    IconButton(
+                      onPressed: () {
+                        Get.back();
                       },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.photo_camera_rounded,
-                            color: AppColors.MAIN_BORDER_COLOR,
-                            size: 12.w,
-                          ),
-                          SizedBox(height: 1.h),
-                          Text(
-                            AppStrings.camera.tr,
-                            style: TextStyle(
-                              color: AppColors.SECONDARY_COLOR,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                      style: IconButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      icon: Icon(
+                        Icons.close_rounded,
+                        color: AppColors.SECONDARY_COLOR,
+                        size: 6.w,
                       ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 2.h),
-            ],
+                Divider(
+                  color: AppColors.HINT_GREY_COLOR,
+                  thickness: 1,
+                ),
+                SizedBox(height: 3.h),
+
+                ///Select Method
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ///Gallery
+                      InkWell(
+                        onTap: () async {
+                          final selectedImage = await ImagePickerService.pickImage(source: ImageSource.gallery);
+                          if (selectedImage != null) {
+                            final fileFormat = selectedImage.$2.path.split('/').last.split('.').last;
+                            XFile? result = await FlutterImageCompress.compressAndGetFile(
+                              selectedImage.$2.absolute.path,
+                              "${selectedImage.$2.path.split(selectedImage.$2.path.split('/').last).first}optimize_${selectedImage.$2.path.split('/').last}",
+                              quality: 50,
+                              inSampleSize: 4,
+                              format: fileFormat == 'png'
+                                  ? CompressFormat.png
+                                  : fileFormat == 'jpg' || fileFormat == 'jpeg'
+                                      ? CompressFormat.jpeg
+                                      : fileFormat == 'heic'
+                                          ? CompressFormat.heic
+                                          : CompressFormat.webp,
+                            );
+                            if (result != null) {
+                              controller.base64Image.value = base64Encode(await result.readAsBytes());
+                              controller.isImageSelected(true);
+                            }
+                            Get.back();
+                          } else if (controller.base64Image.value.isEmpty) {
+                            controller.isImageSelected(false);
+                          }
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image_rounded,
+                              color: AppColors.MAIN_BORDER_COLOR,
+                              size: 12.w,
+                            ),
+                            SizedBox(height: 1.h),
+                            Text(
+                              AppStrings.gallery.tr,
+                              style: TextStyle(
+                                color: AppColors.SECONDARY_COLOR,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      ///Camera
+                      InkWell(
+                        onTap: () async {
+                          final selectedImage = await ImagePickerService.pickImage(source: ImageSource.camera);
+                          if (selectedImage != null) {
+                            final fileFormat = selectedImage.$2.path.split('/').last.split('.').last;
+                            XFile? result = await FlutterImageCompress.compressAndGetFile(
+                              selectedImage.$2.absolute.path,
+                              "${selectedImage.$2.path.split(selectedImage.$2.path.split('/').last).first}optimize_${selectedImage.$2.path.split('/').last}",
+                              quality: 50,
+                              inSampleSize: 4,
+                              format: fileFormat == 'png'
+                                  ? CompressFormat.png
+                                  : fileFormat == 'jpg' || fileFormat == 'jpeg'
+                                      ? CompressFormat.jpeg
+                                      : fileFormat == 'heic'
+                                          ? CompressFormat.heic
+                                          : CompressFormat.webp,
+                            );
+                            if (result != null) {
+                              controller.base64Image.value = base64Encode(await result.readAsBytes());
+                              controller.isImageSelected(true);
+                            }
+                            Get.back();
+                          } else if (controller.base64Image.value.isEmpty) {
+                            controller.isImageSelected(false);
+                          }
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.photo_camera_rounded,
+                              color: AppColors.MAIN_BORDER_COLOR,
+                              size: 12.w,
+                            ),
+                            SizedBox(height: 1.h),
+                            Text(
+                              AppStrings.camera.tr,
+                              style: TextStyle(
+                                color: AppColors.SECONDARY_COLOR,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 2.h),
+              ],
+            ),
           ),
         );
       },

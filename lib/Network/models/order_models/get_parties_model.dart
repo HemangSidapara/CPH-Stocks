@@ -66,32 +66,40 @@ class Data {
   Data({
     String? orderId,
     String? partyName,
+    String? contactNumber,
   }) {
     _orderId = orderId;
     _partyName = partyName;
+    _contactNumber = contactNumber;
   }
 
   Data.fromJson(dynamic json) {
     _orderId = json['orderId'];
     _partyName = json['partyName'];
+    _contactNumber = json['contactNumber'];
   }
   String? _orderId;
   String? _partyName;
+  String? _contactNumber;
   Data copyWith({
     String? orderId,
     String? partyName,
+    String? contactNumber,
   }) =>
       Data(
         orderId: orderId ?? _orderId,
         partyName: partyName ?? _partyName,
+        contactNumber: contactNumber ?? _contactNumber,
       );
   String? get orderId => _orderId;
   String? get partyName => _partyName;
+  String? get contactNumber => _contactNumber;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['orderId'] = _orderId;
     map['partyName'] = _partyName;
+    map['contactNumber'] = _contactNumber;
     return map;
   }
 }

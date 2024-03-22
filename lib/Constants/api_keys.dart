@@ -13,4 +13,6 @@ class ApiKeys {
   static const orderMetaId = "orderMetaId";
   static const okPcs = "okPcs";
   static const woProcess = "woProcess";
+  static const contactNumber = "contactNumber";
+  static const orderId = "orderId";
 }
