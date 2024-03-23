@@ -23,10 +23,25 @@ class SettingsView extends GetView<SettingsController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ///Header
-          CustomHeaderWidget(
-            title: AppStrings.settings.tr,
-            titleIcon: AppAssets.settingsAnim,
-            titleIconSize: 7.w,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomHeaderWidget(
+                title: AppStrings.settings.tr,
+                titleIcon: AppAssets.settingsAnim,
+                titleIconSize: 7.w,
+              ),
+              Obx(() {
+                return Text(
+                  AppConstance.appVersion.replaceAll('1.0.0', controller.appVersion.value),
+                  style: TextStyle(
+                    color: AppColors.PRIMARY_COLOR.withOpacity(0.55),
+                    fontWeight: FontWeight.w700,
+                    fontSize: context.isPortrait ? 16.sp : 12.sp,
+                  ),
+                );
+              }),
+            ],
           ),
           SizedBox(height: 5.h),
 

@@ -81,4 +81,7 @@ Map<String, String> enIN = <String, String>{
   AppStrings.deletePartyText: "Are you sure? You want to delete 'Party'? After deleting all data will be lost under this party.",
   AppStrings.deleteItemText: "Are you sure? You want to delete 'Item'? After deleting all cycles will be lost under this order.",
   AppStrings.itemDetails: "Item Details",
+  AppStrings.searchPvdColor: "Search pvd color",
+  AppStrings.selectPvdColor: "Select pvd color",
+  AppStrings.pleaseSelectPvdColor: "Please select pvd color",
 };

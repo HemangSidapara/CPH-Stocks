@@ -520,6 +520,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       controller.sizeControllerList.add(TextEditingController());
                       controller.base64ImageList.add('');
                       controller.isImageSelectedList.add(false);
+                      controller.selectedPvdColorList.add(-1);
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
@@ -549,6 +550,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       controller.sizeControllerList.add(TextEditingController());
                       controller.base64ImageList.add('');
                       controller.isImageSelectedList.add(false);
+                      controller.selectedPvdColorList.add(-1);
                     } else {
                       controller.itemNameControllerList.removeAt(index);
                       controller.pvdColorControllerList.removeAt(index);
@@ -556,6 +558,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       controller.sizeControllerList.removeAt(index);
                       controller.base64ImageList.removeAt(index);
                       controller.isImageSelectedList.removeAt(index);
+                      controller.selectedPvdColorList.removeAt(index);
                     }
                   },
                   style: TextButton.styleFrom(
@@ -594,13 +597,203 @@ class CreateOrderView extends GetView<CreateOrderController> {
         SizedBox(height: 2.h),
 
         ///PVD Color
+        Padding(
+          padding: EdgeInsets.only(left: 2.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppStrings.pvdColor.tr,
+                style: TextStyle(
+                  color: AppColors.PRIMARY_COLOR,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  controller.pvdColorControllerList[index].clear();
+                  controller.selectedPvdColorList[index] = -1;
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  maximumSize: Size(10.w, 2.5.h),
+                  minimumSize: Size(10.w, 2.5.h),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  AppStrings.reset.tr,
+                  style: TextStyle(
+                    color: AppColors.LIGHT_BLUE_COLOR,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 1.h),
+        DropdownSearch<String>(
+          autoValidateMode: AutovalidateMode.onUserInteraction,
+          items: controller.pvdColorList,
+          selectedItem: controller.selectedPvdColorList[index] == -1 ? null : controller.pvdColorList[controller.selectedPvdColorList[index]],
+          dropdownButtonProps: DropdownButtonProps(
+            padding: EdgeInsets.zero,
+            icon: Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: AppColors.SECONDARY_COLOR,
+              size: 5.w,
+            ),
+          ),
+          validator: (value) => controller.validatePvdColorList(value, index),
+          dropdownDecoratorProps: DropDownDecoratorProps(
+            baseStyle: TextStyle(
+              color: AppColors.SECONDARY_COLOR,
+              fontWeight: FontWeight.w600,
+              fontSize: 16.sp,
+            ),
+            dropdownSearchDecoration: InputDecoration(
+              filled: true,
+              enabled: true,
+              fillColor: AppColors.WHITE_COLOR,
+              hintText: AppStrings.selectPvdColor.tr,
+              hintStyle: TextStyle(
+                color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+              errorStyle: TextStyle(
+                color: AppColors.ERROR_COLOR,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.PRIMARY_COLOR,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.PRIMARY_COLOR,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.PRIMARY_COLOR,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.ERROR_COLOR,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: AppColors.ERROR_COLOR,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0).copyWith(right: 1.w),
+            ),
+          ),
+          itemAsString: (item) {
+            return item;
+          },
+          popupProps: PopupProps.menu(
+            menuProps: MenuProps(
+              backgroundColor: AppColors.WHITE_COLOR,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            loadingBuilder: (context, searchEntry) {
+              return Center(
+                child: LoadingWidget(
+                  loaderColor: AppColors.SECONDARY_COLOR,
+                ),
+              );
+            },
+            emptyBuilder: (context, searchEntry) {
+              return Center(
+                child: Text(
+                  AppStrings.noDataFound.tr,
+                  style: TextStyle(
+                    color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                    fontSize: context.isPortrait ? 10.sp : 5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            },
+            itemBuilder: (context, item, isSelected) {
+              return TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  controller.selectedPvdColorList[index] = controller.pvdColorList.indexWhere((element) => element == item);
+                  if (controller.selectedPvdColorList[index] != -1) {
+                    controller.pvdColorControllerList[index].text = controller.pvdColorList[controller.selectedPvdColorList[index]];
+                  }
+                },
+                style: TextButton.styleFrom(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 5.w : 5.h, vertical: context.isPortrait ? 1.h : 1.w),
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                ),
+                child: Text(
+                  item,
+                  style: TextStyle(
+                    color: AppColors.SECONDARY_COLOR,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            },
+            interceptCallBacks: true,
+            showSearchBox: true,
+            searchFieldProps: TextFieldProps(
+              cursorColor: AppColors.TERTIARY_COLOR,
+              style: TextStyle(
+                color: AppColors.SECONDARY_COLOR,
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+              decoration: InputDecoration(
+                hintText: AppStrings.searchPvdColor.tr,
+                hintStyle: TextStyle(
+                  color: AppColors.HINT_GREY_COLOR,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: AppColors.SECONDARY_COLOR),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(width: 1, color: AppColors.SECONDARY_COLOR),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 4.w : 4.h, vertical: context.isPortrait ? 1.2.h : 1.2.w),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 1.h),
         TextFieldWidget(
           controller: controller.pvdColorControllerList[index],
-          title: AppStrings.pvdColor,
           hintText: AppStrings.enterPVDColor,
           validator: controller.validatePVDColor,
           textInputAction: TextInputAction.next,
           maxLength: 30,
+          isDisable: controller.selectedPvdColorList[index] != -1,
         ),
         SizedBox(height: 2.h),
 
@@ -623,8 +816,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
           hintText: AppStrings.enterSize,
           validator: controller.validateSize,
           textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          maxLength: 10,
+          maxLength: 20,
         ),
         SizedBox(height: 2.h),
 

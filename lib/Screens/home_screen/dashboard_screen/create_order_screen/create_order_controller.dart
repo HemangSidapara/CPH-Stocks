@@ -18,6 +18,16 @@ class CreateOrderController extends GetxController {
   RxList<TextEditingController> sizeControllerList = RxList<TextEditingController>();
   RxList<String> base64ImageList = RxList();
 
+  RxList<String> pvdColorList = RxList([
+    "Gold",
+    "Rosegold",
+    "Black",
+    "Grey",
+    "Bronze",
+    "Rainbow",
+  ]);
+  RxList<int> selectedPvdColorList = RxList();
+
   RxBool isGetPartiesLoading = true.obs;
   RxList<get_parties.Data> partyList = RxList();
   RxInt selectedParty = (-1).obs;
@@ -33,6 +43,7 @@ class CreateOrderController extends GetxController {
     sizeControllerList.add(TextEditingController());
     base64ImageList.add('');
     isImageSelectedList.add(false);
+    selectedPvdColorList.add(-1);
   }
 
   String? validatePartyName(String? value) {
@@ -59,6 +70,13 @@ class CreateOrderController extends GetxController {
   String? validateItemName(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterItemName.tr;
+    }
+    return null;
+  }
+
+  String? validatePvdColorList(String? value, int index) {
+    if (value == null && pvdColorControllerList[index].text.isEmpty) {
+      return AppStrings.pleaseSelectPvdColor.tr;
     }
     return null;
   }

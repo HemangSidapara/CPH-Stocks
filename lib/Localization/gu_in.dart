@@ -81,4 +81,7 @@ Map<String, String> guIN = <String, String>{
   AppStrings.deletePartyText: "શું તમને ખાતરી છે? તમે 'Party' કાઢી નાખવા માંગો છો? ડિલીટ કર્યા પછી આ પાર્ટી હેઠળ તમામ ડેટા ખોવાઈ જશે.",
   AppStrings.deleteItemText: "શું તમને ખાતરી છે? તમે 'Item' કાઢી નાખવા માંગો છો? ડિલીટ કર્યા પછી આ ઓર્ડર હેઠળ તમામ સાઈકલ ગુમ થઈ જશે.",
   AppStrings.itemDetails: "આઇટમની વિગતો",
+  AppStrings.searchPvdColor: "PVD રંગ શોધો",
+  AppStrings.selectPvdColor: "PVD રંગ પસંદ કરો",
+  AppStrings.pleaseSelectPvdColor: "કૃપા કરીને PVD રંગ પસંદ કરો",
 };
