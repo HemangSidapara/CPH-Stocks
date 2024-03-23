@@ -1,3 +1,4 @@
+import 'package:cph_stocks/Constants/api_keys.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
@@ -11,17 +12,28 @@ class CreateOrderController extends GetxController {
 
   TextEditingController partyNameController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
-  TextEditingController itemNameController = TextEditingController();
-  TextEditingController pvdColorController = TextEditingController();
-  TextEditingController quantityController = TextEditingController();
-  TextEditingController sizeController = TextEditingController();
-  RxString base64Image = ''.obs;
+  RxList<TextEditingController> itemNameControllerList = RxList<TextEditingController>();
+  RxList<TextEditingController> pvdColorControllerList = RxList<TextEditingController>();
+  RxList<TextEditingController> quantityControllerList = RxList<TextEditingController>();
+  RxList<TextEditingController> sizeControllerList = RxList<TextEditingController>();
+  RxList<String> base64ImageList = RxList();
 
   RxBool isGetPartiesLoading = true.obs;
   RxList<get_parties.Data> partyList = RxList();
   RxInt selectedParty = (-1).obs;
   RxBool isCreateOrderLoading = false.obs;
-  RxBool isImageSelected = false.obs;
+  RxList<bool> isImageSelectedList = RxList();
+
+  @override
+  void onInit() {
+    super.onInit();
+    itemNameControllerList.add(TextEditingController());
+    pvdColorControllerList.add(TextEditingController());
+    quantityControllerList.add(TextEditingController());
+    sizeControllerList.add(TextEditingController());
+    base64ImageList.add('');
+    isImageSelectedList.add(false);
+  }
 
   String? validatePartyName(String? value) {
     if (value == null || value.isEmpty == true) {
@@ -93,15 +105,21 @@ class CreateOrderController extends GetxController {
       final isValidate = createOrderFormKey.currentState?.validate();
 
       if (isValidate == true) {
-        if (isImageSelected.value) {
+        if (isImageSelectedList.every((element) => element == true)) {
+          List<Map<String, dynamic>> tempMetaList = [];
+          for (int i = 0; i < itemNameControllerList.length; i++) {
+            tempMetaList.add({
+              ApiKeys.itemName: itemNameControllerList[i].text,
+              ApiKeys.pvdColor: pvdColorControllerList[i].text,
+              ApiKeys.quantity: quantityControllerList[i].text,
+              ApiKeys.size: sizeControllerList[i].text,
+              ApiKeys.itemImage: base64ImageList[i],
+            });
+          }
           final response = await OrderServices.createOrderService(
             partyName: partyNameController.text.trim(),
             contactNumber: contactNumberController.text.trim(),
-            itemName: itemNameController.text.trim(),
-            pvdColor: pvdColorController.text.trim(),
-            quantity: quantityController.text.trim(),
-            size: sizeController.text.trim(),
-            itemImage: base64Image.value,
+            meta: tempMetaList,
           );
 
           if (response.isSuccess) {

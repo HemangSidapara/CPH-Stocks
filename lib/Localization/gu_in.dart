@@ -80,4 +80,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.delete: "કાઢી નાખો",
   AppStrings.deletePartyText: "શું તમને ખાતરી છે? તમે 'Party' કાઢી નાખવા માંગો છો? ડિલીટ કર્યા પછી આ પાર્ટી હેઠળ તમામ ડેટા ખોવાઈ જશે.",
   AppStrings.deleteItemText: "શું તમને ખાતરી છે? તમે 'Item' કાઢી નાખવા માંગો છો? ડિલીટ કર્યા પછી આ ઓર્ડર હેઠળ તમામ સાઈકલ ગુમ થઈ જશે.",
+  AppStrings.itemDetails: "આઇટમની વિગતો",
 };

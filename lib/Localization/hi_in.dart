@@ -79,4 +79,5 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.delete: "मिटाना",
   AppStrings.deletePartyText: "क्या आपको यकीन है? आप 'Party' हटाना चाहते हैं? डिलीट करने के बाद इस पार्टी के अंतर्गत सारा डेटा खो जाएगा।",
   AppStrings.deleteItemText: "क्या आपको यकीन है? आप 'Item' हटाना चाहते हैं? हटाने के बाद इस आदेश के तहत सभी चक्र खो जाएंगे।",
+  AppStrings.itemDetails: "आइटम विवरण",
 };

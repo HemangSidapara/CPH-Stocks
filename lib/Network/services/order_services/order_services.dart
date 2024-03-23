@@ -30,24 +30,12 @@ class OrderServices {
   static Future<ResponseModel> createOrderService({
     required String partyName,
     required String contactNumber,
-    required String itemName,
-    required String pvdColor,
-    required String quantity,
-    required String size,
-    required String itemImage,
+    required List<Map<String, dynamic>> meta,
   }) async {
     final params = {
       ApiKeys.partyName: partyName,
       ApiKeys.contactNumber: contactNumber,
-      ApiKeys.meta: [
-        {
-          ApiKeys.itemName: itemName,
-          ApiKeys.pvdColor: pvdColor,
-          ApiKeys.quantity: quantity,
-          ApiKeys.size: size,
-          ApiKeys.itemImage: itemImage,
-        },
-      ],
+      ApiKeys.meta: meta,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.createOrderApi,

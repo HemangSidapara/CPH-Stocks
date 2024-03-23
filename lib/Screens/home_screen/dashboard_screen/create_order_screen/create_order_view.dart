@@ -51,7 +51,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                         children: [
                           /// Party List
                           Padding(
-                            padding: EdgeInsets.only(left: context.isPortrait ? 2.w : 1.w),
+                            padding: EdgeInsets.only(left: 2.w),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -59,7 +59,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                   AppStrings.partyName.tr,
                                   style: TextStyle(
                                     color: AppColors.PRIMARY_COLOR,
-                                    fontSize: context.isPortrait ? 16.sp : 12.sp,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -72,8 +72,8 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
-                                    maximumSize: Size(10.w, 5.h),
-                                    minimumSize: Size(10.w, 2.h),
+                                    maximumSize: Size(10.w, 2.5.h),
+                                    minimumSize: Size(10.w, 2.5.h),
                                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: Text(
@@ -212,7 +212,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                       style: TextStyle(
                                         color: AppColors.SECONDARY_COLOR,
                                         fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   );
@@ -280,143 +280,14 @@ class CreateOrderView extends GetView<CreateOrderController> {
                           ),
                           SizedBox(height: 2.h),
 
-                          ///Item Name
-                          TextFieldWidget(
-                            controller: controller.itemNameController,
-                            title: AppStrings.itemName,
-                            hintText: AppStrings.enterItemName,
-                            validator: controller.validateItemName,
-                            textInputAction: TextInputAction.next,
-                            maxLength: 30,
-                          ),
-                          SizedBox(height: 2.h),
-
-                          ///PVD Color
-                          TextFieldWidget(
-                            controller: controller.pvdColorController,
-                            title: AppStrings.pvdColor,
-                            hintText: AppStrings.enterPVDColor,
-                            validator: controller.validatePVDColor,
-                            textInputAction: TextInputAction.next,
-                            maxLength: 30,
-                          ),
-                          SizedBox(height: 2.h),
-
-                          ///Quantity
-                          TextFieldWidget(
-                            controller: controller.quantityController,
-                            title: AppStrings.quantity,
-                            hintText: AppStrings.enterQuantity,
-                            validator: controller.validateQuantity,
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.number,
-                            maxLength: 10,
-                          ),
-                          SizedBox(height: 2.h),
-
-                          ///Size
-                          TextFieldWidget(
-                            controller: controller.sizeController,
-                            title: AppStrings.size,
-                            hintText: AppStrings.enterSize,
-                            validator: controller.validateSize,
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.number,
-                            maxLength: 10,
-                          ),
-                          SizedBox(height: 2.h),
-
-                          ///Image
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: context.isPortrait ? 2.w : 1.w),
-                              child: Text(
-                                AppStrings.itemImage.tr,
-                                style: TextStyle(
-                                  color: AppColors.PRIMARY_COLOR,
-                                  fontSize: context.isPortrait ? 16.sp : 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          InkWell(
-                            onTap: () async {
-                              Utils.unfocus();
-                              await showSelectImageBottomSheet();
-                            },
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              width: double.maxFinite,
-                              padding: EdgeInsets.symmetric(vertical: 3.h),
-                              decoration: BoxDecoration(
-                                color: AppColors.PRIMARY_COLOR,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: AppColors.LIGHT_BLUE_COLOR,
-                                  width: 2.5,
-                                ),
-                              ),
-                              child: Obx(() {
-                                if (controller.isImageSelected.isTrue) {
-                                  return Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 25.h,
-                                        child: Image.memory(
-                                          base64Decode(controller.base64Image.value),
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2.h),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          controller.base64Image.value = '';
-                                          controller.isImageSelected(false);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.SECONDARY_COLOR.withOpacity(0.9),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          fixedSize: Size(40.w, 5.h),
-                                        ),
-                                        child: Text(
-                                          AppStrings.remove.tr,
-                                          style: TextStyle(
-                                            color: AppColors.PRIMARY_COLOR,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  return Column(
-                                    children: [
-                                      Icon(
-                                        Icons.image_rounded,
-                                        size: 8.5.w,
-                                        color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
-                                      ),
-                                      Text(
-                                        AppStrings.selectOrCaptureAImage.tr,
-                                        style: TextStyle(
-                                          color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
-                              }),
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
+                          ///Item Fields
+                          Obx(() {
+                            return Column(
+                              children: [
+                                for (int i = 0; i < controller.itemNameControllerList.length; i++) itemFieldsWidget(context: context, index: i),
+                              ],
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -443,7 +314,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
     );
   }
 
-  Future<void> showSelectImageBottomSheet() async {
+  Future<void> showSelectImageBottomSheet({required int index}) async {
     await showModalBottomSheet(
       context: Get.context!,
       constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 90.h, minHeight: 0.h),
@@ -526,12 +397,12 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                           : CompressFormat.webp,
                             );
                             if (result != null) {
-                              controller.base64Image.value = base64Encode(await result.readAsBytes());
-                              controller.isImageSelected(true);
+                              controller.base64ImageList[index] = base64Encode(await result.readAsBytes());
+                              controller.isImageSelectedList[index] = true;
                             }
                             Get.back();
-                          } else if (controller.base64Image.value.isEmpty) {
-                            controller.isImageSelected(false);
+                          } else if (controller.base64ImageList[index].isEmpty) {
+                            controller.isImageSelectedList[index] = false;
                           }
                         },
                         child: Column(
@@ -575,12 +446,12 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                           : CompressFormat.webp,
                             );
                             if (result != null) {
-                              controller.base64Image.value = base64Encode(await result.readAsBytes());
-                              controller.isImageSelected(true);
+                              controller.base64ImageList[index] = base64Encode(await result.readAsBytes());
+                              controller.isImageSelectedList[index] = true;
                             }
                             Get.back();
-                          } else if (controller.base64Image.value.isEmpty) {
-                            controller.isImageSelected(false);
+                          } else if (controller.base64ImageList[index].isEmpty) {
+                            controller.isImageSelectedList[index] = false;
                           }
                         },
                         child: Column(
@@ -612,6 +483,243 @@ class CreateOrderView extends GetView<CreateOrderController> {
           ),
         );
       },
+    );
+  }
+
+  Widget itemFieldsWidget({
+    required BuildContext context,
+    required int index,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ///Title & Buttons
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ///Title
+            Text(
+              '${index + 1}. ${AppStrings.itemDetails.tr}:',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 18.sp,
+                color: AppColors.PRIMARY_COLOR,
+              ),
+            ),
+
+            ///Buttons
+            Row(
+              children: [
+                ///Add
+                if (index != 0) ...[
+                  TextButton(
+                    onPressed: () {
+                      controller.itemNameControllerList.add(TextEditingController());
+                      controller.pvdColorControllerList.add(TextEditingController());
+                      controller.quantityControllerList.add(TextEditingController());
+                      controller.sizeControllerList.add(TextEditingController());
+                      controller.base64ImageList.add('');
+                      controller.isImageSelectedList.add(false);
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      maximumSize: Size(10.w, 2.5.h),
+                      minimumSize: Size(10.w, 2.5.h),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      AppStrings.add.tr,
+                      style: TextStyle(
+                        color: AppColors.DARK_GREEN_COLOR,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                ],
+
+                ///Add & Remove
+                TextButton(
+                  onPressed: () {
+                    if (index == 0) {
+                      controller.itemNameControllerList.add(TextEditingController());
+                      controller.pvdColorControllerList.add(TextEditingController());
+                      controller.quantityControllerList.add(TextEditingController());
+                      controller.sizeControllerList.add(TextEditingController());
+                      controller.base64ImageList.add('');
+                      controller.isImageSelectedList.add(false);
+                    } else {
+                      controller.itemNameControllerList.removeAt(index);
+                      controller.pvdColorControllerList.removeAt(index);
+                      controller.quantityControllerList.removeAt(index);
+                      controller.sizeControllerList.removeAt(index);
+                      controller.base64ImageList.removeAt(index);
+                      controller.isImageSelectedList.removeAt(index);
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    maximumSize: Size(index == 0 ? 10.w : 15.w, 2.5.h),
+                    minimumSize: Size(index == 0 ? 10.w : 15.w, 2.5.h),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    index == 0 ? AppStrings.add.tr : AppStrings.remove.tr,
+                    style: TextStyle(
+                      color: index == 0 ? AppColors.DARK_GREEN_COLOR : AppColors.DARK_RED_COLOR,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Divider(
+          color: AppColors.PRIMARY_COLOR,
+          thickness: 1,
+        ),
+
+        ///Item Name
+        TextFieldWidget(
+          controller: controller.itemNameControllerList[index],
+          title: AppStrings.itemName.tr,
+          hintText: AppStrings.enterItemName,
+          validator: controller.validateItemName,
+          textInputAction: TextInputAction.next,
+          maxLength: 30,
+        ),
+        SizedBox(height: 2.h),
+
+        ///PVD Color
+        TextFieldWidget(
+          controller: controller.pvdColorControllerList[index],
+          title: AppStrings.pvdColor,
+          hintText: AppStrings.enterPVDColor,
+          validator: controller.validatePVDColor,
+          textInputAction: TextInputAction.next,
+          maxLength: 30,
+        ),
+        SizedBox(height: 2.h),
+
+        ///Quantity
+        TextFieldWidget(
+          controller: controller.quantityControllerList[index],
+          title: AppStrings.quantity,
+          hintText: AppStrings.enterQuantity,
+          validator: controller.validateQuantity,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          maxLength: 10,
+        ),
+        SizedBox(height: 2.h),
+
+        ///Size
+        TextFieldWidget(
+          controller: controller.sizeControllerList[index],
+          title: AppStrings.size,
+          hintText: AppStrings.enterSize,
+          validator: controller.validateSize,
+          textInputAction: TextInputAction.next,
+          keyboardType: TextInputType.number,
+          maxLength: 10,
+        ),
+        SizedBox(height: 2.h),
+
+        ///Image
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.only(left: context.isPortrait ? 2.w : 1.w),
+            child: Text(
+              AppStrings.itemImage.tr,
+              style: TextStyle(
+                color: AppColors.PRIMARY_COLOR,
+                fontSize: context.isPortrait ? 16.sp : 12.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 1.h),
+        InkWell(
+          onTap: () async {
+            Utils.unfocus();
+            await showSelectImageBottomSheet(index: index);
+          },
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.symmetric(vertical: 3.h),
+            decoration: BoxDecoration(
+              color: AppColors.PRIMARY_COLOR,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: AppColors.LIGHT_BLUE_COLOR,
+                width: 2.5,
+              ),
+            ),
+            child: Obx(() {
+              if (controller.isImageSelectedList[index] == true) {
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 25.h,
+                      child: Image.memory(
+                        base64Decode(controller.base64ImageList[index]),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    ElevatedButton(
+                      onPressed: () {
+                        controller.base64ImageList[index] = '';
+                        controller.isImageSelectedList[index] = false;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.SECONDARY_COLOR.withOpacity(0.9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        fixedSize: Size(40.w, 5.h),
+                      ),
+                      child: Text(
+                        AppStrings.remove.tr,
+                        style: TextStyle(
+                          color: AppColors.PRIMARY_COLOR,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    Icon(
+                      Icons.image_rounded,
+                      size: 8.5.w,
+                      color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                    ),
+                    Text(
+                      AppStrings.selectOrCaptureAImage.tr,
+                      style: TextStyle(
+                        color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            }),
+          ),
+        ),
+        SizedBox(height: index < controller.itemNameControllerList.length - 1 ? 2.h : 1.h),
+      ],
     );
   }
 }

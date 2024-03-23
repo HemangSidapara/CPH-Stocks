@@ -81,4 +81,5 @@ class AppStrings {
   static const String delete = "Delete";
   static const String deletePartyText = "Are you sure? You want to delete 'Party'? After deleting all data will be lost under this party.";
   static const String deleteItemText = "Are you sure? You want to delete 'Item'? After deleting all cycles will be lost under this order.";
+  static const String itemDetails = "Item Details";
 }
