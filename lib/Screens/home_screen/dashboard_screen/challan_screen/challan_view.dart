@@ -195,7 +195,7 @@ class ChallanView extends GetView<ChallanController> {
                                           padding: EdgeInsets.symmetric(horizontal: 5.w),
                                           child: Row(
                                             children: [
-                                              ///ItemName
+                                              ///Date
                                               Flexible(
                                                 child: Row(
                                                   children: [
@@ -210,7 +210,7 @@ class ChallanView extends GetView<ChallanController> {
                                                     SizedBox(width: 2.w),
                                                     Flexible(
                                                       child: Text(
-                                                        controller.searchedInvoiceList[index].modelMeta?[itemIndex].itemName ?? '',
+                                                        controller.searchedInvoiceList[index].modelMeta?[itemIndex].createdDate ?? '',
                                                         style: TextStyle(
                                                           color: AppColors.SECONDARY_COLOR,
                                                           fontSize: 16.sp,
@@ -225,10 +225,10 @@ class ChallanView extends GetView<ChallanController> {
                                               ///Download
                                               IconButton(
                                                 onPressed: () async {
-                                                  if (controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice != null && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.isNotEmpty == true) {
+                                                  if (controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice != null && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.isNotEmpty == true && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.contains("https://") == true) {
                                                     await showChallanBottomSheet(
                                                       pdfUrl: controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice ?? '',
-                                                      fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].itemName?.replaceAll(' ', '')}.pdf",
+                                                      fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].orderId?.replaceAll(' ', '')}.pdf",
                                                       contactNumber: controller.searchedInvoiceList[index].contactNumber ?? '',
                                                     );
                                                   } else {
@@ -343,9 +343,14 @@ class ChallanView extends GetView<ChallanController> {
                     ),
                     child: SfPdfViewer.network(
                       pdfUrl,
+                      onDocumentLoadFailed: (details) {
+                        debugPrint("SfPdfViewer error :: ${details.description}");
+                        Utils.handleMessage(message: details.description, isError: true);
+                      },
                     ),
                   ),
                 ),
+                SizedBox(height: 2.h),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

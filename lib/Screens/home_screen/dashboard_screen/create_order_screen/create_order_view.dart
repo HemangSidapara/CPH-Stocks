@@ -186,7 +186,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                       AppStrings.noDataFound.tr,
                                       style: TextStyle(
                                         color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
-                                        fontSize: context.isPortrait ? 10.sp : 5.sp,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -728,7 +728,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                   AppStrings.noDataFound.tr,
                   style: TextStyle(
                     color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
-                    fontSize: context.isPortrait ? 10.sp : 5.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

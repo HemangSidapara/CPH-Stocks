@@ -5,6 +5,7 @@ import 'dart:convert';
 /// Data : [{"orderId":"1","partyName":"Test","model_meta":[{"orderMetaId":"1","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"2","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"4","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"5","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]},{"orderId":"2","partyName":"Test1","model_meta":[{"orderMetaId":"3","itemName":"gauge","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]},{"orderId":"3","partyName":"IMP","model_meta":[{"orderMetaId":"24","itemName":"fr","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"31","itemName":"xhn","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]}]
 
 GetInvoicesModel getInvoicesModelFromJson(String str) => GetInvoicesModel.fromJson(json.decode(str));
+
 String getInvoicesModelToJson(GetInvoicesModel data) => json.encode(data.toJson());
 
 class GetInvoicesModel {
@@ -28,9 +29,11 @@ class GetInvoicesModel {
       });
     }
   }
+
   String? _code;
   String? _msg;
   List<Data>? _data;
+
   GetInvoicesModel copyWith({
     String? code,
     String? msg,
@@ -41,8 +44,11 @@ class GetInvoicesModel {
         msg: msg ?? _msg,
         data: data ?? _data,
       );
+
   String? get code => _code;
+
   String? get msg => _msg;
+
   List<Data>? get data => _data;
 
   Map<String, dynamic> toJson() {
@@ -61,6 +67,7 @@ class GetInvoicesModel {
 /// model_meta : [{"orderMetaId":"1","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"2","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"4","itemName":"Handle","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"},{"orderMetaId":"5","itemName":"Nut Ball","invoice":"https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"}]
 
 Data dataFromJson(String str) => Data.fromJson(json.decode(str));
+
 String dataToJson(Data data) => json.encode(data.toJson());
 
 class Data {
@@ -87,10 +94,12 @@ class Data {
       });
     }
   }
+
   String? _orderId;
   String? _partyName;
   String? _contactNumber;
   List<ModelMeta>? _modelMeta;
+
   Data copyWith({
     String? orderId,
     String? partyName,
@@ -103,9 +112,13 @@ class Data {
         contactNumber: contactNumber ?? _contactNumber,
         modelMeta: modelMeta ?? _modelMeta,
       );
+
   String? get orderId => _orderId;
+
   String? get partyName => _partyName;
+
   String? get contactNumber => _contactNumber;
+
   List<ModelMeta>? get modelMeta => _modelMeta;
 
   Map<String, dynamic> toJson() {
@@ -125,46 +138,61 @@ class Data {
 /// invoice : "https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/Invoices/35.pdf"
 
 ModelMeta modelMetaFromJson(String str) => ModelMeta.fromJson(json.decode(str));
+
 String modelMetaToJson(ModelMeta data) => json.encode(data.toJson());
 
 class ModelMeta {
   ModelMeta({
     String? orderMetaId,
-    String? itemName,
+    String? orderId,
     String? invoice,
+    String? createdDate,
   }) {
     _orderMetaId = orderMetaId;
-    _itemName = itemName;
+    _orderId = orderId;
     _invoice = invoice;
+    _createdDate = createdDate;
   }
 
   ModelMeta.fromJson(dynamic json) {
     _orderMetaId = json['orderMetaId'];
-    _itemName = json['itemName'];
+    _orderId = json['orderId'];
     _invoice = json['invoice'];
+    _createdDate = json['createdDate'];
   }
+
   String? _orderMetaId;
-  String? _itemName;
+  String? _orderId;
   String? _invoice;
+  String? _createdDate;
+
   ModelMeta copyWith({
     String? orderMetaId,
-    String? itemName,
+    String? orderId,
     String? invoice,
+    String? createdDate,
   }) =>
       ModelMeta(
         orderMetaId: orderMetaId ?? _orderMetaId,
-        itemName: itemName ?? _itemName,
+        orderId: orderId ?? _orderId,
         invoice: invoice ?? _invoice,
+        createdDate: createdDate ?? _createdDate,
       );
+
   String? get orderMetaId => _orderMetaId;
-  String? get itemName => _itemName;
+
+  String? get orderId => _orderId;
+
   String? get invoice => _invoice;
+
+  String? get createdDate => _createdDate;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['orderMetaId'] = _orderMetaId;
-    map['itemName'] = _itemName;
+    map['itemName'] = _orderId;
     map['invoice'] = _invoice;
+    map['createdDate'] = _createdDate;
     return map;
   }
 }

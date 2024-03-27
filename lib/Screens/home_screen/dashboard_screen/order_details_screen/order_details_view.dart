@@ -480,6 +480,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
 
                                                       ///PVD Color
                                                       Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
                                                             "${AppStrings.pvdColor.tr}: ",
@@ -489,12 +490,14 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                               color: AppColors.SECONDARY_COLOR,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            controller.searchedOrderList[index].modelMeta?[itemIndex].pvdColor ?? '',
-                                                            style: TextStyle(
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: AppColors.SECONDARY_COLOR,
+                                                          Flexible(
+                                                            child: Text(
+                                                              controller.searchedOrderList[index].modelMeta?[itemIndex].pvdColor ?? '',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontWeight: FontWeight.w700,
+                                                                color: AppColors.SECONDARY_COLOR,
+                                                              ),
                                                             ),
                                                           ),
                                                         ],

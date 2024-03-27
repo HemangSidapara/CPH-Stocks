@@ -40,31 +40,31 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                         Get.back(closeOverlays: true);
                       },
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        if (controller.challanUrl.value.isNotEmpty) {
-                          await showChallanBottomSheet(pdfUrl: controller.challanUrl.value);
-                        } else {
-                          Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
-                        }
-                      },
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),
-                        surfaceTintColor: AppColors.PRIMARY_COLOR,
-                        highlightColor: AppColors.PRIMARY_COLOR,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                        padding: EdgeInsets.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      icon: Icon(
-                        Icons.receipt_long_rounded,
-                        color: AppColors.SECONDARY_COLOR,
-                        size: 6.5.w,
-                      ),
-                    ),
+                    // IconButton(
+                    //   onPressed: () async {
+                    //     if (controller.challanUrl.value.isNotEmpty) {
+                    //       await showChallanBottomSheet(pdfUrl: controller.challanUrl.value);
+                    //     } else {
+                    //       Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
+                    //     }
+                    //   },
+                    //   style: IconButton.styleFrom(
+                    //     backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+                    //     surfaceTintColor: AppColors.PRIMARY_COLOR,
+                    //     highlightColor: AppColors.PRIMARY_COLOR,
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(12),
+                    //     ),
+                    //     elevation: 4,
+                    //     padding: EdgeInsets.zero,
+                    //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    //   ),
+                    //   icon: Icon(
+                    //     Icons.receipt_long_rounded,
+                    //     color: AppColors.SECONDARY_COLOR,
+                    //     size: 6.5.w,
+                    //   ),
+                    // ),
                   ],
                 ),
                 SizedBox(height: 4.h),
