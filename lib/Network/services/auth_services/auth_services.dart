@@ -4,11 +4,32 @@ import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/api_base_helper.dart';
+import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/models/auth_models/login_model.dart';
 import 'package:cph_stocks/Network/response_model.dart';
 import 'package:flutter/material.dart';
 
 class AuthServices {
+  static Future<ResponseModel> getLatestVersionService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.inAppUpdateApi,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) async {
+        if (res.isSuccess) {
+          GetLatestVersionModel latestVersionModel = GetLatestVersionModel.fromJson(res.response?.data);
+          debugPrint("inAppUpdateApi success :: ${latestVersionModel.msg}");
+        } else {
+          debugPrint("inAppUpdateApi error :: ${res.message}");
+        }
+      },
+    );
+
+    return response;
+  }
+
   static Future<ResponseModel> loginService({
     required String phone,
     required String password,

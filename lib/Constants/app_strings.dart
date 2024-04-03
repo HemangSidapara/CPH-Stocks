@@ -85,4 +85,6 @@ class AppStrings {
   static const String searchPvdColor = "Search pvd color";
   static const String selectPvdColor = "Select pvd color";
   static const String pleaseSelectPvdColor = "Please select pvd color";
+  static const String update = 'Update';
+  static const String newVersionAvailable = 'A new version is available. Please upgrade to it.';
 }

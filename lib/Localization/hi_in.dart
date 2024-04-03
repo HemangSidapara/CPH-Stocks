@@ -83,4 +83,6 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.searchPvdColor: "PVD रंग खोजें",
   AppStrings.selectPvdColor: "PVD रंग चुनें",
   AppStrings.pleaseSelectPvdColor: "कृपया PVD रंग चुनें",
+  AppStrings.update: 'अद्यतन',
+  AppStrings.newVersionAvailable: 'एक नया संस्करण उपलब्ध है। कृपया इसे अपग्रेड करें।',
 };

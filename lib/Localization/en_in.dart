@@ -84,4 +84,6 @@ Map<String, String> enIN = <String, String>{
   AppStrings.searchPvdColor: "Search pvd color",
   AppStrings.selectPvdColor: "Select pvd color",
   AppStrings.pleaseSelectPvdColor: "Please select pvd color",
+  AppStrings.update: 'Update',
+  AppStrings.newVersionAvailable: 'A new version is available. Please upgrade to it.',
 };

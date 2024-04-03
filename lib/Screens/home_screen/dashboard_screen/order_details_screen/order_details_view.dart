@@ -593,6 +593,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                           ),
                                                         ),
                                                       ),
+                                                      SizedBox(height: 1.h),
                                                     ],
                                                   ),
                                                 ),

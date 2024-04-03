@@ -11,6 +11,7 @@ class ButtonWidget extends StatelessWidget {
   final OutlinedBorder? shape;
   final bool isLoading;
   final Color? buttonColor;
+  final Widget? loaderWidget;
 
   const ButtonWidget({
     super.key,
@@ -22,6 +23,7 @@ class ButtonWidget extends StatelessWidget {
     this.isLoading = false,
     this.buttonColor,
     this.buttonTitleColor,
+    this.loaderWidget,
   });
 
   @override
@@ -38,14 +40,15 @@ class ButtonWidget extends StatelessWidget {
         fixedSize: fixedSize ?? Size(double.maxFinite, 5.h),
       ),
       child: isLoading
-          ? SizedBox(
-              height: 5.w,
-              width: 5.w,
-              child: CircularProgressIndicator(
-                color: AppColors.SECONDARY_COLOR,
-                strokeWidth: 1.6,
-              ),
-            )
+          ? loaderWidget ??
+              SizedBox(
+                height: 5.w,
+                width: 5.w,
+                child: CircularProgressIndicator(
+                  color: AppColors.SECONDARY_COLOR,
+                  strokeWidth: 1.6,
+                ),
+              )
           : child ??
               Text(
                 buttonTitle,

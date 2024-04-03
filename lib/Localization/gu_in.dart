@@ -84,4 +84,6 @@ Map<String, String> guIN = <String, String>{
   AppStrings.searchPvdColor: "PVD રંગ શોધો",
   AppStrings.selectPvdColor: "PVD રંગ પસંદ કરો",
   AppStrings.pleaseSelectPvdColor: "કૃપા કરીને PVD રંગ પસંદ કરો",
+  AppStrings.update: 'અપડેટ કરો',
+  AppStrings.newVersionAvailable: 'નવું સંસ્કરણ ઉપલબ્ધ છે. કૃપા કરીને તેમાં અપગ્રેડ કરો.',
 };

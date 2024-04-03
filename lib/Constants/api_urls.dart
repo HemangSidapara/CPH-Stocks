@@ -12,4 +12,5 @@ class ApiUrls {
   static const String updatePartyApi = '${_apiPath}updateParty';
   static const String deletePartyApi = '${_apiPath}deleteParty';
   static const String deleteOrderApi = '${_apiPath}deleteOrder';
+  static const String inAppUpdateApi = '${_apiPath}inAppUpdate';
 }

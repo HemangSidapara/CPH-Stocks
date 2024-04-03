@@ -92,6 +92,7 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                             hintText: AppStrings.enterWOProcess,
                             validator: controller.validateWOProcess,
                             textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.number,
                             maxLength: 30,
                             inputFormatters: [
                               TextInputFormatter.withFunction((oldValue, newValue) {
