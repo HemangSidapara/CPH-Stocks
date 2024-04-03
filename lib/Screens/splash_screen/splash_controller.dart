@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
-import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
@@ -13,13 +11,12 @@ import 'package:cph_stocks/Network/services/utils_services/get_package_info_serv
 import 'package:cph_stocks/Network/services/utils_services/install_apk_service.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
-import 'package:cph_stocks/Widgets/button_widget.dart';
+import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SplashController extends GetxController {
   RxString newAPKUrl = ''.obs;
@@ -52,7 +49,13 @@ class SplashController extends GetxController {
           if (isLatestVersion(currentVersion, newAPKVersion.value)) {
             nextScreenRoute();
           } else {
-            await showUpdateDialog();
+            await showUpdateDialog(
+              onUpdate: () async {
+                await _downloadAndInstall();
+              },
+              isUpdateLoading: isUpdateLoading,
+              downloadedProgress: downloadedProgress,
+            );
           }
         } else {
           nextScreenRoute();
@@ -93,107 +96,6 @@ class SplashController extends GetxController {
       return (versionModel.data?.firstOrNull?.appUrl, versionModel.data?.firstOrNull?.appVersion);
     }
     return (null, null);
-  }
-
-  /// Update app dialog
-  Future<void> showUpdateDialog() async {
-    await showGeneralDialog(
-      context: Get.context!,
-      barrierDismissible: false,
-      useRootNavigator: true,
-      barrierLabel: 'string',
-      barrierColor: AppColors.TRANSPARENT,
-      transitionDuration: const Duration(milliseconds: 350),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return SlideTransition(
-          position: Tween(
-            begin: const Offset(0, 1),
-            end: const Offset(0, 0),
-          ).animate(animation),
-          child: child,
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: AppColors.WHITE_COLOR,
-          surfaceTintColor: AppColors.WHITE_COLOR,
-          contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
-          content: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: AppColors.WHITE_COLOR,
-            ),
-            height: context.isPortrait ? 35.h : 65.h,
-            width: context.isPortrait ? 80.w : 40.w,
-            clipBehavior: Clip.hardEdge,
-            padding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 5.w : 5.h, vertical: context.isPortrait ? 2.h : 2.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  AppAssets.updateAnim,
-                  height: context.isPortrait ? 10.h : 10.w,
-                ),
-                SizedBox(height: context.isPortrait ? 2.h : 2.w),
-                Text(
-                  AppStrings.newVersionAvailable.tr,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.SECONDARY_COLOR,
-                    fontSize: context.isPortrait ? 18.sp : 14.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const Spacer(),
-                Obx(() {
-                  return ButtonWidget(
-                    onPressed: () async {
-                      await _downloadAndInstall();
-                    },
-                    isLoading: isUpdateLoading.value,
-                    loaderWidget: Row(
-                      children: [
-                        Text(
-                          "${downloadedProgress.value}%",
-                          style: TextStyle(
-                            color: AppColors.PRIMARY_COLOR,
-                            fontWeight: FontWeight.w700,
-                            fontSize: context.isPortrait ? 14.sp : 12.sp,
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: context.isPortrait ? 5.w : 5.h,
-                                width: context.isPortrait ? 5.w : 5.h,
-                                child: CircularProgressIndicator(
-                                  color: AppColors.PRIMARY_COLOR,
-                                  strokeWidth: 1.6,
-                                  value: downloadedProgress.value / 100,
-                                ),
-                              ),
-                              SizedBox(width: 4.w),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    buttonTitle: AppStrings.update.tr,
-                    buttonTitleColor: AppColors.PRIMARY_COLOR,
-                    buttonColor: AppColors.SECONDARY_COLOR,
-                  );
-                }),
-                SizedBox(height: 2.h),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   /// Download and install

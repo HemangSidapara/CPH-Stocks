@@ -4,7 +4,9 @@ import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
+import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_controller.dart';
+import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +34,44 @@ class SettingsView extends GetView<SettingsController> {
                 titleIconSize: 7.w,
               ),
               Obx(() {
-                return Text(
-                  AppConstance.appVersion.replaceAll('1.0.0', controller.appVersion.value),
-                  style: TextStyle(
-                    color: AppColors.PRIMARY_COLOR.withOpacity(0.55),
-                    fontWeight: FontWeight.w700,
-                    fontSize: context.isPortrait ? 16.sp : 12.sp,
-                  ),
+                return Row(
+                  children: [
+                    if (Get.find<HomeController>().isLatestVersionAvailable.isTrue) ...[
+                      IconButton(
+                        onPressed: () async {
+                          await showUpdateDialog(
+                            isUpdateLoading: controller.isUpdateLoading,
+                            downloadedProgress: controller.downloadedProgress,
+                            onUpdate: () async {
+                              await controller.downloadAndInstallService();
+                            },
+                          );
+                        },
+                        style: IconButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: EdgeInsets.zero,
+                          maximumSize: Size(6.w, 6.w),
+                          minimumSize: Size(6.w, 6.w),
+                        ),
+                        icon: Icon(
+                          Icons.arrow_circle_up_rounded,
+                          color: AppColors.DARK_GREEN_COLOR,
+                          size: 6.w,
+                        ),
+                      ),
+                      SizedBox(width: 2.w),
+                    ],
+                    Obx(() {
+                      return Text(
+                        AppConstance.appVersion.replaceAll('1.0.0', controller.appVersion.value),
+                        style: TextStyle(
+                          color: AppColors.PRIMARY_COLOR.withOpacity(0.55),
+                          fontWeight: FontWeight.w700,
+                          fontSize: context.isPortrait ? 16.sp : 12.sp,
+                        ),
+                      );
+                    }),
+                  ],
                 );
               }),
             ],

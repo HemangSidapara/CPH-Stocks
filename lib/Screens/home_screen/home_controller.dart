@@ -1,5 +1,8 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
+import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
+import 'package:cph_stocks/Network/services/utils_services/get_package_info_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_view.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,9 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   RxInt bottomIndex = 0.obs;
   PageController pageController = PageController(initialPage: 0);
+  RxBool isLatestVersionAvailable = false.obs;
+  RxString newAPKUrl = ''.obs;
+  RxString newAPKVersion = ''.obs;
 
   RxList<String> listOfImages = [
     AppAssets.homeIcon,
@@ -36,6 +42,17 @@ class HomeController extends GetxController {
 
   Future<void> onBottomItemChange({required int index}) async {
     bottomIndex.value = index;
+    AuthServices.getLatestVersionService().then((response) async {
+      GetLatestVersionModel versionModel = GetLatestVersionModel.fromJson(response.response?.data);
+      if (response.isSuccess) {
+        newAPKUrl(versionModel.data?.firstOrNull?.appUrl ?? '');
+        newAPKVersion(versionModel.data?.firstOrNull?.appVersion ?? '');
+        final currentVersion = (await GetPackageInfoService.instance.getInfo()).version;
+        debugPrint('currentVersion :: $currentVersion');
+        debugPrint('newVersion :: ${newAPKVersion.value}');
+        isLatestVersionAvailable.value = isOldVersion(currentVersion, versionModel.data?.firstOrNull?.appVersion ?? currentVersion);
+      }
+    });
     if (index == 0) {
       if (Get.keys[0]?.currentState?.canPop() == true) {
         Get.back(id: 0);
@@ -46,5 +63,9 @@ class HomeController extends GetxController {
       }
     }
     pageController.jumpToPage(bottomIndex.value);
+  }
+
+  bool isOldVersion(String currentVersion, String newAPKVersion) {
+    return int.parse(currentVersion.split('.').last.length == 1 ? '${currentVersion.replaceAll('.', '')}0' : currentVersion.replaceAll('.', '')) < int.parse(newAPKVersion.split('.').last.length == 1 ? '${newAPKVersion.replaceAll('.', '')}0' : newAPKVersion.replaceAll('.', ''));
   }
 }
