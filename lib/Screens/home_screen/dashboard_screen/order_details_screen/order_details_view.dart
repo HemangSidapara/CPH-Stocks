@@ -432,8 +432,34 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                 Flexible(
                                                   child: Column(
                                                     children: [
+                                                      ///Date
+                                                      Align(
+                                                        alignment: Alignment.centerLeft,
+                                                        child: Text(
+                                                          "${AppStrings.orderDate.tr}: ",
+                                                          style: TextStyle(
+                                                            fontSize: 15.sp,
+                                                            fontWeight: FontWeight.w600,
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment.centerLeft,
+                                                        child: Text(
+                                                          controller.searchedOrderList[index].modelMeta?[itemIndex].orderDate ?? '',
+                                                          style: TextStyle(
+                                                            fontSize: 15.sp,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: AppColors.LIGHT_BLUE_COLOR,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 0.5.h),
+
                                                       ///Size
                                                       Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
                                                             "${AppStrings.size.tr}: ",
@@ -443,12 +469,14 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                               color: AppColors.SECONDARY_COLOR,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            controller.searchedOrderList[index].modelMeta?[itemIndex].size ?? '',
-                                                            style: TextStyle(
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: AppColors.SECONDARY_COLOR,
+                                                          Flexible(
+                                                            child: Text(
+                                                              controller.searchedOrderList[index].modelMeta?[itemIndex].size ?? '',
+                                                              style: TextStyle(
+                                                                fontSize: 16.sp,
+                                                                fontWeight: FontWeight.w700,
+                                                                color: AppColors.SECONDARY_COLOR,
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
@@ -598,7 +626,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  height: 26.h,
+                                                  height: 27.h,
                                                   child: VerticalDivider(
                                                     color: AppColors.HINT_GREY_COLOR,
                                                     thickness: 1,

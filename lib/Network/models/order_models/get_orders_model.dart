@@ -139,6 +139,7 @@ class ModelMeta {
     String? pending,
     String? okPcs,
     String? woProcess,
+    String? orderDate,
   }) {
     _orderMetaId = orderMetaId;
     _itemName = itemName;
@@ -149,6 +150,7 @@ class ModelMeta {
     _pending = pending;
     _okPcs = okPcs;
     _woProcess = woProcess;
+    _orderDate = orderDate;
   }
 
   ModelMeta.fromJson(dynamic json) {
@@ -161,6 +163,7 @@ class ModelMeta {
     _pending = json['pending'];
     _okPcs = json['okPcs'];
     _woProcess = json['woProcess'];
+    _orderDate = json['orderDate'];
   }
   String? _orderMetaId;
   String? _itemName;
@@ -171,6 +174,7 @@ class ModelMeta {
   String? _pending;
   String? _okPcs;
   String? _woProcess;
+  String? _orderDate;
   ModelMeta copyWith({
     String? orderMetaId,
     String? itemName,
@@ -181,6 +185,7 @@ class ModelMeta {
     String? pending,
     String? okPcs,
     String? woProcess,
+    String? orderDate,
   }) =>
       ModelMeta(
         orderMetaId: orderMetaId ?? _orderMetaId,
@@ -192,6 +197,7 @@ class ModelMeta {
         pending: pending ?? _pending,
         okPcs: okPcs ?? _okPcs,
         woProcess: woProcess ?? _woProcess,
+        orderDate: orderDate ?? _orderDate,
       );
   String? get orderMetaId => _orderMetaId;
   String? get itemName => _itemName;
@@ -202,6 +208,7 @@ class ModelMeta {
   String? get pending => _pending;
   String? get okPcs => _okPcs;
   String? get woProcess => _woProcess;
+  String? get orderDate => _orderDate;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -214,6 +221,7 @@ class ModelMeta {
     map['pending'] = _pending;
     map['okPcs'] = _okPcs;
     map['woProcess'] = _woProcess;
+    map['orderDate'] = _orderDate;
     return map;
   }
 }

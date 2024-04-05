@@ -183,73 +183,87 @@ class ChallanView extends GetView<ChallanController> {
                                   constraints: BoxConstraints(
                                     maxHeight: 60.h,
                                   ),
-                                  child: ListView.separated(
-                                    itemCount: controller.searchedInvoiceList[index].modelMeta?.length ?? 0,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, itemIndex) {
-                                      return DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.PRIMARY_COLOR.withOpacity(0.7),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                          child: Row(
-                                            children: [
-                                              ///Date
-                                              Flexible(
+                                  child: controller.searchedInvoiceList[index].modelMeta?.isNotEmpty == true
+                                      ? ListView.separated(
+                                          itemCount: controller.searchedInvoiceList[index].modelMeta?.length ?? 0,
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, itemIndex) {
+                                            return DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: AppColors.PRIMARY_COLOR.withOpacity(0.7),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 5.w),
                                                 child: Row(
                                                   children: [
-                                                    Text(
-                                                      '• ',
-                                                      style: TextStyle(
-                                                        fontSize: 16.sp,
-                                                        fontWeight: FontWeight.w700,
-                                                        color: AppColors.SECONDARY_COLOR,
+                                                    ///Date
+                                                    Flexible(
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            '• ',
+                                                            style: TextStyle(
+                                                              fontSize: 16.sp,
+                                                              fontWeight: FontWeight.w700,
+                                                              color: AppColors.SECONDARY_COLOR,
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                          Flexible(
+                                                            child: Text(
+                                                              controller.searchedInvoiceList[index].modelMeta?[itemIndex].createdDate ?? '',
+                                                              style: TextStyle(
+                                                                color: AppColors.SECONDARY_COLOR,
+                                                                fontSize: 16.sp,
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    SizedBox(width: 2.w),
-                                                    Flexible(
-                                                      child: Text(
-                                                        controller.searchedInvoiceList[index].modelMeta?[itemIndex].createdDate ?? '',
-                                                        style: TextStyle(
-                                                          color: AppColors.SECONDARY_COLOR,
-                                                          fontSize: 16.sp,
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
+
+                                                    ///Download
+                                                    IconButton(
+                                                      onPressed: () async {
+                                                        if (controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice != null && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.isNotEmpty == true && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.contains("https://") == true) {
+                                                          await showChallanBottomSheet(
+                                                            pdfUrl: controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice ?? '',
+                                                            fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].orderId?.replaceAll(' ', '')}.pdf",
+                                                            contactNumber: controller.searchedInvoiceList[index].contactNumber ?? '',
+                                                          );
+                                                        } else {
+                                                          Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
+                                                        }
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.download_rounded,
+                                                        color: AppColors.DARK_RED_COLOR,
+                                                        size: 6.5.w,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-
-                                              ///Download
-                                              IconButton(
-                                                onPressed: () async {
-                                                  if (controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice != null && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.isNotEmpty == true && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.contains("https://") == true) {
-                                                    await showChallanBottomSheet(
-                                                      pdfUrl: controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice ?? '',
-                                                      fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].orderId?.replaceAll(' ', '')}.pdf",
-                                                      contactNumber: controller.searchedInvoiceList[index].contactNumber ?? '',
-                                                    );
-                                                  } else {
-                                                    Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
-                                                  }
-                                                },
-                                                icon: Icon(
-                                                  Icons.download_rounded,
-                                                  color: AppColors.DARK_RED_COLOR,
-                                                  size: 6.5.w,
-                                                ),
+                                            );
+                                          },
+                                          separatorBuilder: (context, index) {
+                                            return SizedBox(height: 1.5.h);
+                                          },
+                                        )
+                                      : SizedBox(
+                                          height: 10.h,
+                                          child: Center(
+                                            child: Text(
+                                              AppStrings.challansAreNotGeneratedYet.tr,
+                                              style: TextStyle(
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.w700,
+                                                color: AppColors.SECONDARY_COLOR,
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return SizedBox(height: 1.5.h);
-                                    },
-                                  ),
                                 ),
                               ],
                             ),

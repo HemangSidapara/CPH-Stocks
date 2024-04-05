@@ -87,4 +87,6 @@ class AppStrings {
   static const String pleaseSelectPvdColor = "Please select pvd color";
   static const String update = 'Update';
   static const String newVersionAvailable = 'A new version is available. Please upgrade to it.';
+  static const String orderDate = 'Order date';
+  static const String challansAreNotGeneratedYet = 'Challans are not generated yet.';
 }
