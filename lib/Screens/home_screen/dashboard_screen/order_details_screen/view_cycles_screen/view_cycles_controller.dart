@@ -1,12 +1,15 @@
+import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/order_models/get_order_cycles_model.dart' as get_order_cycles;
 import 'package:cph_stocks/Network/models/order_models/item_id_model.dart';
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
 import 'package:get/get.dart';
 
 class ViewCyclesController extends GetxController {
   ItemDetailsModel arguments = ItemDetailsModel();
 
   RxBool isGetOrderCycleLoading = false.obs;
+  RxBool isDeletingOrderCycleLoading = false.obs;
 
   RxString challanUrl = ''.obs;
   RxString contactNumber = ''.obs;
@@ -33,6 +36,28 @@ class ViewCyclesController extends GetxController {
       }
     } finally {
       isGetOrderCycleLoading(false);
+    }
+  }
+
+  Future<void> deleteCycleApi({required String orderCycleId}) async {
+    try {
+      isDeletingOrderCycleLoading(true);
+      final response = await OrderServices.deleteOrderCycleService(orderCycleId: orderCycleId);
+
+      if (response.isSuccess) {
+        await getOrderCyclesApi().then((value) {
+          Get.back();
+          Future.delayed(
+            const Duration(milliseconds: 300),
+            () {
+              Utils.handleMessage(message: response.message);
+            },
+          );
+          Get.find<OrderDetailsController>().getOrdersApi(isLoading: false);
+        });
+      }
+    } finally {
+      isDeletingOrderCycleLoading(false);
     }
   }
 }

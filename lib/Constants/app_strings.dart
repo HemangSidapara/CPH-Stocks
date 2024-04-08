@@ -89,4 +89,9 @@ class AppStrings {
   static const String newVersionAvailable = 'A new version is available. Please upgrade to it.';
   static const String orderDate = 'Order date';
   static const String challansAreNotGeneratedYet = 'Challans are not generated yet.';
+  static const String sortByParty = 'Sort by Party';
+  static const String sortByColor = 'Sort by Color';
+  static const String searchColor = 'Search color';
+  static const String editItemDetails = 'Edit Item Details';
+  static const String deleteCycleText = "Are you sure? You want to delete 'Cycle' cycle? After deleting cycle will be lost under this order.";
 }

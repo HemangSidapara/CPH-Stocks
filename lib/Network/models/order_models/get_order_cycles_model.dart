@@ -81,11 +81,13 @@ String dataToJson(Data data) => json.encode(data.toJson());
 
 class Data {
   Data({
+    String? orderCycleId,
     String? pending,
     String? okPcs,
     String? woProcess,
     String? createdDate,
   }) {
+    _orderCycleId = orderCycleId;
     _pending = pending;
     _okPcs = okPcs;
     _woProcess = woProcess;
@@ -93,27 +95,32 @@ class Data {
   }
 
   Data.fromJson(dynamic json) {
+    _orderCycleId = json['orderCycleId'];
     _pending = json['pending'];
     _okPcs = json['okPcs'];
     _woProcess = json['woProcess'];
     _createdDate = json['createdDate'];
   }
+  String? _orderCycleId;
   String? _pending;
   String? _okPcs;
   String? _woProcess;
   String? _createdDate;
   Data copyWith({
+    String? orderCycleId,
     String? pending,
     String? okPcs,
     String? woProcess,
     String? createdDate,
   }) =>
       Data(
+        orderCycleId: orderCycleId ?? _orderCycleId,
         pending: pending ?? _pending,
         okPcs: okPcs ?? _okPcs,
         woProcess: woProcess ?? _woProcess,
         createdDate: createdDate ?? _createdDate,
       );
+  String? get orderCycleId => _orderCycleId;
   String? get pending => _pending;
   String? get okPcs => _okPcs;
   String? get woProcess => _woProcess;
@@ -121,6 +128,7 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['orderCycleId'] = _orderCycleId;
     map['pending'] = _pending;
     map['okPcs'] = _okPcs;
     map['woProcess'] = _woProcess;

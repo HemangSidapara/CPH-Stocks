@@ -47,8 +47,8 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                             ignoring: true,
                             child: TextFieldWidget(
                               controller: controller.pendingController,
-                              title: AppStrings.pending,
-                              hintText: AppStrings.enterPending,
+                              title: AppStrings.pending.tr,
+                              hintText: AppStrings.enterPending.tr,
                               validator: controller.validatePending,
                               textInputAction: TextInputAction.next,
                               maxLength: 30,
@@ -59,8 +59,8 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                           ///Ok pcs.
                           TextFieldWidget(
                             controller: controller.okPcsController,
-                            title: AppStrings.okPcs,
-                            hintText: AppStrings.enterOkPcs,
+                            title: AppStrings.okPcs.tr,
+                            hintText: AppStrings.enterOkPcs.tr,
                             validator: controller.validateOkPcs,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
@@ -88,8 +88,8 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                           ///W/O Process
                           TextFieldWidget(
                             controller: controller.woProcessController,
-                            title: AppStrings.woProcess,
-                            hintText: AppStrings.enterWOProcess,
+                            title: AppStrings.woProcess.tr,
+                            hintText: AppStrings.enterWOProcess.tr,
                             validator: controller.validateWOProcess,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,

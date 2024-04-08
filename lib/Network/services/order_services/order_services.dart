@@ -132,6 +132,32 @@ class OrderServices {
     return response;
   }
 
+  /// Delete Order Cycles
+  static Future<ResponseModel> deleteOrderCycleService({
+    required String orderCycleId,
+  }) async {
+    final params = {
+      ApiKeys.orderCycleId: orderCycleId,
+    };
+    final response = await ApiBaseHelper.deleteHTTP(
+      ApiUrls.deleteOrderCycleApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("deleteOrderCycleApi success :: ${res.message}");
+        } else {
+          debugPrint("deleteOrderCycleApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
   /// Update Party
   static Future<ResponseModel> updatePartyService({
     required String orderId,
@@ -162,7 +188,7 @@ class OrderServices {
     return response;
   }
 
-  /// Update Party
+  /// Delete Party
   static Future<ResponseModel> deletePartyService({
     required String orderId,
   }) async {
@@ -188,7 +214,37 @@ class OrderServices {
     return response;
   }
 
-  /// Update Party
+  /// Update Item
+  static Future<ResponseModel> updateItemService({
+    required String orderMetaId,
+    required String itemName,
+    required String itemImage,
+  }) async {
+    final params = {
+      ApiKeys.orderMetaId: orderMetaId,
+      ApiKeys.itemName: itemName,
+      ApiKeys.itemImage: itemImage,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.updateOrderApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          debugPrint("updateOrderApi success :: ${res.message}");
+        } else {
+          debugPrint("updateOrderApi error :: ${res.message}");
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Delete Order
   static Future<ResponseModel> deleteOrderService({
     required String orderMetaId,
   }) async {

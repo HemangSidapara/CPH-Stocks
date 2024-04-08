@@ -88,4 +88,9 @@ Map<String, String> guIN = <String, String>{
   AppStrings.newVersionAvailable: 'નવું સંસ્કરણ ઉપલબ્ધ છે. કૃપા કરીને તેમાં અપગ્રેડ કરો.',
   AppStrings.orderDate: 'ઓર્ડર તારીખ',
   AppStrings.challansAreNotGeneratedYet: 'ચલણ હજુ જનરેટ થયા નથી.',
+  AppStrings.sortByParty: 'પાર્ટી દ્વારા સૉર્ટ કરો',
+  AppStrings.sortByColor: 'રંગ દ્વારા સૉર્ટ કરો',
+  AppStrings.searchColor: 'રંગ શોધો',
+  AppStrings.editItemDetails: 'આઇટમ વિગતો સંપાદિત કરો',
+  AppStrings.deleteCycleText: "શું તમને ખાતરી છે? તમે 'Cycle' સાયકલ કાઢી નાખવા માંગો છો? ડિલીટ કર્યા પછી આ ઓર્ડર હેઠળ સાયકલ ગુમ થઈ જશે.",
 };

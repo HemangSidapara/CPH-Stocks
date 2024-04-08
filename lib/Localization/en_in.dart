@@ -88,4 +88,9 @@ Map<String, String> enIN = <String, String>{
   AppStrings.newVersionAvailable: 'A new version is available. Please upgrade to it.',
   AppStrings.orderDate: 'Order date',
   AppStrings.challansAreNotGeneratedYet: 'Challans are not generated yet.',
+  AppStrings.sortByParty: 'Sort by Party',
+  AppStrings.sortByColor: 'Sort by Color',
+  AppStrings.searchColor: 'Search color',
+  AppStrings.editItemDetails: 'Edit Item Details',
+  AppStrings.deleteCycleText: "Are you sure? You want to delete 'Cycle' cycle? After deleting cycle will be lost under this order.",
 };

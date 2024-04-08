@@ -14,9 +14,7 @@ class HomeView extends GetView<HomeController> {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
-        if (didPop) {
-          await showExitDialog(context);
-        }
+        await showExitDialog(context);
       },
       child: SafeArea(
         child: Scaffold(

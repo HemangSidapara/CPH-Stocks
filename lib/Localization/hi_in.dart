@@ -85,5 +85,11 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.pleaseSelectPvdColor: "कृपया PVD रंग चुनें",
   AppStrings.update: 'अद्यतन',
   AppStrings.newVersionAvailable: 'एक नया संस्करण उपलब्ध है। कृपया इसे अपग्रेड करें।',
-  AppStrings.orderDate: 'अभी चलान जनरेट नहीं हुए हैं।',
+  AppStrings.orderDate: 'आर्डर की तारीख',
+  AppStrings.challansAreNotGeneratedYet: 'अभी चलान जनरेट नहीं हुए हैं।',
+  AppStrings.sortByParty: 'पार्टी के अनुसार क्रमबद्ध करें',
+  AppStrings.sortByColor: 'रंग के अनुसार क्रमबद्ध करें',
+  AppStrings.searchColor: 'रंग खोजें',
+  AppStrings.editItemDetails: 'आइटम विवरण संपादित करें',
+  AppStrings.deleteCycleText: "क्या आपको यकीन है? आप 'साइकिल' चक्र को हटाना चाहते हैं? इस आदेश के तहत डिलीट करने के बाद चक्र नष्ट हो जाएगा।",
 };

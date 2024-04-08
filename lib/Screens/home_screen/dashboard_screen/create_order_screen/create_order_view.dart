@@ -68,7 +68,6 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     controller.partyNameController.clear();
                                     controller.contactNumberController.clear();
                                     controller.selectedParty(-1);
-                                    controller.createOrderFormKey.currentState?.reset();
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
@@ -251,7 +250,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                           ///Party Name
                           TextFieldWidget(
                             controller: controller.partyNameController,
-                            hintText: AppStrings.enterPartyName,
+                            hintText: AppStrings.enterPartyName.tr,
                             validator: controller.validatePartyName,
                             textInputAction: TextInputAction.next,
                             maxLength: 30,
@@ -262,8 +261,8 @@ class CreateOrderView extends GetView<CreateOrderController> {
                           ///Contact Number
                           TextFieldWidget(
                             controller: controller.contactNumberController,
-                            title: AppStrings.contactNumber,
-                            hintText: AppStrings.enterContactNumber,
+                            title: AppStrings.contactNumber.tr,
+                            hintText: AppStrings.enterContactNumber.tr,
                             validator: controller.validateContactNumber,
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
@@ -589,7 +588,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
         TextFieldWidget(
           controller: controller.itemNameControllerList[index],
           title: AppStrings.itemName.tr,
-          hintText: AppStrings.enterItemName,
+          hintText: AppStrings.enterItemName.tr,
           validator: controller.validateItemName,
           textInputAction: TextInputAction.next,
           maxLength: 30,
@@ -789,7 +788,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
         SizedBox(height: 1.h),
         TextFieldWidget(
           controller: controller.pvdColorControllerList[index],
-          hintText: AppStrings.enterPVDColor,
+          hintText: AppStrings.enterPVDColor.tr,
           validator: controller.validatePVDColor,
           textInputAction: TextInputAction.next,
           maxLength: 30,
@@ -800,8 +799,8 @@ class CreateOrderView extends GetView<CreateOrderController> {
         ///Quantity
         TextFieldWidget(
           controller: controller.quantityControllerList[index],
-          title: AppStrings.quantity,
-          hintText: AppStrings.enterQuantity,
+          title: AppStrings.quantity.tr,
+          hintText: AppStrings.enterQuantity.tr,
           validator: controller.validateQuantity,
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.number,
@@ -812,8 +811,8 @@ class CreateOrderView extends GetView<CreateOrderController> {
         ///Size
         TextFieldWidget(
           controller: controller.sizeControllerList[index],
-          title: AppStrings.size,
-          hintText: AppStrings.enterSize,
+          title: AppStrings.size.tr,
+          hintText: AppStrings.enterSize.tr,
           validator: controller.validateSize,
           textInputAction: TextInputAction.next,
           maxLength: 20,

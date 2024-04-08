@@ -4,6 +4,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/services/utils_services/download_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_controller.dart';
+import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -29,43 +30,13 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
             child: Column(
               children: [
                 ///Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomHeaderWidget(
-                      title: AppStrings.viewCycles.tr,
-                      titleIcon: AppAssets.viewCyclesIcon,
-                      titleIconSize: 8.w,
-                      onBackPressed: () {
-                        Get.back(closeOverlays: true);
-                      },
-                    ),
-                    // IconButton(
-                    //   onPressed: () async {
-                    //     if (controller.challanUrl.value.isNotEmpty) {
-                    //       await showChallanBottomSheet(pdfUrl: controller.challanUrl.value);
-                    //     } else {
-                    //       Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
-                    //     }
-                    //   },
-                    //   style: IconButton.styleFrom(
-                    //     backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),
-                    //     surfaceTintColor: AppColors.PRIMARY_COLOR,
-                    //     highlightColor: AppColors.PRIMARY_COLOR,
-                    //     shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(12),
-                    //     ),
-                    //     elevation: 4,
-                    //     padding: EdgeInsets.zero,
-                    //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    //   ),
-                    //   icon: Icon(
-                    //     Icons.receipt_long_rounded,
-                    //     color: AppColors.SECONDARY_COLOR,
-                    //     size: 6.5.w,
-                    //   ),
-                    // ),
-                  ],
+                CustomHeaderWidget(
+                  title: AppStrings.viewCycles.tr,
+                  titleIcon: AppAssets.viewCyclesIcon,
+                  titleIconSize: 8.w,
+                  onBackPressed: () {
+                    Get.back(closeOverlays: true);
+                  },
                 ),
                 SizedBox(height: 4.h),
 
@@ -111,7 +82,7 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                   ),
                                   Flexible(
                                     child: Text(
-                                      controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateTime.parse(controller.orderCycleList[index].createdDate!).toLocal()) : '',
+                                      controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : '',
                                       style: TextStyle(
                                         color: AppColors.SECONDARY_COLOR,
                                         fontSize: 15.sp,
@@ -120,6 +91,29 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                     ),
                                   ),
                                 ],
+                              ),
+                              trailing: IconButton(
+                                onPressed: () async {
+                                  await showDeleteDialog(
+                                    onPressed: () async {
+                                      await controller.deleteCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
+                                    },
+                                    title: AppStrings.deleteCycleText.tr.replaceAll("'Cycle'", "'${controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : ''}'"),
+                                  );
+                                },
+                                style: IconButton.styleFrom(
+                                  backgroundColor: AppColors.DARK_RED_COLOR,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  padding: EdgeInsets.zero,
+                                  elevation: 4,
+                                  maximumSize: Size(7.5.w, 7.5.w),
+                                  minimumSize: Size(7.5.w, 7.5.w),
+                                ),
+                                icon: Icon(
+                                  Icons.delete_forever_rounded,
+                                  color: AppColors.PRIMARY_COLOR,
+                                  size: 4.w,
+                                ),
                               ),
                               dense: true,
                               collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
@@ -368,6 +362,104 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                   ],
                 ),
                 SizedBox(height: 2.h),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showDeleteDialog({
+    required void Function()? onPressed,
+    required String title,
+  }) async {
+    await showGeneralDialog(
+      context: Get.context!,
+      barrierDismissible: true,
+      barrierLabel: 'string',
+      transitionDuration: const Duration(milliseconds: 400),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 1),
+            end: const Offset(0, 0),
+          ).animate(animation),
+          child: FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
+            ),
+            child: child,
+          ),
+        );
+      },
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          backgroundColor: AppColors.WHITE_COLOR,
+          surfaceTintColor: AppColors.WHITE_COLOR,
+          contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: AppColors.WHITE_COLOR,
+            ),
+            width: 80.w,
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 2.h),
+                Icon(
+                  Icons.delete_forever_rounded,
+                  color: AppColors.DARK_RED_COLOR,
+                  size: 8.w,
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.SECONDARY_COLOR,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.sp,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ///Cancel
+                      ButtonWidget(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        fixedSize: Size(30.w, 5.h),
+                        buttonTitle: AppStrings.cancel.tr,
+                        buttonColor: AppColors.DARK_GREEN_COLOR,
+                        buttonTitleColor: AppColors.PRIMARY_COLOR,
+                      ),
+
+                      ///Delete
+                      Obx(() {
+                        return ButtonWidget(
+                          onPressed: onPressed,
+                          isLoading: controller.isDeletingOrderCycleLoading.value,
+                          fixedSize: Size(30.w, 5.h),
+                          buttonTitle: AppStrings.delete.tr,
+                          buttonColor: AppColors.DARK_RED_COLOR,
+                          buttonTitleColor: AppColors.PRIMARY_COLOR,
+                          loaderColor: AppColors.PRIMARY_COLOR,
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 3.h),
               ],
             ),
           ),
