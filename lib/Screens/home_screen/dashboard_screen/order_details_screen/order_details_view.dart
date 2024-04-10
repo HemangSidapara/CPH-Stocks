@@ -99,7 +99,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                     ),
                   ),
                   onTap: (value) {
-                    FocusManager.instance.primaryFocus?.unfocus();
+                    Utils.unfocus();
                     controller.tabController.animateTo(value);
                   },
                   dividerColor: AppColors.TRANSPARENT,
