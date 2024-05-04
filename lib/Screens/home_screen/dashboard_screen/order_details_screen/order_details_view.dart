@@ -104,9 +104,9 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                   },
                   dividerColor: AppColors.TRANSPARENT,
                   tabs: [
-                    ///Sort By Party
+                    ///Sort By PVD Color
                     Text(
-                      AppStrings.sortByParty.tr,
+                      AppStrings.sortByColor.tr,
                       style: TextStyle(
                         color: AppColors.PRIMARY_COLOR,
                         fontSize: context.isPortrait ? 16.sp : 14.sp,
@@ -114,9 +114,9 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                       ),
                     ),
 
-                    ///Sort By PVD Color
+                    ///Sort By Party
                     Text(
-                      AppStrings.sortByColor.tr,
+                      AppStrings.sortByParty.tr,
                       style: TextStyle(
                         color: AppColors.PRIMARY_COLOR,
                         fontSize: context.isPortrait ? 16.sp : 14.sp,
@@ -132,11 +132,11 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                   child: TabBarView(
                     controller: controller.tabController,
                     children: const [
-                      ///Party View
-                      SortByPartyView(),
-
                       ///PVD Color View
                       SortByPvdColorView(),
+
+                      ///Party View
+                      SortByPartyView(),
                     ],
                   ),
                 ),

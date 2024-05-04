@@ -46,9 +46,7 @@ class SplashController extends GetxController {
           debugPrint('currentVersion :: $currentVersion');
           debugPrint('newVersion :: ${newAPKVersion.value}');
 
-          if (isLatestVersion(currentVersion, newAPKVersion.value)) {
-            nextScreenRoute();
-          } else {
+          if (isUpdateAvailable(currentVersion, newAPKVersion.value)) {
             await showUpdateDialog(
               onUpdate: () async {
                 await _downloadAndInstall();
@@ -56,6 +54,8 @@ class SplashController extends GetxController {
               isUpdateLoading: isUpdateLoading,
               downloadedProgress: downloadedProgress,
             );
+          } else {
+            nextScreenRoute();
           }
         } else {
           nextScreenRoute();
@@ -84,8 +84,15 @@ class SplashController extends GetxController {
   }
 
   /// Current app is latest or not
-  bool isLatestVersion(String currentVersion, String newAPKVersion) {
-    return int.parse(currentVersion.split('.').last.length == 1 ? '${currentVersion.replaceAll('.', '')}0' : currentVersion.replaceAll('.', '')) >= int.parse(newAPKVersion.split('.').last.length == 1 ? '${newAPKVersion.replaceAll('.', '')}0' : newAPKVersion.replaceAll('.', ''));
+  bool isUpdateAvailable(String currentVersion, String newAPKVersion) {
+    List<String> versionNumberList = currentVersion.split('.').toList();
+    List<String> storeVersionNumberList = newAPKVersion.split('.').toList();
+    for (int i = 0; i < versionNumberList.length; i++) {
+      if (versionNumberList[i].toInt() < storeVersionNumberList[i].toInt()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Get latest Version on server

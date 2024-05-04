@@ -29,4 +29,8 @@ class AppColors {
   static Color WARNING_COLOR = const Color(0xffe2b13c);
   static Color SUCCESS_COLOR = const Color(0xff27C193);
   static Color ORANGE_COLOR = const Color(0xffE56736);
+  static Color GOLD_COLOR = const Color(0xffFFD700);
+  static Color ROSEGOLD_COLOR = const Color(0xffb76e79);
+  static Color GREY_COLOR = const Color(0xff808080);
+  static Color BRONZE_COLOR = const Color(0xffCD7F32);
 }

@@ -31,6 +31,14 @@ class OrderDetailsController extends GetxController with GetSingleTickerProvider
   GlobalKey<FormState> editPartyFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> editItemFormKey = GlobalKey<FormState>();
 
+  Map<String, Color> colorCodes = {
+    "Gold": AppColors.GOLD_COLOR,
+    "Rosegold": AppColors.ROSEGOLD_COLOR,
+    "Black": AppColors.BLACK_COLOR,
+    "Grey": AppColors.GREY_COLOR,
+    "Bronze": AppColors.BRONZE_COLOR,
+  };
+
   @override
   void onInit() async {
     super.onInit();

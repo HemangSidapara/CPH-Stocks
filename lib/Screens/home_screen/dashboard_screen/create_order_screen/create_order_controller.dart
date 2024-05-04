@@ -18,14 +18,16 @@ class CreateOrderController extends GetxController {
   RxList<TextEditingController> sizeControllerList = RxList<TextEditingController>();
   RxList<String> base64ImageList = RxList();
 
-  RxList<String> pvdColorList = RxList([
-    "Gold",
-    "Rosegold",
-    "Black",
-    "Grey",
-    "Bronze",
-    "Rainbow",
-  ]);
+  RxList<String> pvdColorList = RxList(
+    [
+      "Gold",
+      "Rosegold",
+      "Black",
+      "Grey",
+      "Bronze",
+      "Rainbow",
+    ],
+  );
   RxList<int> selectedPvdColorList = RxList();
 
   RxBool isGetPartiesLoading = true.obs;
