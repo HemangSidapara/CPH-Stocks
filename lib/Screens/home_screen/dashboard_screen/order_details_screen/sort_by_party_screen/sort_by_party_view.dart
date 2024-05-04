@@ -628,6 +628,7 @@ class SortByPartyView extends GetView<OrderDetailsController> {
                                                         height: 15.h,
                                                         width: double.maxFinite,
                                                         child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             CircularProgressIndicator(
                                                               color: AppColors.SECONDARY_COLOR,
