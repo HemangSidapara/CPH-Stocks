@@ -23,6 +23,7 @@ class SplashController extends GetxController {
   RxString newAPKVersion = ''.obs;
   RxBool isUpdateLoading = false.obs;
   RxInt downloadedProgress = 0.obs;
+  RxString currentVersion = ''.obs;
 
   @override
   void onInit() async {
@@ -41,12 +42,11 @@ class SplashController extends GetxController {
 
     newAPKUrl.addListener(GetStream(
       onListen: () async {
+        currentVersion.value = (await GetPackageInfoService.instance.getInfo()).version;
+        debugPrint('currentVersion :: ${currentVersion.value}');
+        debugPrint('newVersion :: ${newAPKVersion.value}');
         if (newAPKUrl.value.isNotEmpty && newAPKVersion.value.isNotEmpty) {
-          final currentVersion = (await GetPackageInfoService.instance.getInfo()).version;
-          debugPrint('currentVersion :: $currentVersion');
-          debugPrint('newVersion :: ${newAPKVersion.value}');
-
-          if (isUpdateAvailable(currentVersion, newAPKVersion.value)) {
+          if (isUpdateAvailable(currentVersion.value, newAPKVersion.value)) {
             await showUpdateDialog(
               onUpdate: () async {
                 await _downloadAndInstall();

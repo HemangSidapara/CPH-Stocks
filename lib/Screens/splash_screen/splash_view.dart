@@ -1,5 +1,6 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Screens/splash_screen/splash_controller.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,16 @@ class SplashView extends GetView<SplashController> {
               ],
             ),
           ),
+          Obx(() {
+            return Text(
+              AppConstance.appVersion.replaceAll('1.0.0', controller.currentVersion.value),
+              style: TextStyle(
+                color: AppColors.PRIMARY_COLOR.withOpacity(0.55),
+                fontWeight: FontWeight.w700,
+                fontSize: 14.sp,
+              ),
+            );
+          }),
           Text(
             AppStrings.poweredByMindwaveInfoway,
             style: TextStyle(

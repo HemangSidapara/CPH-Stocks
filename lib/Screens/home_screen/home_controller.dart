@@ -66,6 +66,7 @@ class HomeController extends GetxController {
     pageController.jumpToPage(bottomIndex.value);
   }
 
+  /// Current app is latest or not
   bool isUpdateAvailable(String currentVersion, String newAPKVersion) {
     List<String> versionNumberList = currentVersion.split('.').toList();
     List<String> storeVersionNumberList = newAPKVersion.split('.').toList();
