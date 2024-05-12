@@ -253,7 +253,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             hintText: AppStrings.enterPartyName.tr,
                             validator: controller.validatePartyName,
                             textInputAction: TextInputAction.next,
-                            maxLength: 30,
+                            maxLength: 50,
                             isDisable: controller.selectedParty.value != -1,
                           ),
                           SizedBox(height: 2.h),

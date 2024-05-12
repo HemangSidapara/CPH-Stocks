@@ -88,8 +88,12 @@ class SplashController extends GetxController {
     List<String> versionNumberList = currentVersion.split('.').toList();
     List<String> storeVersionNumberList = newAPKVersion.split('.').toList();
     for (int i = 0; i < versionNumberList.length; i++) {
-      if (versionNumberList[i].toInt() < storeVersionNumberList[i].toInt()) {
-        return true;
+      if (versionNumberList[i].toInt() != storeVersionNumberList[i].toInt()) {
+        if (versionNumberList[i].toInt() < storeVersionNumberList[i].toInt()) {
+          return true;
+        } else {
+          return false;
+        }
       }
     }
     return false;

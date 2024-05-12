@@ -15,7 +15,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class OrderDetailsController extends GetxController with GetSingleTickerProviderStateMixin {
+class OrderDetailsController extends GetxController with GetTickerProviderStateMixin {
   late TabController tabController;
 
   TextEditingController searchPartyController = TextEditingController();
@@ -39,11 +39,14 @@ class OrderDetailsController extends GetxController with GetSingleTickerProvider
     "Bronze": AppColors.BRONZE_COLOR,
   };
 
+  late TabController sortByColorTabController;
+
   @override
   void onInit() async {
     super.onInit();
     tabController = TabController(length: 2, vsync: this);
     await getOrdersApi();
+    sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
   }
 
   String? validatePartyName(String? value) {
@@ -178,6 +181,7 @@ class OrderDetailsController extends GetxController with GetSingleTickerProvider
     } else {
       searchedColorDataList.addAll(colorDataList);
     }
+    sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
   }
 
   Future<void> showItemImageDialog({
