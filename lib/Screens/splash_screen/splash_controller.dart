@@ -46,7 +46,7 @@ class SplashController extends GetxController {
         debugPrint('currentVersion :: ${currentVersion.value}');
         debugPrint('newVersion :: ${newAPKVersion.value}');
         if (newAPKUrl.value.isNotEmpty && newAPKVersion.value.isNotEmpty) {
-          if (isUpdateAvailable(currentVersion.value, newAPKVersion.value)) {
+          if (Utils.isUpdateAvailable(currentVersion.value, newAPKVersion.value)) {
             await showUpdateDialog(
               onUpdate: () async {
                 await _downloadAndInstall();
@@ -81,22 +81,6 @@ class SplashController extends GetxController {
     } else {
       Get.offAllNamed(Routes.homeScreen);
     }
-  }
-
-  /// Current app is latest or not
-  bool isUpdateAvailable(String currentVersion, String newAPKVersion) {
-    List<String> versionNumberList = currentVersion.split('.').toList();
-    List<String> storeVersionNumberList = newAPKVersion.split('.').toList();
-    for (int i = 0; i < versionNumberList.length; i++) {
-      if (versionNumberList[i].toInt() != storeVersionNumberList[i].toInt()) {
-        if (versionNumberList[i].toInt() < storeVersionNumberList[i].toInt()) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
   }
 
   /// Get latest Version on server

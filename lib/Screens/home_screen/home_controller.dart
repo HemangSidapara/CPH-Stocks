@@ -1,11 +1,11 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/get_package_info_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_view.dart';
-import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -51,7 +51,7 @@ class HomeController extends GetxController {
         final currentVersion = (await GetPackageInfoService.instance.getInfo()).version;
         debugPrint('currentVersion :: $currentVersion');
         debugPrint('newVersion :: ${newAPKVersion.value}');
-        isLatestVersionAvailable.value = isUpdateAvailable(currentVersion, versionModel.data?.firstOrNull?.appVersion ?? currentVersion);
+        isLatestVersionAvailable.value = Utils.isUpdateAvailable(currentVersion, versionModel.data?.firstOrNull?.appVersion ?? currentVersion);
       }
     });
     if (index == 0) {
@@ -64,21 +64,5 @@ class HomeController extends GetxController {
       }
     }
     pageController.jumpToPage(bottomIndex.value);
-  }
-
-  /// Current app is latest or not
-  bool isUpdateAvailable(String currentVersion, String newAPKVersion) {
-    List<String> versionNumberList = currentVersion.split('.').toList();
-    List<String> storeVersionNumberList = newAPKVersion.split('.').toList();
-    for (int i = 0; i < versionNumberList.length; i++) {
-      if (versionNumberList[i].toInt() != storeVersionNumberList[i].toInt()) {
-        if (versionNumberList[i].toInt() < storeVersionNumberList[i].toInt()) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-    return false;
   }
 }
