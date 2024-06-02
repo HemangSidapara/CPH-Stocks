@@ -50,7 +50,7 @@ class Utils {
                 : isWarning
                     ? AppColors.WARNING_COLOR
                     : AppColors.SUCCESS_COLOR),
-        borderRadius: 30,
+        borderRadius: 12,
         padding: Get.context != null
             ? Get.context!.isPortrait
                 ? EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h)
