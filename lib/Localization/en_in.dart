@@ -56,7 +56,7 @@ Map<String, String> enIN = <String, String>{
   AppStrings.orderCycle: "Order Cycle",
   AppStrings.add: "Add",
   AppStrings.invalidInputs: "Invalid inputs",
-  AppStrings.lastCycleLog: "Last Cycle Log:",
+  AppStrings.totalStatsLog: "Total Stats Log:",
   AppStrings.viewCycles: "View Cycles",
   AppStrings.challan: "Challan",
   AppStrings.itemImage: "Item Image",
@@ -93,4 +93,6 @@ Map<String, String> enIN = <String, String>{
   AppStrings.searchColor: 'Search color',
   AppStrings.editItemDetails: 'Edit Item Details',
   AppStrings.deleteCycleText: "Are you sure? You want to delete 'Cycle' cycle? After deleting cycle will be lost under this order.",
+  AppStrings.description: "Description",
+  AppStrings.enterDescription: "Enter description",
 };

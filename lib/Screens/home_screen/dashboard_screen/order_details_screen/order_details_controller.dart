@@ -8,7 +8,9 @@ import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
+import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
@@ -19,10 +21,8 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   late TabController tabController;
 
   TextEditingController searchPartyController = TextEditingController();
-  TextEditingController searchColorController = TextEditingController();
-  RxList<get_orders.PartyData> searchedPartyDataList = RxList();
-  RxList<get_orders.PartyData> partyDataList = RxList();
   RxList<get_orders.ColorData> searchedColorDataList = RxList();
+  RxList<get_orders.ColorData> tempColorDataList = RxList();
   RxList<get_orders.ColorData> colorDataList = RxList();
   RxBool isGetOrdersLoading = false.obs;
   RxBool isRefreshing = false.obs;
@@ -70,6 +70,27 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     return null;
   }
 
+  String? validatePvdColorList(String? value) {
+    if (value == null) {
+      return AppStrings.pleaseSelectPvdColor.tr;
+    }
+    return null;
+  }
+
+  String? validateQuantity(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseEnterQuantity.tr;
+    }
+    return null;
+  }
+
+  String? validateSize(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseEnterSize.tr;
+    }
+    return null;
+  }
+
   Future<void> getOrdersApi({bool isLoading = true}) async {
     try {
       isRefreshing(!isLoading);
@@ -78,14 +99,11 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
 
       if (response.isSuccess) {
         get_orders.GetOrdersModel ordersModel = get_orders.GetOrdersModel.fromJson(response.response?.data);
-        partyDataList.clear();
-        searchedPartyDataList.clear();
         colorDataList.clear();
         searchedColorDataList.clear();
-        partyDataList.addAll(ordersModel.partyData ?? []);
-        searchedPartyDataList.addAll(ordersModel.partyData ?? []);
         colorDataList.addAll(ordersModel.colorData ?? []);
         searchedColorDataList.addAll(ordersModel.colorData ?? []);
+        sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
       }
     } finally {
       isRefreshing(false);
@@ -143,6 +161,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> updateItemApi({
     required String orderMetaId,
     required String itemName,
+    required String pvdColor,
+    required String quantity,
+    required String size,
     required String itemImage,
   }) async {
     final isValidate = editItemFormKey.currentState?.validate();
@@ -152,6 +173,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         final response = await OrderServices.updateItemService(
           orderMetaId: orderMetaId,
           itemName: itemName,
+          pvdColor: pvdColor,
+          quantity: quantity,
+          size: size,
           itemImage: itemImage,
         );
 
@@ -166,18 +190,16 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   }
 
   Future<void> searchPartyName(String searchedValue) async {
-    searchedPartyDataList.clear();
-    if (searchedValue.isNotEmpty) {
-      searchedPartyDataList.addAll(partyDataList.where((element) => element.partyName?.toLowerCase().contains(searchedValue.toLowerCase()) == true));
-    } else {
-      searchedPartyDataList.addAll(partyDataList);
-    }
-  }
-
-  Future<void> searchColorName(String searchedValue) async {
     searchedColorDataList.clear();
     if (searchedValue.isNotEmpty) {
-      searchedColorDataList.addAll(colorDataList.where((element) => element.pvdColor?.toLowerCase().contains(searchedValue.toLowerCase()) == true));
+      for (var colorData in colorDataList) {
+        var filteredPartyMeta = colorData.partyMeta?.where((element) => element.partyName?.toLowerCase().contains(searchedValue.toLowerCase()) == true).toList();
+
+        if (filteredPartyMeta != null && filteredPartyMeta.isNotEmpty) {
+          var clonedItem = colorData.copyWith(partyMeta: filteredPartyMeta);
+          searchedColorDataList.add(clonedItem);
+        }
+      }
     } else {
       searchedColorDataList.addAll(colorDataList);
     }
@@ -400,9 +422,26 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> showEditItemBottomSheet({
     required String orderMetaId,
     required String itemName,
+    required String pvdColor,
+    required String quantity,
+    required String size,
     required String itemImage,
   }) async {
     TextEditingController itemNameController = TextEditingController(text: itemName);
+    TextEditingController pvdColorController = TextEditingController(text: pvdColor);
+    TextEditingController quantityController = TextEditingController(text: quantity);
+    TextEditingController sizeController = TextEditingController(text: size);
+    RxList<String> pvdColorList = RxList(
+      [
+        "Gold",
+        "Rosegold",
+        "Black",
+        "Grey",
+        "Bronze",
+        "Rainbow",
+      ],
+    );
+    int selectedPvdColor = pvdColorList.indexOf(pvdColor);
     RxString initialImage = itemImage.obs;
     RxString base64Image = ''.obs;
     RxBool isImageSelected = base64Image.isEmpty && initialImage.isEmpty ? false.obs : true.obs;
@@ -484,6 +523,237 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                               validator: validateItemName,
                               textInputAction: TextInputAction.next,
                               maxLength: 30,
+                              primaryColor: AppColors.SECONDARY_COLOR,
+                              secondaryColor: AppColors.PRIMARY_COLOR,
+                            ),
+                            SizedBox(height: 1.h),
+
+                            ///PVD Color
+                            Padding(
+                              padding: EdgeInsets.only(left: 2.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppStrings.pvdColor.tr,
+                                    style: TextStyle(
+                                      color: AppColors.PRIMARY_COLOR,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      pvdColorController.clear();
+                                      selectedPvdColor = -1;
+                                    },
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      maximumSize: Size(10.w, 2.5.h),
+                                      minimumSize: Size(10.w, 2.5.h),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    child: Text(
+                                      AppStrings.reset.tr,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: AppColors.LIGHT_BLUE_COLOR,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 16.sp,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 1.h),
+                            DropdownSearch<String>(
+                              autoValidateMode: AutovalidateMode.onUserInteraction,
+                              items: pvdColorList,
+                              selectedItem: selectedPvdColor == -1 ? null : pvdColorList[selectedPvdColor],
+                              dropdownButtonProps: DropdownButtonProps(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: AppColors.PRIMARY_COLOR,
+                                  size: 5.w,
+                                ),
+                              ),
+                              validator: (value) => validatePvdColorList(value),
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                baseStyle: TextStyle(
+                                  color: AppColors.PRIMARY_COLOR,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16.sp,
+                                ),
+                                dropdownSearchDecoration: InputDecoration(
+                                  filled: true,
+                                  enabled: true,
+                                  fillColor: AppColors.SECONDARY_COLOR,
+                                  hintText: AppStrings.selectPvdColor.tr,
+                                  hintStyle: TextStyle(
+                                    color: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: AppColors.ERROR_COLOR,
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.SECONDARY_COLOR,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.SECONDARY_COLOR,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.SECONDARY_COLOR,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.ERROR_COLOR,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.ERROR_COLOR,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0).copyWith(right: 1.w),
+                                ),
+                              ),
+                              itemAsString: (item) {
+                                return item;
+                              },
+                              popupProps: PopupProps.menu(
+                                menuProps: MenuProps(
+                                  backgroundColor: AppColors.SECONDARY_COLOR,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                loadingBuilder: (context, searchEntry) {
+                                  return Center(
+                                    child: LoadingWidget(
+                                      loaderColor: AppColors.PRIMARY_COLOR,
+                                    ),
+                                  );
+                                },
+                                emptyBuilder: (context, searchEntry) {
+                                  return Center(
+                                    child: Text(
+                                      AppStrings.noDataFound.tr,
+                                      style: TextStyle(
+                                        color: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                itemBuilder: (context, item, isSelected) {
+                                  return TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      selectedPvdColor = pvdColorList.indexWhere((element) => element == item);
+                                      if (selectedPvdColor != -1) {
+                                        pvdColorController.text = pvdColorList[selectedPvdColor];
+                                      }
+                                    },
+                                    style: TextButton.styleFrom(
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 5.w : 5.h, vertical: context.isPortrait ? 1.h : 1.w),
+                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                    ),
+                                    child: Text(
+                                      item,
+                                      style: TextStyle(
+                                        color: AppColors.PRIMARY_COLOR,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                interceptCallBacks: true,
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  cursorColor: AppColors.TERTIARY_COLOR,
+                                  style: TextStyle(
+                                    color: AppColors.PRIMARY_COLOR,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.sp,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: AppStrings.searchPvdColor.tr,
+                                    hintStyle: TextStyle(
+                                      color: AppColors.HINT_GREY_COLOR,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(width: 1, color: AppColors.PRIMARY_COLOR),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(width: 1, color: AppColors.PRIMARY_COLOR),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 4.w : 4.h, vertical: context.isPortrait ? 1.2.h : 1.2.w),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 1.h),
+                            TextFieldWidget(
+                              controller: pvdColorController,
+                              hintText: AppStrings.enterPVDColor.tr,
+                              validator: validatePvdColorList,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 30,
+                              isDisable: selectedPvdColor != -1,
+                              primaryColor: AppColors.SECONDARY_COLOR,
+                              secondaryColor: AppColors.PRIMARY_COLOR,
+                            ),
+                            SizedBox(height: 1.h),
+
+                            ///Quantity
+                            TextFieldWidget(
+                              controller: quantityController,
+                              title: AppStrings.quantity.tr,
+                              hintText: AppStrings.enterQuantity.tr,
+                              validator: validateQuantity,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              maxLength: 10,
+                              primaryColor: AppColors.SECONDARY_COLOR,
+                              secondaryColor: AppColors.PRIMARY_COLOR,
+                            ),
+                            SizedBox(height: 1.h),
+
+                            ///Size
+                            TextFieldWidget(
+                              controller: sizeController,
+                              title: AppStrings.size.tr,
+                              hintText: AppStrings.enterSize.tr,
+                              validator: validateSize,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 20,
                               primaryColor: AppColors.SECONDARY_COLOR,
                               secondaryColor: AppColors.PRIMARY_COLOR,
                             ),
@@ -631,6 +901,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                     await updateItemApi(
                                       orderMetaId: orderMetaId,
                                       itemName: itemNameController.text.trim(),
+                                      pvdColor: pvdColorController.text.trim(),
+                                      quantity: quantityController.text.trim(),
+                                      size: sizeController.text.trim(),
                                       itemImage: base64Image.value,
                                     );
                                   },

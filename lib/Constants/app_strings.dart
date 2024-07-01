@@ -57,7 +57,7 @@ class AppStrings {
   static const String orderCycle = "Order Cycle";
   static const String add = "Add";
   static const String invalidInputs = "Invalid inputs";
-  static const String lastCycleLog = "Last Cycle Log:";
+  static const String totalStatsLog = "Total Stats Log:";
   static const String viewCycles = "View Cycles";
   static const String challan = "Challan";
   static const String itemImage = "Item Image";
@@ -94,4 +94,8 @@ class AppStrings {
   static const String searchColor = 'Search color';
   static const String editItemDetails = 'Edit Item Details';
   static const String deleteCycleText = "Are you sure? You want to delete 'Cycle' cycle? After deleting cycle will be lost under this order.";
+  static const String description = "Description";
+  static const String enterDescription = "Enter description";
+  static const String pleaseEnterValidPhoneNumber = "Please enter valid phone number";
+  static const String nowItemCantBeEditable = "Now, Item can't be editable";
 }

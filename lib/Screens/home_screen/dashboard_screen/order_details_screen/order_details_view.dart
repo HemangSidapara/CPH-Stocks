@@ -3,7 +3,6 @@ import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/sort_by_party_screen/sort_by_party_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/sort_by_pvd_color_screen/sort_by_pvd_color_view.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:flutter/material.dart';
@@ -76,69 +75,9 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                 ),
                 SizedBox(height: 2.h),
 
-                ///Tabs
-                TabBar(
-                  controller: controller.tabController,
-                  padding: EdgeInsets.zero,
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.center,
-                  labelColor: AppColors.PRIMARY_COLOR,
-                  labelPadding: EdgeInsets.symmetric(
-                    horizontal: 8.w,
-                    vertical: 1.h,
-                  ),
-                  indicatorPadding: EdgeInsets.zero,
-                  indicatorColor: AppColors.TERTIARY_COLOR,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicatorWeight: 2.5,
-                  indicator: UnderlineTabIndicator(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: AppColors.TERTIARY_COLOR,
-                      width: 2.5,
-                    ),
-                  ),
-                  onTap: (value) {
-                    Utils.unfocus();
-                    controller.tabController.animateTo(value);
-                  },
-                  dividerColor: AppColors.TRANSPARENT,
-                  tabs: [
-                    ///Sort By PVD Color
-                    Text(
-                      AppStrings.sortByColor.tr,
-                      style: TextStyle(
-                        color: AppColors.PRIMARY_COLOR,
-                        fontSize: context.isPortrait ? 16.sp : 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-
-                    ///Sort By Party
-                    Text(
-                      AppStrings.sortByParty.tr,
-                      style: TextStyle(
-                        color: AppColors.PRIMARY_COLOR,
-                        fontSize: context.isPortrait ? 16.sp : 14.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 2.h),
-
-                ///Tab view
-                Flexible(
-                  child: TabBarView(
-                    controller: controller.tabController,
-                    children: const [
-                      ///PVD Color View
-                      SortByPvdColorView(),
-
-                      ///Party View
-                      SortByPartyView(),
-                    ],
-                  ),
+                ///Sort by Color
+                const Expanded(
+                  child: SortByPvdColorView(),
                 ),
               ],
             ),

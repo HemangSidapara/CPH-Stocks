@@ -31,10 +31,12 @@ class OrderServices {
     required String partyName,
     required String contactNumber,
     required List<Map<String, dynamic>> meta,
+    required String description,
   }) async {
     final params = {
       ApiKeys.partyName: partyName,
       ApiKeys.contactNumber: contactNumber,
+      ApiKeys.description: description,
       ApiKeys.meta: meta,
     };
     final response = await ApiBaseHelper.postHTTP(
@@ -219,10 +221,16 @@ class OrderServices {
     required String orderMetaId,
     required String itemName,
     required String itemImage,
+    required String pvdColor,
+    required String quantity,
+    required String size,
   }) async {
     final params = {
       ApiKeys.orderMetaId: orderMetaId,
       ApiKeys.itemName: itemName,
+      ApiKeys.pvdColor: pvdColor,
+      ApiKeys.quantity: quantity,
+      ApiKeys.size: size,
       ApiKeys.itemImage: itemImage,
     };
     final response = await ApiBaseHelper.postHTTP(

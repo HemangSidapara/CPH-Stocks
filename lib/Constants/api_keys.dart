@@ -16,4 +16,5 @@ class ApiKeys {
   static const contactNumber = "contactNumber";
   static const orderId = "orderId";
   static const orderCycleId = "orderCycleId";
+  static const description = "description";
 }

@@ -56,7 +56,7 @@ Map<String, String> guIN = <String, String>{
   AppStrings.orderCycle: "ઓર્ડર સાયકલ",
   AppStrings.add: "ઉમેરો",
   AppStrings.invalidInputs: "અમાન્ય ઇનપુટ્સ",
-  AppStrings.lastCycleLog: "છેલ્લો સાયકલ લોગ:",
+  AppStrings.totalStatsLog: "કુલ આંકડા લોગ:",
   AppStrings.viewCycles: "સાયકલ જુઓ",
   AppStrings.challan: "ચલણ",
   AppStrings.itemImage: "આઇટમની છબી",
@@ -93,4 +93,8 @@ Map<String, String> guIN = <String, String>{
   AppStrings.searchColor: 'રંગ શોધો',
   AppStrings.editItemDetails: 'આઇટમ વિગતો સંપાદિત કરો',
   AppStrings.deleteCycleText: "શું તમને ખાતરી છે? તમે 'Cycle' સાયકલ કાઢી નાખવા માંગો છો? ડિલીટ કર્યા પછી આ ઓર્ડર હેઠળ સાયકલ ગુમ થઈ જશે.",
+  AppStrings.description: "વર્ણન",
+  AppStrings.enterDescription: "વર્ણન દાખલ કરો",
+  AppStrings.pleaseEnterValidPhoneNumber: "કૃપા કરીને માન્ય ફોન નંબર દાખલ કરો",
+  AppStrings.nowItemCantBeEditable: "હવે, આઇટમ સંપાદનયોગ્ય હોઈ શકતી નથી",
 };

@@ -279,6 +279,17 @@ class CreateOrderView extends GetView<CreateOrderController> {
                           ),
                           SizedBox(height: 2.h),
 
+                          ///Description
+                          TextFieldWidget(
+                            controller: controller.descriptionController,
+                            title: AppStrings.description.tr,
+                            hintText: AppStrings.enterDescription.tr,
+                            textInputAction: TextInputAction.next,
+                            maxLength: 120,
+                            maxLines: 3,
+                          ),
+                          SizedBox(height: 2.h),
+
                           ///Item Fields
                           Obx(() {
                             return Column(
@@ -529,6 +540,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     ),
                     child: Text(
                       AppStrings.add.tr,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: AppColors.DARK_GREEN_COLOR,
                         fontSize: 16.sp,
@@ -622,6 +634,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 ),
                 child: Text(
                   AppStrings.reset.tr,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: AppColors.LIGHT_BLUE_COLOR,
                     fontWeight: FontWeight.w900,

@@ -29,6 +29,8 @@ class TextFieldWidget extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final Color? primaryColor;
   final Color? secondaryColor;
+  final int? maxLines;
+  final int? minLines;
 
   const TextFieldWidget({
     super.key,
@@ -56,6 +58,8 @@ class TextFieldWidget extends StatefulWidget {
     this.inputFormatters,
     this.primaryColor,
     this.secondaryColor,
+    this.maxLines,
+    this.minLines = 1,
   });
 
   @override
@@ -106,6 +110,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             onFieldSubmitted: widget.onFieldSubmitted,
             readOnly: widget.readOnly,
             inputFormatters: widget.inputFormatters,
+            maxLines: widget.maxLines,
+            minLines: widget.minLines,
             decoration: InputDecoration(
               counter: const SizedBox(),
               counterStyle: TextStyle(color: widget.primaryColor ?? AppColors.PRIMARY_COLOR),

@@ -12,6 +12,7 @@ class CreateOrderController extends GetxController {
 
   TextEditingController partyNameController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   RxList<TextEditingController> itemNameControllerList = RxList<TextEditingController>();
   RxList<TextEditingController> pvdColorControllerList = RxList<TextEditingController>();
   RxList<TextEditingController> quantityControllerList = RxList<TextEditingController>();
@@ -65,6 +66,8 @@ class CreateOrderController extends GetxController {
   String? validateContactNumber(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterContactNumber.tr;
+    } else if (value.length < 10) {
+      return AppStrings.pleaseEnterValidPhoneNumber.tr;
     }
     return null;
   }
@@ -139,6 +142,7 @@ class CreateOrderController extends GetxController {
           final response = await OrderServices.createOrderService(
             partyName: partyNameController.text.trim(),
             contactNumber: contactNumberController.text.trim(),
+            description: descriptionController.text.trim(),
             meta: tempMetaList,
           );
 

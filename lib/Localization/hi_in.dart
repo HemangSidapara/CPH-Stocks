@@ -56,7 +56,7 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.orderCycle: "ऑर्डर चक्र",
   AppStrings.add: "जोड़ना",
   AppStrings.invalidInputs: "अमान्य इनपुट",
-  AppStrings.lastCycleLog: "अंतिम चक्र लॉग:",
+  AppStrings.totalStatsLog: "कुल आँकड़े लॉग:",
   AppStrings.challan: "चलान",
   AppStrings.itemImage: "आइटम छवि",
   AppStrings.selectOrCaptureAImage: "इस छवि को चुनें या कैप्चर करें",
@@ -92,4 +92,8 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.searchColor: 'रंग खोजें',
   AppStrings.editItemDetails: 'आइटम विवरण संपादित करें',
   AppStrings.deleteCycleText: "क्या आपको यकीन है? आप 'साइकिल' चक्र को हटाना चाहते हैं? इस आदेश के तहत डिलीट करने के बाद चक्र नष्ट हो जाएगा।",
+  AppStrings.description: "विवरण",
+  AppStrings.enterDescription: "विवरण दर्ज करें",
+  AppStrings.pleaseEnterValidPhoneNumber: "कृपया एक वैध फोन नंबर डालें",
+  AppStrings.nowItemCantBeEditable: "अब, आइटम संपादन योग्य नहीं हो सकता",
 };
