@@ -58,7 +58,7 @@ class TextFieldWidget extends StatefulWidget {
     this.inputFormatters,
     this.primaryColor,
     this.secondaryColor,
-    this.maxLines,
+    this.maxLines = 1,
     this.minLines = 1,
   });
 

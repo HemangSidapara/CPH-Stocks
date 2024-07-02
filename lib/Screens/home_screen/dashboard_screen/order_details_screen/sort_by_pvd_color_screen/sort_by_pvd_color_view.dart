@@ -326,13 +326,25 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 28.w,
-                                    child: Text(
-                                      AppStrings.pending.tr,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15.sp,
-                                      ),
+                                    width: 32.5.w,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          AppStrings.quantity.tr,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15.sp,
+                                          ),
+                                        ),
+                                        SizedBox(width: 1.w),
+                                        Text(
+                                          AppStrings.pending.tr,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15.sp,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -465,21 +477,38 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                           ),
                                                         ),
                                                       ),
+                                                      SizedBox(width: 2.w),
                                                     ],
                                                   ),
                                                 ),
 
-                                                ///Pending
-                                                SizedBox(
-                                                  width: 10.w,
-                                                  child: Text(
-                                                    controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                      fontSize: 16.sp,
-                                                      color: AppColors.DARK_RED_COLOR,
+                                                ///Quantity & Pending
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].quantity ?? '',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.w700,
+                                                        fontSize: 16.sp,
+                                                        color: AppColors.LIGHT_BLUE_COLOR,
+                                                      ),
                                                     ),
-                                                  ),
+                                                    SizedBox(
+                                                      height: 3.h,
+                                                      child: VerticalDivider(
+                                                        color: AppColors.SECONDARY_COLOR,
+                                                        thickness: 1,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.w700,
+                                                        fontSize: 16.sp,
+                                                        color: AppColors.DARK_RED_COLOR,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
