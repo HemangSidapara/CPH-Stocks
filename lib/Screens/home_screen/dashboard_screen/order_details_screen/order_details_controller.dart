@@ -102,7 +102,6 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         searchedColorDataList.clear();
         colorDataList.addAll(ordersModel.colorData ?? []);
         searchedColorDataList.addAll(ordersModel.colorData ?? []);
-        sortByColorTabController.removeListener(tabListener);
         sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
         sortByColorTabController.addListener(tabListener);
         sortByColorTabController.animateTo(selectedSortByColorTabIndex.value);
@@ -205,7 +204,6 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     } else {
       searchedColorDataList.addAll(colorDataList);
     }
-    sortByColorTabController.removeListener(tabListener);
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
     sortByColorTabController.addListener(tabListener);
   }
