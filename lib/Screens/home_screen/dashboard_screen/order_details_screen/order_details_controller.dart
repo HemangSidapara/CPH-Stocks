@@ -18,8 +18,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OrderDetailsController extends GetxController with GetTickerProviderStateMixin {
-  late TabController tabController;
-
   TextEditingController searchPartyController = TextEditingController();
   RxList<get_orders.ColorData> searchedColorDataList = RxList();
   RxList<get_orders.ColorData> tempColorDataList = RxList();
@@ -40,13 +38,14 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   };
 
   late TabController sortByColorTabController;
+  RxInt selectedSortByColorTabIndex = 0.obs;
 
   @override
   void onInit() async {
     super.onInit();
-    tabController = TabController(length: 2, vsync: this);
     await getOrdersApi();
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
+    sortByColorTabController.addListener(tabListener);
   }
 
   String? validatePartyName(String? value) {
@@ -103,7 +102,10 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         searchedColorDataList.clear();
         colorDataList.addAll(ordersModel.colorData ?? []);
         searchedColorDataList.addAll(ordersModel.colorData ?? []);
+        sortByColorTabController.removeListener(tabListener);
         sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
+        sortByColorTabController.addListener(tabListener);
+        sortByColorTabController.animateTo(selectedSortByColorTabIndex.value);
       }
     } finally {
       isRefreshing(false);
@@ -203,7 +205,13 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     } else {
       searchedColorDataList.addAll(colorDataList);
     }
+    sortByColorTabController.removeListener(tabListener);
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
+    sortByColorTabController.addListener(tabListener);
+  }
+
+  void tabListener() {
+    selectedSortByColorTabIndex(sortByColorTabController.index);
   }
 
   Future<void> showItemImageDialog({

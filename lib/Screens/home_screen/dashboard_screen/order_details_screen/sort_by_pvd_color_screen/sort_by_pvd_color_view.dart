@@ -102,6 +102,10 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                       ),
                     ),
                     dividerColor: AppColors.TRANSPARENT,
+                    onTap: (value) {
+                      Utils.unfocus();
+                      controller.selectedSortByColorTabIndex(value);
+                    },
                     tabs: [
                       for (int i = 0; i < controller.searchedColorDataList.length; i++)
                         Row(
