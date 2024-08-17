@@ -3,6 +3,8 @@ class AppAssets {
   static const String settingsAnim = "assets/animations/settings.gif";
   static const String searchAnim = "assets/animations/search_animation.gif";
   static const String updateAnim = "assets/animations/update_animation.gif";
+  static const String recycleBinAnim = "assets/animations/recycle_bin.gif";
+  static const String notesAnim = "assets/animations/notes.gif";
 
   ///Images
   static const String splashImage = "assets/images/splash_image.png";
@@ -21,4 +23,6 @@ class AppAssets {
   static const String addOrderCycleIcon = "assets/icons/add_order_cycle_icon.png";
   static const String viewCyclesIcon = "assets/icons/view_cycles_icon.png";
   static const String challanIcon = "assets/icons/challan_icon.png";
+  static const String recycleBinIcon = "assets/icons/recycle_bin_icon.png";
+  static const String notesIcon = "assets/icons/notes_icon.png";
 }

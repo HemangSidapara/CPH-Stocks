@@ -8,6 +8,7 @@ import 'package:cph_stocks/Network/services/utils_services/install_apk_service.d
 import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -54,7 +55,9 @@ class SettingsController extends GetxController {
           downloadPath,
           onReceiveProgress: (counter, total) {
             if (total != -1) {
-              debugPrint("Downloaded % :: ${(counter / total * 100).toStringAsFixed(0)}%");
+              if (kDebugMode) {
+                print("Downloaded % :: ${(counter / total * 100).toStringAsFixed(0)}%");
+              }
               downloadedProgress.value = (counter / total * 100).toStringAsFixed(0).toInt();
             }
           },

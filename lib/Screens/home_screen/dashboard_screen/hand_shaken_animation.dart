@@ -1,6 +1,7 @@
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -30,7 +31,9 @@ class _HandShakenAnimationState extends State<HandShakenAnimation> with TickerPr
             try {
               _controller.reverse();
             } catch (e) {
-              debugPrint('HandShakenAnimation Exception :: $e');
+              if (kDebugMode) {
+                print('HandShakenAnimation Exception :: $e');
+              }
             }
           });
         } else if (status == AnimationStatus.dismissed) {
@@ -38,7 +41,9 @@ class _HandShakenAnimationState extends State<HandShakenAnimation> with TickerPr
             try {
               _controller.forward();
             } catch (e) {
-              debugPrint('HandShakenAnimation Exception :: $e');
+              if (kDebugMode) {
+                print('HandShakenAnimation Exception :: $e');
+              }
             }
           });
         }
@@ -46,7 +51,9 @@ class _HandShakenAnimationState extends State<HandShakenAnimation> with TickerPr
 
       _controller.forward();
     } catch (e) {
-      debugPrint('HandShakenAnimation Exception :: $e');
+      if (kDebugMode) {
+        print('HandShakenAnimation Exception :: $e');
+      }
     }
   }
 

@@ -38,6 +38,7 @@ class HomeView extends GetView<HomeController> {
                     child: AssetImages(
                       index: i,
                       iconName: controller.listOfImages[i],
+                      iconSize: i == 1 || i == 2 ? 6.w : null,
                     ),
                   ),
               ],
@@ -57,6 +58,7 @@ class HomeView extends GetView<HomeController> {
   Widget AssetImages({
     required int index,
     required String iconName,
+    double? iconSize,
   }) {
     return InkWell(
       onTap: () async {
@@ -75,7 +77,7 @@ class HomeView extends GetView<HomeController> {
               Obx(() {
                 return Image.asset(
                   iconName,
-                  width: 8.w,
+                  width: iconSize ?? 8.w,
                   color: controller.bottomIndex.value == index ? AppColors.TERTIARY_COLOR : AppColors.WHITE_COLOR,
                 );
               }),

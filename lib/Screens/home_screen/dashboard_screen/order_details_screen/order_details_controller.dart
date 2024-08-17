@@ -7,10 +7,13 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
+import 'package:cph_stocks/Utils/progress_dialog.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
@@ -39,6 +42,11 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
 
   late TabController sortByColorTabController;
   RxInt selectedSortByColorTabIndex = 0.obs;
+
+  RxBool isDeleteMultipleOrdersEnable = false.obs;
+  RxList<String> selectedOrderMetaIdForDeletion = RxList();
+  RxBool isDeletingMultipleOrders = false.obs;
+  RxString selectedPartyForDeletingMultipleOrders = "".obs;
 
   @override
   void onInit() async {
@@ -105,6 +113,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
         sortByColorTabController.addListener(tabListener);
         sortByColorTabController.animateTo(selectedSortByColorTabIndex.value);
+        if (searchPartyController.text.trim().isNotEmpty) {
+          searchPartyName(searchPartyController.text.trim());
+        }
       }
     } finally {
       isRefreshing(false);
@@ -147,7 +158,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   }
 
   Future<void> deleteOrderApi({
-    required String orderMetaId,
+    required List<String> orderMetaId,
   }) async {
     final response = await OrderServices.deleteOrderService(
       orderMetaId: orderMetaId,
@@ -449,7 +460,26 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     );
     int selectedPvdColor = pvdColorList.indexOf(pvdColor);
     RxString initialImage = itemImage.obs;
+
     RxString base64Image = ''.obs;
+
+    try {
+      Get.put(ProgressDialog()).showProgressDialog(true);
+      dio.Response<List<int>> response = await dio.Dio().get<List<int>>(
+        itemImage,
+        options: dio.Options(responseType: dio.ResponseType.bytes),
+      );
+      Get.put(ProgressDialog()).showProgressDialog(false);
+
+      if (response.statusCode! >= 200 && response.statusCode! <= 299 && response.data != null) {
+        base64Image.value = base64Encode(response.data!);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Image Load Exception: $e");
+      }
+    }
+
     RxBool isImageSelected = base64Image.isEmpty && initialImage.isEmpty ? false.obs : true.obs;
     await showModalBottomSheet(
       context: Get.context!,

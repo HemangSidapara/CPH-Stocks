@@ -95,4 +95,10 @@ Map<String, String> enIN = <String, String>{
   AppStrings.deleteCycleText: "Are you sure? You want to delete 'Cycle' cycle? After deleting cycle will be lost under this order.",
   AppStrings.description: "Description",
   AppStrings.enterDescription: "Enter description",
+  AppStrings.pleaseEnterValidPhoneNumber: "Please enter valid phone number",
+  AppStrings.nowItemCantBeEditable: "Now, Item can't be editable",
+  AppStrings.pleaseSelectAtLeastOneOrder: "Please selected at-least one order.",
+  AppStrings.selectOrders: "Select orders",
+  AppStrings.recycleBin: "Recycle Bin",
+  AppStrings.notes: "Notes",
 };

@@ -98,4 +98,8 @@ class AppStrings {
   static const String enterDescription = "Enter description";
   static const String pleaseEnterValidPhoneNumber = "Please enter valid phone number";
   static const String nowItemCantBeEditable = "Now, Item can't be editable";
+  static const String pleaseSelectAtLeastOneOrder = "Please select at-least one order.";
+  static const String selectOrders = "Select orders";
+  static const String recycleBin = "Recycle Bin";
+  static const String notes = "Notes";
 }

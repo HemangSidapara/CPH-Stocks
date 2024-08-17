@@ -13,7 +13,7 @@ import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,8 +43,10 @@ class SplashController extends GetxController {
     newAPKUrl.addListener(GetStream(
       onListen: () async {
         currentVersion.value = (await GetPackageInfoService.instance.getInfo()).version;
-        debugPrint('currentVersion :: ${currentVersion.value}');
-        debugPrint('newVersion :: ${newAPKVersion.value}');
+        if (kDebugMode) {
+          print('currentVersion :: ${currentVersion.value}');
+          print('newVersion :: ${newAPKVersion.value}');
+        }
         if (newAPKUrl.value.isNotEmpty && newAPKVersion.value.isNotEmpty) {
           if (Utils.isUpdateAvailable(currentVersion.value, newAPKVersion.value)) {
             await showUpdateDialog(
@@ -75,7 +77,9 @@ class SplashController extends GetxController {
         statusBarBrightness: Brightness.light,
       ),
     );
-    debugPrint("token value ::: ${getData(AppConstance.authorizationToken)}");
+    if (kDebugMode) {
+      print("token value ::: ${getData(AppConstance.authorizationToken)}");
+    }
     if (getData(AppConstance.authorizationToken) == null) {
       Get.offAllNamed(Routes.signInScreen);
     } else {
@@ -107,7 +111,9 @@ class SplashController extends GetxController {
           downloadPath,
           onReceiveProgress: (counter, total) {
             if (total != -1) {
-              debugPrint("Downloaded % :: ${(counter / total * 100).toStringAsFixed(0)}%");
+              if (kDebugMode) {
+                print("Downloaded % :: ${(counter / total * 100).toStringAsFixed(0)}%");
+              }
               downloadedProgress.value = (counter / total * 100).toStringAsFixed(0).toInt();
             }
           },

@@ -2,7 +2,7 @@ import 'package:cph_stocks/Constants/api_urls.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/api_base_helper.dart';
 import 'package:cph_stocks/Network/response_model.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class ChallanService {
   static Future<ResponseModel> getInvoicesService() async {
@@ -13,9 +13,13 @@ class ChallanService {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("getInvoicesApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("getInvoicesApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("getInvoicesApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("getInvoicesApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },

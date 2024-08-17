@@ -5,7 +5,12 @@ import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.d
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/get_package_info_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
+import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_view.dart';
+import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_view.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,11 +24,15 @@ class HomeController extends GetxController {
 
   RxList<String> listOfImages = [
     AppAssets.homeIcon,
+    AppAssets.recycleBinIcon,
+    AppAssets.notesIcon,
     AppAssets.settingsIcon,
   ].obs;
 
   RxList<Widget> bottomItemWidgetList = [
     const DashboardView(),
+    const RecycleBinView(),
+    const NotesView(),
     const SettingsView(),
   ].obs;
 
@@ -49,19 +58,17 @@ class HomeController extends GetxController {
         newAPKUrl(versionModel.data?.firstOrNull?.appUrl ?? '');
         newAPKVersion(versionModel.data?.firstOrNull?.appVersion ?? '');
         final currentVersion = (await GetPackageInfoService.instance.getInfo()).version;
-        debugPrint('currentVersion :: $currentVersion');
-        debugPrint('newVersion :: ${newAPKVersion.value}');
+        if (kDebugMode) {
+          print('currentVersion :: $currentVersion');
+          print('newVersion :: ${newAPKVersion.value}');
+        }
         isLatestVersionAvailable.value = Utils.isUpdateAvailable(currentVersion, versionModel.data?.firstOrNull?.appVersion ?? currentVersion);
       }
     });
-    if (index == 0) {
-      if (Get.keys[0]?.currentState?.canPop() == true) {
-        Get.back(id: 0);
-      }
-    } else if (index == 1) {
-      if (Get.keys[1]?.currentState?.canPop() == true) {
-        Get.back(id: 1);
-      }
+    if (index == 1) {
+      Get.find<RecycleBinController>().getOrdersApi(isLoading: false);
+    } else if (index == 2) {
+      Get.find<NotesController>().getNotesApi(isLoading: false);
     }
     pageController.jumpToPage(bottomIndex.value);
   }

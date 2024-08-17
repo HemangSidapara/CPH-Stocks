@@ -3,7 +3,7 @@ import 'package:cph_stocks/Constants/api_urls.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/api_base_helper.dart';
 import 'package:cph_stocks/Network/response_model.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class OrderServices {
   /// Get Parties
@@ -16,9 +16,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("getPartiesApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("getPartiesApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("getPartiesApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("getPartiesApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -48,9 +52,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("createOrderApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("createOrderApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("createOrderApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("createOrderApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -59,18 +67,22 @@ class OrderServices {
   }
 
   /// Get Orders
-  static Future<ResponseModel> getOrdersService() async {
+  static Future<ResponseModel> getOrdersService({bool isRecycleBin = false}) async {
     final response = await ApiBaseHelper.getHTTP(
-      ApiUrls.getOrdersApi,
+      "${ApiUrls.getOrdersApi}${isRecycleBin ? "1" : "0"}",
       showProgress: false,
       onError: (dioExceptions) {
         Utils.handleMessage(message: dioExceptions.message, isError: true);
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("getOrdersApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("getOrdersApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("getOrdersApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("getOrdersApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -98,9 +110,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("createOrderCycleApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("createOrderCycleApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("createOrderCycleApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("createOrderCycleApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -124,9 +140,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("getOrderCyclesApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("getOrderCyclesApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("getOrderCyclesApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("getOrderCyclesApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -150,9 +170,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("deleteOrderCycleApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("deleteOrderCycleApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("deleteOrderCycleApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("deleteOrderCycleApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -180,9 +204,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("updatePartyApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("updatePartyApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("updatePartyApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("updatePartyApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -206,9 +234,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("deletePartyApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("deletePartyApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("deletePartyApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("deletePartyApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -242,9 +274,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("updateOrderApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("updateOrderApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("updateOrderApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("updateOrderApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },
@@ -254,7 +290,7 @@ class OrderServices {
 
   /// Delete Order
   static Future<ResponseModel> deleteOrderService({
-    required String orderMetaId,
+    required List<String> orderMetaId,
   }) async {
     final params = {
       ApiKeys.orderMetaId: orderMetaId,
@@ -268,9 +304,13 @@ class OrderServices {
       },
       onSuccess: (res) {
         if (res.isSuccess) {
-          debugPrint("deleteOrderApi success :: ${res.message}");
+          if (kDebugMode) {
+            print("deleteOrderApi success :: ${res.message}");
+          }
         } else {
-          debugPrint("deleteOrderApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("deleteOrderApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },

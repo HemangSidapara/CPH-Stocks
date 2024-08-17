@@ -7,7 +7,7 @@ import 'package:cph_stocks/Network/api_base_helper.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/models/auth_models/login_model.dart';
 import 'package:cph_stocks/Network/response_model.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthServices {
   static Future<ResponseModel> getLatestVersionService() async {
@@ -20,9 +20,13 @@ class AuthServices {
       onSuccess: (res) async {
         if (res.isSuccess) {
           GetLatestVersionModel latestVersionModel = GetLatestVersionModel.fromJson(res.response?.data);
-          debugPrint("inAppUpdateApi success :: ${latestVersionModel.msg}");
+          if (kDebugMode) {
+            print("inAppUpdateApi success :: ${latestVersionModel.msg}");
+          }
         } else {
-          debugPrint("inAppUpdateApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("inAppUpdateApi error :: ${res.message}");
+          }
         }
       },
     );
@@ -49,10 +53,14 @@ class AuthServices {
           LoginModel loginModel = LoginModel.fromJson(res.response?.data);
           await setData(AppConstance.authorizationToken, loginModel.token);
           await setData(AppConstance.role, loginModel.role);
-          debugPrint("loginApi success :: ${loginModel.msg}");
+          if (kDebugMode) {
+            print("loginApi success :: ${loginModel.msg}");
+          }
           Utils.handleMessage(message: loginModel.msg);
         } else {
-          debugPrint("loginApi error :: ${res.message}");
+          if (kDebugMode) {
+            print("loginApi error :: ${res.message}");
+          }
           Utils.handleMessage(message: res.message, isError: true);
         }
       },

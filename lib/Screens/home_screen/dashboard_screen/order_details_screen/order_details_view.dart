@@ -23,56 +23,145 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
             child: Column(
               children: [
                 ///Header
-                Padding(
-                  padding: EdgeInsets.only(left: 7.w, right: 5.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomHeaderWidget(
-                        title: AppStrings.orderDetails.tr,
-                        titleIcon: AppAssets.orderDetailsIcon,
-                        onBackPressed: () {
-                          Get.back(closeOverlays: true);
-                        },
-                      ),
-                      Obx(() {
-                        return IconButton(
-                          onPressed: controller.isRefreshing.value
-                              ? () {}
-                              : () async {
-                                  await controller.getOrdersApi(isLoading: false);
-                                },
-                          style: IconButton.styleFrom(
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: EdgeInsets.zero,
+                Obx(() {
+                  if (controller.isDeleteMultipleOrdersEnable.isFalse) {
+                    return Padding(
+                      padding: EdgeInsets.only(left: 7.w, right: 5.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomHeaderWidget(
+                            title: AppStrings.orderDetails.tr,
+                            titleIcon: AppAssets.orderDetailsIcon,
+                            onBackPressed: () {
+                              Get.back(closeOverlays: true);
+                            },
                           ),
-                          icon: Obx(() {
-                            return TweenAnimationBuilder(
-                              duration: Duration(seconds: controller.isRefreshing.value ? 45 : 1),
-                              tween: Tween(begin: 0.0, end: controller.isRefreshing.value ? 45.0 : controller.ceilValueForRefresh.value),
-                              onEnd: () {
-                                controller.isRefreshing.value = false;
-                              },
-                              builder: (context, value, child) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  controller.ceilValueForRefresh(value.toDouble().ceilToDouble());
-                                });
-                                return Transform.rotate(
-                                  angle: value * 2 * 3.141592653589793,
-                                  child: Icon(
-                                    Icons.refresh_rounded,
-                                    color: AppColors.PRIMARY_COLOR,
-                                    size: context.isPortrait ? 6.w : 6.h,
-                                  ),
+                          Obx(() {
+                            return IconButton(
+                              onPressed: controller.isRefreshing.value
+                                  ? () {}
+                                  : () async {
+                                      await controller.getOrdersApi(isLoading: false);
+                                    },
+                              style: IconButton.styleFrom(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                padding: EdgeInsets.zero,
+                              ),
+                              icon: Obx(() {
+                                return TweenAnimationBuilder(
+                                  duration: Duration(seconds: controller.isRefreshing.value ? 45 : 1),
+                                  tween: Tween(begin: 0.0, end: controller.isRefreshing.value ? 45.0 : controller.ceilValueForRefresh.value),
+                                  onEnd: () {
+                                    controller.isRefreshing.value = false;
+                                  },
+                                  builder: (context, value, child) {
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      controller.ceilValueForRefresh(value.toDouble().ceilToDouble());
+                                    });
+                                    return Transform.rotate(
+                                      angle: value * 2 * 3.141592653589793,
+                                      child: Icon(
+                                        Icons.refresh_rounded,
+                                        color: AppColors.PRIMARY_COLOR,
+                                        size: context.isPortrait ? 6.w : 6.h,
+                                      ),
+                                    );
+                                  },
                                 );
-                              },
+                              }),
                             );
                           }),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return ColoredBox(
+                      color: AppColors.DARK_RED_COLOR,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 0.6.h),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    controller.isDeleteMultipleOrdersEnable(false);
+                                    controller.selectedOrderMetaIdForDeletion.clear();
+                                    controller.selectedPartyForDeletingMultipleOrders.value == "";
+                                  },
+                                  style: IconButton.styleFrom(
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                  icon: Icon(
+                                    Icons.close_rounded,
+                                    color: AppColors.WHITE_COLOR,
+                                    size: context.isPortrait ? 7.w : 7.h,
+                                  ),
+                                ),
+                                SizedBox(width: 2.w),
+                                Text(
+                                  AppStrings.selectOrders.tr,
+                                  style: TextStyle(
+                                    color: AppColors.WHITE_COLOR,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Obx(() {
+                              return IconButton(
+                                onPressed: controller.isDeletingMultipleOrders.isFalse
+                                    ? () async {
+                                        if (controller.selectedOrderMetaIdForDeletion.isNotEmpty) {
+                                          try {
+                                            controller.isDeletingMultipleOrders(true);
+                                            await controller.showDeleteDialog(
+                                              onPressed: () async {
+                                                await controller.deleteOrderApi(orderMetaId: controller.selectedOrderMetaIdForDeletion);
+                                              },
+                                              title: AppStrings.deleteItemText.tr,
+                                            );
+                                          } finally {
+                                            controller.isDeleteMultipleOrdersEnable(false);
+                                            controller.isDeletingMultipleOrders(false);
+                                            controller.selectedOrderMetaIdForDeletion.clear();
+                                            controller.selectedPartyForDeletingMultipleOrders.value == "";
+                                          }
+                                        } else {
+                                          Utils.handleMessage(message: AppStrings.pleaseSelectAtLeastOneOrder.tr, isError: true);
+                                        }
+                                      }
+                                    : () {},
+                                style: IconButton.styleFrom(
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  padding: EdgeInsets.zero,
+                                ),
+                                icon: controller.isDeletingMultipleOrders.isTrue
+                                    ? SizedBox(
+                                        width: context.isPortrait ? 5.w : 5.h,
+                                        height: context.isPortrait ? 5.w : 5.h,
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.WHITE_COLOR,
+                                          strokeWidth: 2.5,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.delete_forever_rounded,
+                                        color: AppColors.WHITE_COLOR,
+                                        size: context.isPortrait ? 6.w : 6.h,
+                                      ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                }),
                 SizedBox(height: 2.h),
 
                 ///Sort by Color

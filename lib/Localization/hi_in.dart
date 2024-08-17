@@ -96,4 +96,8 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.enterDescription: "विवरण दर्ज करें",
   AppStrings.pleaseEnterValidPhoneNumber: "कृपया एक वैध फोन नंबर डालें",
   AppStrings.nowItemCantBeEditable: "अब, आइटम संपादन योग्य नहीं हो सकता",
+  AppStrings.pleaseSelectAtLeastOneOrder: "कृपया कम से कम एक ऑर्डर चुनें।",
+  AppStrings.selectOrders: "ऑर्डर चुनें",
+  AppStrings.recycleBin: "रीसायकल बिन",
+  AppStrings.notes: "टिप्पणियाँ",
 };

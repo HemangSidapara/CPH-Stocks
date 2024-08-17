@@ -97,4 +97,8 @@ Map<String, String> guIN = <String, String>{
   AppStrings.enterDescription: "વર્ણન દાખલ કરો",
   AppStrings.pleaseEnterValidPhoneNumber: "કૃપા કરીને માન્ય ફોન નંબર દાખલ કરો",
   AppStrings.nowItemCantBeEditable: "હવે, આઇટમ સંપાદનયોગ્ય હોઈ શકતી નથી",
+  AppStrings.pleaseSelectAtLeastOneOrder: "કૃપા કરીને ઓછામાં ઓછો એક ઓર્ડર પસંદ કરો.",
+  AppStrings.selectOrders: "ઓર્ડર પસંદ કરો",
+  AppStrings.recycleBin: "રિસાયકલ બિન",
+  AppStrings.notes: "નોંધો",
 };

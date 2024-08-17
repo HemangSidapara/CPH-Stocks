@@ -92,29 +92,31 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                   ),
                                 ],
                               ),
-                              trailing: IconButton(
-                                onPressed: () async {
-                                  await showDeleteDialog(
-                                    onPressed: () async {
-                                      await controller.deleteCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
-                                    },
-                                    title: AppStrings.deleteCycleText.tr.replaceAll("'Cycle'", "'${controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : ''}'"),
-                                  );
-                                },
-                                style: IconButton.styleFrom(
-                                  backgroundColor: AppColors.DARK_RED_COLOR,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  padding: EdgeInsets.zero,
-                                  elevation: 4,
-                                  maximumSize: Size(7.5.w, 7.5.w),
-                                  minimumSize: Size(7.5.w, 7.5.w),
-                                ),
-                                icon: Icon(
-                                  Icons.delete_forever_rounded,
-                                  color: AppColors.PRIMARY_COLOR,
-                                  size: 4.w,
-                                ),
-                              ),
+                              trailing: controller.arguments.isFromRecycleBin
+                                  ? null
+                                  : IconButton(
+                                      onPressed: () async {
+                                        await showDeleteDialog(
+                                          onPressed: () async {
+                                            await controller.deleteCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
+                                          },
+                                          title: AppStrings.deleteCycleText.tr.replaceAll("'Cycle'", "'${controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : ''}'"),
+                                        );
+                                      },
+                                      style: IconButton.styleFrom(
+                                        backgroundColor: AppColors.DARK_RED_COLOR,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        padding: EdgeInsets.zero,
+                                        elevation: 4,
+                                        maximumSize: Size(7.5.w, 7.5.w),
+                                        minimumSize: Size(7.5.w, 7.5.w),
+                                      ),
+                                      icon: Icon(
+                                        Icons.delete_forever_rounded,
+                                        color: AppColors.PRIMARY_COLOR,
+                                        size: 4.w,
+                                      ),
+                                    ),
                               dense: true,
                               collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
                               backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),

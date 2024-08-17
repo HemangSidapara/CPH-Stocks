@@ -7,6 +7,7 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/c
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -358,7 +359,9 @@ class ChallanView extends GetView<ChallanController> {
                     child: SfPdfViewer.network(
                       pdfUrl,
                       onDocumentLoadFailed: (details) {
-                        debugPrint("SfPdfViewer error :: ${details.description}");
+                        if (kDebugMode) {
+                          print("SfPdfViewer error :: ${details.description}");
+                        }
                         Utils.handleMessage(message: details.description, isError: true);
                       },
                     ),
