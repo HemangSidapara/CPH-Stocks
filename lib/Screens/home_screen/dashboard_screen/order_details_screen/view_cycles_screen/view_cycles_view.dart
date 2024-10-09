@@ -64,53 +64,77 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: ExpansionTile(
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${index + 1}. ',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.SECONDARY_COLOR,
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : '',
+                              title: GestureDetector(
+                                onLongPress: () async {
+                                  await controller.lastBilledCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${index + 1}. ',
                                       style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w700,
                                         color: AppColors.SECONDARY_COLOR,
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Flexible(
+                                      child: Text(
+                                        controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : '',
+                                        style: TextStyle(
+                                          color: AppColors.SECONDARY_COLOR,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               trailing: controller.arguments.isFromRecycleBin
                                   ? null
-                                  : IconButton(
-                                      onPressed: () async {
-                                        await showDeleteDialog(
+                                  : Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ///Last Billed Cycle
+                                        if (controller.orderCycleList[index].isLastBilled == true) ...[
+                                          Tooltip(
+                                            message: AppStrings.thisIsLastBilledCycle.tr,
+                                            child: Icon(
+                                              Icons.receipt_long,
+                                              color: AppColors.LIGHT_BLUE_COLOR,
+                                              size: 6.w,
+                                            ),
+                                          ),
+                                          SizedBox(width: 2.w),
+                                        ],
+
+                                        ///Delete
+                                        IconButton(
                                           onPressed: () async {
-                                            await controller.deleteCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
+                                            await showDeleteDialog(
+                                              onPressed: () async {
+                                                await controller.deleteCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
+                                              },
+                                              title: AppStrings.deleteCycleText.tr.replaceAll("'Cycle'", "'${controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : ''}'"),
+                                            );
                                           },
-                                          title: AppStrings.deleteCycleText.tr.replaceAll("'Cycle'", "'${controller.orderCycleList[index].createdDate != null || controller.orderCycleList[index].createdDate?.isNotEmpty == true ? DateFormat("MMMM dd, yyyy hh:mm a").format(DateFormat("yyyy-MM-dd, hh:mm a").parse(controller.orderCycleList[index].createdDate!).toLocal()) : ''}'"),
-                                        );
-                                      },
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: AppColors.DARK_RED_COLOR,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        padding: EdgeInsets.zero,
-                                        elevation: 4,
-                                        maximumSize: Size(7.5.w, 7.5.w),
-                                        minimumSize: Size(7.5.w, 7.5.w),
-                                      ),
-                                      icon: Icon(
-                                        Icons.delete_forever_rounded,
-                                        color: AppColors.PRIMARY_COLOR,
-                                        size: 4.w,
-                                      ),
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: AppColors.DARK_RED_COLOR,
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            padding: EdgeInsets.zero,
+                                            elevation: 4,
+                                            maximumSize: Size(7.5.w, 7.5.w),
+                                            minimumSize: Size(7.5.w, 7.5.w),
+                                          ),
+                                          icon: Icon(
+                                            Icons.delete_forever_rounded,
+                                            color: AppColors.PRIMARY_COLOR,
+                                            size: 4.w,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                               dense: true,
                               collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),

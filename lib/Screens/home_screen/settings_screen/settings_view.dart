@@ -129,44 +129,6 @@ class SettingsView extends GetView<SettingsController> {
                           crossAxisSpacing: 5.w,
                           childAspectRatio: 3,
                           children: [
-                            ///Gujarati
-                            InkWell(
-                              onTap: () async {
-                                await setData(AppConstance.languageCode, 'gu');
-                                await setData(AppConstance.languageCountryCode, 'IN');
-                                await Get.updateLocale(
-                                  Locale(getString(AppConstance.languageCode) ?? 'gu', getString(AppConstance.languageCountryCode) ?? 'IN'),
-                                );
-                                controller.isGujaratiLang(true);
-                                controller.isHindiLang(false);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-                                child: Row(
-                                  children: [
-                                    AnimatedOpacity(
-                                      opacity: controller.isGujaratiLang.isTrue ? 1 : 0,
-                                      duration: const Duration(milliseconds: 300),
-                                      child: Icon(
-                                        Icons.done_rounded,
-                                        size: 6.w,
-                                        color: AppColors.SECONDARY_COLOR,
-                                      ),
-                                    ),
-                                    SizedBox(width: 2.w),
-                                    Text(
-                                      AppStrings.gujarati.tr,
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.SECONDARY_COLOR,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
                             ///English
                             InkWell(
                               onTap: () async {
@@ -194,6 +156,44 @@ class SettingsView extends GetView<SettingsController> {
                                     SizedBox(width: 2.w),
                                     Text(
                                       AppStrings.english.tr,
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.SECONDARY_COLOR,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            ///Gujarati
+                            InkWell(
+                              onTap: () async {
+                                await setData(AppConstance.languageCode, 'gu');
+                                await setData(AppConstance.languageCountryCode, 'IN');
+                                await Get.updateLocale(
+                                  Locale(getString(AppConstance.languageCode) ?? 'gu', getString(AppConstance.languageCountryCode) ?? 'IN'),
+                                );
+                                controller.isGujaratiLang(true);
+                                controller.isHindiLang(false);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+                                child: Row(
+                                  children: [
+                                    AnimatedOpacity(
+                                      opacity: controller.isGujaratiLang.isTrue ? 1 : 0,
+                                      duration: const Duration(milliseconds: 300),
+                                      child: Icon(
+                                        Icons.done_rounded,
+                                        size: 6.w,
+                                        color: AppColors.SECONDARY_COLOR,
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+                                    Text(
+                                      AppStrings.gujarati.tr,
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w600,

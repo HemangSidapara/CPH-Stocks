@@ -60,4 +60,13 @@ class ViewCyclesController extends GetxController {
       isDeletingOrderCycleLoading(false);
     }
   }
+
+  Future<void> lastBilledCycleApi({required String orderCycleId}) async {
+    final response = await OrderServices.lastBilledCycleService(orderCycleId: orderCycleId);
+
+    if (response.isSuccess) {
+      Utils.handleMessage(message: response.message);
+      Get.find<OrderDetailsController>().getOrdersApi(isLoading: false);
+    }
+  }
 }

@@ -101,4 +101,5 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.recycleBin: "रीसायकल बिन",
   AppStrings.notes: "टिप्पणियाँ",
   AppStrings.creator: "निर्माता",
+  AppStrings.thisIsLastBilledCycle: "आखिरी है साइकिल का बिल।",
 };

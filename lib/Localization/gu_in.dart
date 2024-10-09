@@ -102,4 +102,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.recycleBin: "રિસાયકલ બિન",
   AppStrings.notes: "નોંધો",
   AppStrings.creator: "સર્જક",
+  AppStrings.thisIsLastBilledCycle: "છેલ્લી આ સાયકલનું બિલ છે.",
 };

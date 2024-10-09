@@ -96,6 +96,7 @@ class Data {
     String? woProcess,
     String? createdDate,
     String? createdBy,
+    bool? isLastBilled,
   }) {
     _orderCycleId = orderCycleId;
     _pending = pending;
@@ -103,6 +104,7 @@ class Data {
     _woProcess = woProcess;
     _createdDate = createdDate;
     _createdBy = createdBy;
+    _isLastBilled = isLastBilled;
   }
 
   Data.fromJson(dynamic json) {
@@ -112,6 +114,7 @@ class Data {
     _woProcess = json['woProcess'];
     _createdDate = json['createdDate'];
     _createdBy = json['createdBy'];
+    _isLastBilled = json['isLastBilled'];
   }
 
   String? _orderCycleId;
@@ -120,6 +123,7 @@ class Data {
   String? _woProcess;
   String? _createdDate;
   String? _createdBy;
+  bool? _isLastBilled;
 
   Data copyWith({
     String? orderCycleId,
@@ -128,6 +132,7 @@ class Data {
     String? woProcess,
     String? createdDate,
     String? createdBy,
+    bool? isLastBilled,
   }) =>
       Data(
         orderCycleId: orderCycleId ?? _orderCycleId,
@@ -136,6 +141,7 @@ class Data {
         woProcess: woProcess ?? _woProcess,
         createdDate: createdDate ?? _createdDate,
         createdBy: createdBy ?? _createdBy,
+        isLastBilled: isLastBilled ?? _isLastBilled,
       );
 
   String? get orderCycleId => _orderCycleId;
@@ -150,6 +156,8 @@ class Data {
 
   String? get createdBy => _createdBy;
 
+  bool? get isLastBilled => _isLastBilled;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['orderCycleId'] = _orderCycleId;
@@ -158,6 +166,7 @@ class Data {
     map['woProcess'] = _woProcess;
     map['createdDate'] = _createdDate;
     map['createdBy'] = _createdBy;
+    map['isLastBilled'] = _isLastBilled;
     return map;
   }
 }

@@ -102,4 +102,5 @@ Map<String, String> enIN = <String, String>{
   AppStrings.recycleBin: "Recycle Bin",
   AppStrings.notes: "Notes",
   AppStrings.creator: "Creator",
+  AppStrings.thisIsLastBilledCycle: "This is last billed cycle.",
 };

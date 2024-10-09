@@ -317,4 +317,34 @@ class OrderServices {
     );
     return response;
   }
+
+  /// Last Billed Cycle
+  static Future<ResponseModel> lastBilledCycleService({
+    required String orderCycleId,
+  }) async {
+    final params = {
+      ApiKeys.orderCycleId: orderCycleId,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.lastBilledCycleApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("lastBilledCycleApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("lastBilledCycleApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }
