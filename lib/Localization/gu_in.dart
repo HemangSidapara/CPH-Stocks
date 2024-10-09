@@ -101,4 +101,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.selectOrders: "ઓર્ડર પસંદ કરો",
   AppStrings.recycleBin: "રિસાયકલ બિન",
   AppStrings.notes: "નોંધો",
+  AppStrings.creator: "સર્જક",
 };

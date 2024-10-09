@@ -80,18 +80,29 @@ class SplashController extends GetxController {
     if (kDebugMode) {
       print("token value ::: ${getData(AppConstance.authorizationToken)}");
     }
-    if (getData(AppConstance.authorizationToken) == null) {
+    if (getData(AppConstance.authorizationToken) == null || getData(AppConstance.role) == null) {
       Get.offAllNamed(Routes.signInScreen);
-    } else {
+    } else if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) {
       Get.offAllNamed(Routes.homeScreen);
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          systemNavigationBarColor: AppColors.SECONDARY_COLOR,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: AppColors.SECONDARY_COLOR,
+          statusBarBrightness: Brightness.light,
+        ),
+      );
+      Get.offAllNamed(Routes.orderDetailsScreen);
     }
   }
 
   /// Get latest Version on server
   Future<(String?, String?)> _getLatestVersion() async {
     final response = await AuthServices.getLatestVersionService();
-    GetLatestVersionModel versionModel = GetLatestVersionModel.fromJson(response.response?.data);
     if (response.isSuccess) {
+      GetLatestVersionModel versionModel = GetLatestVersionModel.fromJson(response.response?.data);
       return (versionModel.data?.firstOrNull?.appUrl, versionModel.data?.firstOrNull?.appVersion);
     }
     return (null, null);

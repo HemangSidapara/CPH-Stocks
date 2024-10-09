@@ -1,3 +1,4 @@
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
@@ -39,7 +40,13 @@ class SignInController extends GetxController {
         );
 
         if (response.isSuccess) {
-          Get.offAllNamed(Routes.homeScreen);
+          if (response.response?.data['role'] == null) {
+            return;
+          } else if (response.response?.data['role'] == AppConstance.admin || response.response?.data['role'] == AppConstance.employee) {
+            Get.offAllNamed(Routes.homeScreen);
+          } else {
+            Get.offAllNamed(Routes.orderDetailsScreen);
+          }
         }
       }
     } finally {

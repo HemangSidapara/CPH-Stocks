@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart';
 import 'package:cph_stocks/Network/models/order_models/item_id_model.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
@@ -25,48 +27,48 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
     return Column(
       children: [
         ///Searchbar
-
-        Obx(() {
-          if (controller.isDeleteMultipleOrdersEnable.isFalse) {
-            return Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 7.w),
-                  child: TextFieldWidget(
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: AppColors.SECONDARY_COLOR,
-                      size: 5.w,
-                    ),
-                    prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
-                    suffixIcon: InkWell(
-                      onTap: () {
-                        Utils.unfocus();
-                        controller.searchPartyController.clear();
-                        controller.searchPartyName(controller.searchPartyController.text);
-                      },
-                      child: Icon(
-                        Icons.close_rounded,
+        if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee)
+          Obx(() {
+            if (controller.isDeleteMultipleOrdersEnable.isFalse) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 7.w),
+                    child: TextFieldWidget(
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
                         color: AppColors.SECONDARY_COLOR,
                         size: 5.w,
                       ),
+                      prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          Utils.unfocus();
+                          controller.searchPartyController.clear();
+                          controller.searchPartyName(controller.searchPartyController.text);
+                        },
+                        child: Icon(
+                          Icons.close_rounded,
+                          color: AppColors.SECONDARY_COLOR,
+                          size: 5.w,
+                        ),
+                      ),
+                      suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
+                      hintText: AppStrings.searchParty.tr,
+                      controller: controller.searchPartyController,
+                      onChanged: (value) {
+                        controller.searchPartyName(value);
+                        controller.searchedColorDataList.refresh();
+                      },
                     ),
-                    suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
-                    hintText: AppStrings.searchParty.tr,
-                    controller: controller.searchPartyController,
-                    onChanged: (value) {
-                      controller.searchPartyName(value);
-                      controller.searchedColorDataList.refresh();
-                    },
                   ),
-                ),
-                SizedBox(height: 2.h),
-              ],
-            );
-          } else {
-            return const SizedBox();
-          }
-        }),
+                  SizedBox(height: 2.h),
+                ],
+              );
+            } else {
+              return const SizedBox();
+            }
+          }),
 
         Obx(() {
           if (controller.isGetOrdersLoading.value) {
@@ -232,7 +234,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                             left: 3.w,
                             right: 2.w,
                           ),
-                          trailing: controller.isDeleteMultipleOrdersEnable.isFalse
+                          trailing: (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) && controller.isDeleteMultipleOrdersEnable.isFalse
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -287,7 +289,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     ),
                                   ],
                                 )
-                              : const SizedBox(),
+                              : null,
                           dense: true,
                           collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
                           backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
@@ -560,91 +562,93 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                 ),
                                               ],
                                             ),
-                                            trailing: Obx(() {
-                                              if (controller.isDeleteMultipleOrdersEnable.isFalse) {
-                                                return Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    ///Add Cycle
-                                                    IconButton(
-                                                      onPressed: () async {
-                                                        Get.toNamed(
-                                                          Routes.addOrderCycleScreen,
-                                                          arguments: ItemDetailsModel(
-                                                            itemId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId,
-                                                            pending: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending?.toString().toInt() ?? 0,
+                                            trailing: getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee
+                                                ? Obx(() {
+                                                    if (controller.isDeleteMultipleOrdersEnable.isFalse) {
+                                                      return Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          ///Add Cycle
+                                                          IconButton(
+                                                            onPressed: () async {
+                                                              Get.toNamed(
+                                                                Routes.addOrderCycleScreen,
+                                                                arguments: ItemDetailsModel(
+                                                                  itemId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId,
+                                                                  pending: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending?.toString().toInt() ?? 0,
+                                                                ),
+                                                              );
+                                                            },
+                                                            style: IconButton.styleFrom(
+                                                              backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(180),
+                                                              ),
+                                                              padding: EdgeInsets.zero,
+                                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                              elevation: 4,
+                                                              maximumSize: Size(7.w, 7.w),
+                                                              minimumSize: Size(7.w, 7.w),
+                                                            ),
+                                                            icon: Icon(
+                                                              Icons.cyclone_rounded,
+                                                              color: AppColors.PRIMARY_COLOR,
+                                                              size: 4.w,
+                                                            ),
                                                           ),
-                                                        );
-                                                      },
-                                                      style: IconButton.styleFrom(
-                                                        backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(180),
-                                                        ),
-                                                        padding: EdgeInsets.zero,
-                                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        elevation: 4,
-                                                        maximumSize: Size(7.w, 7.w),
-                                                        minimumSize: Size(7.w, 7.w),
-                                                      ),
-                                                      icon: Icon(
-                                                        Icons.cyclone_rounded,
-                                                        color: AppColors.PRIMARY_COLOR,
-                                                        size: 4.w,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 2.w),
+                                                          SizedBox(width: 2.w),
 
-                                                    ///Delete
-                                                    IconButton(
-                                                      onPressed: () async {
-                                                        await controller.showDeleteDialog(
-                                                          onPressed: () async {
-                                                            await controller.deleteOrderApi(orderMetaId: [controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? '']);
-                                                          },
-                                                          title: AppStrings.deleteItemText.tr.replaceAll("'Item'", "'${controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName}'"),
-                                                        );
-                                                      },
-                                                      style: IconButton.styleFrom(
-                                                        backgroundColor: AppColors.DARK_RED_COLOR,
-                                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        padding: EdgeInsets.zero,
-                                                        elevation: 4,
-                                                        maximumSize: Size(7.5.w, 7.5.w),
-                                                        minimumSize: Size(7.5.w, 7.5.w),
-                                                      ),
-                                                      icon: Icon(
-                                                        Icons.delete_forever_rounded,
-                                                        color: AppColors.PRIMARY_COLOR,
-                                                        size: 4.w,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              } else {
-                                                return AnimatedContainer(
-                                                  duration: const Duration(milliseconds: 375),
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                      color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.SECONDARY_COLOR,
-                                                      width: 1,
-                                                    ),
-                                                    color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
-                                                  ),
-                                                  padding: EdgeInsets.all(context.isPhone ? 1.w : 1.h),
-                                                  child: AnimatedOpacity(
-                                                    opacity: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? 1 : 0,
-                                                    duration: const Duration(milliseconds: 375),
-                                                    child: Icon(
-                                                      Icons.done_rounded,
-                                                      size: 3.5.w,
-                                                      color: AppColors.PRIMARY_COLOR,
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            }),
+                                                          ///Delete
+                                                          IconButton(
+                                                            onPressed: () async {
+                                                              await controller.showDeleteDialog(
+                                                                onPressed: () async {
+                                                                  await controller.deleteOrderApi(orderMetaId: [controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? '']);
+                                                                },
+                                                                title: AppStrings.deleteItemText.tr.replaceAll("'Item'", "'${controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName}'"),
+                                                              );
+                                                            },
+                                                            style: IconButton.styleFrom(
+                                                              backgroundColor: AppColors.DARK_RED_COLOR,
+                                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                              padding: EdgeInsets.zero,
+                                                              elevation: 4,
+                                                              maximumSize: Size(7.5.w, 7.5.w),
+                                                              minimumSize: Size(7.5.w, 7.5.w),
+                                                            ),
+                                                            icon: Icon(
+                                                              Icons.delete_forever_rounded,
+                                                              color: AppColors.PRIMARY_COLOR,
+                                                              size: 4.w,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    } else {
+                                                      return AnimatedContainer(
+                                                        duration: const Duration(milliseconds: 375),
+                                                        decoration: BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                            color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.SECONDARY_COLOR,
+                                                            width: 1,
+                                                          ),
+                                                          color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                                                        ),
+                                                        padding: EdgeInsets.all(context.isPhone ? 1.w : 1.h),
+                                                        child: AnimatedOpacity(
+                                                          opacity: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? 1 : 0,
+                                                          duration: const Duration(milliseconds: 375),
+                                                          child: Icon(
+                                                            Icons.done_rounded,
+                                                            size: 3.5.w,
+                                                            color: AppColors.PRIMARY_COLOR,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  })
+                                                : const SizedBox(),
                                             dense: true,
                                             collapsedShape: InputBorder.none,
                                             shape: InputBorder.none,
@@ -963,6 +967,34 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                       ),
                     ],
                   ),
+
+                  ///Created By
+                  if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) ...[
+                    SizedBox(height: 1.h),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text.rich(
+                        TextSpan(
+                          text: "${AppStrings.creator.tr}: ",
+                          children: [
+                            TextSpan(
+                              text: itemDetails?.createdBy ?? '',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.DARK_GREEN_COLOR,
+                              ),
+                            ),
+                          ],
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.SECONDARY_COLOR,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                   SizedBox(height: 2.h),
 
                   ///Size, Quantity & PVD Color
@@ -1235,71 +1267,73 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 2.h),
 
                   ///Actions
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ///View Cycles
-                      ElevatedButton(
-                        onPressed: () {
-                          Get.back();
-                          Get.toNamed(
-                            Routes.viewCyclesScreen,
-                            arguments: ItemDetailsModel(
-                              partyName: partyName,
-                              itemName: itemDetails?.itemName,
-                              itemId: itemDetails?.orderMetaId,
+                  if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) ...[
+                    SizedBox(height: 2.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ///View Cycles
+                        ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                            Get.toNamed(
+                              Routes.viewCyclesScreen,
+                              arguments: ItemDetailsModel(
+                                partyName: partyName,
+                                itemName: itemDetails?.itemName,
+                                itemId: itemDetails?.orderMetaId,
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.SECONDARY_COLOR,
+                            elevation: 4,
+                            fixedSize: Size(38.w, 5.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.SECONDARY_COLOR,
-                          elevation: 4,
-                          fixedSize: Size(38.w, 5.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.remove_red_eye_rounded,
+                            color: AppColors.PRIMARY_COLOR,
                           ),
                         ),
-                        child: Icon(
-                          Icons.remove_red_eye_rounded,
-                          color: AppColors.PRIMARY_COLOR,
-                        ),
-                      ),
 
-                      ///Edit Item
-                      ElevatedButton(
-                        onPressed: itemDetails?.quantity == itemDetails?.pending
-                            ? () async {
-                                Get.back();
-                                await controller.showEditItemBottomSheet(
-                                  orderMetaId: itemDetails?.orderMetaId ?? "",
-                                  itemName: itemDetails?.itemName ?? "",
-                                  pvdColor: itemDetails?.pvdColor ?? "",
-                                  quantity: itemDetails?.quantity ?? "",
-                                  size: itemDetails?.size ?? "",
-                                  itemImage: itemDetails?.itemImage ?? '',
-                                );
-                              }
-                            : () {
-                                Utils.handleMessage(message: AppStrings.nowItemCantBeEditable.tr, isError: true);
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.WARNING_COLOR,
-                          elevation: 4,
-                          fixedSize: Size(38.w, 5.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        ///Edit Item
+                        ElevatedButton(
+                          onPressed: itemDetails?.quantity == itemDetails?.pending
+                              ? () async {
+                                  Get.back();
+                                  await controller.showEditItemBottomSheet(
+                                    orderMetaId: itemDetails?.orderMetaId ?? "",
+                                    itemName: itemDetails?.itemName ?? "",
+                                    pvdColor: itemDetails?.pvdColor ?? "",
+                                    quantity: itemDetails?.quantity ?? "",
+                                    size: itemDetails?.size ?? "",
+                                    itemImage: itemDetails?.itemImage ?? '',
+                                  );
+                                }
+                              : () {
+                                  Utils.handleMessage(message: AppStrings.nowItemCantBeEditable.tr, isError: true);
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.WARNING_COLOR,
+                            elevation: 4,
+                            fixedSize: Size(38.w, 5.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.edit_rounded,
+                            color: AppColors.PRIMARY_COLOR,
                           ),
                         ),
-                        child: Icon(
-                          Icons.edit_rounded,
-                          color: AppColors.PRIMARY_COLOR,
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                   SizedBox(height: 3.h),
                 ],
               ),

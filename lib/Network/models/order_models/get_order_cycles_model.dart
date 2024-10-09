@@ -5,6 +5,7 @@ import 'dart:convert';
 /// Data : [{"pending":"20","okPcs":"20","woProcess":"10","invoice":""},{"pending":"10","okPcs":"5","woProcess":"5","invoice":""},{"pending":"0","okPcs":"10","woProcess":"0","invoice":""}]
 
 GetOrderCyclesModel getOrderCyclesModelFromJson(String str) => GetOrderCyclesModel.fromJson(json.decode(str));
+
 String getOrderCyclesModelToJson(GetOrderCyclesModel data) => json.encode(data.toJson());
 
 class GetOrderCyclesModel {
@@ -34,11 +35,13 @@ class GetOrderCyclesModel {
       });
     }
   }
+
   String? _code;
   String? _msg;
   String? _invoice;
   String? _contactNumber;
   List<Data>? _data;
+
   GetOrderCyclesModel copyWith({
     String? code,
     String? msg,
@@ -52,10 +55,15 @@ class GetOrderCyclesModel {
         contactNumber: contactNumber ?? _contactNumber,
         data: data ?? _data,
       );
+
   String? get code => _code;
+
   String? get msg => _msg;
+
   String? get invoice => _invoice;
+
   String? get contactNumber => _contactNumber;
+
   List<Data>? get data => _data;
 
   Map<String, dynamic> toJson() {
@@ -77,6 +85,7 @@ class GetOrderCyclesModel {
 /// invoice : ""
 
 Data dataFromJson(String str) => Data.fromJson(json.decode(str));
+
 String dataToJson(Data data) => json.encode(data.toJson());
 
 class Data {
@@ -86,12 +95,14 @@ class Data {
     String? okPcs,
     String? woProcess,
     String? createdDate,
+    String? createdBy,
   }) {
     _orderCycleId = orderCycleId;
     _pending = pending;
     _okPcs = okPcs;
     _woProcess = woProcess;
     _createdDate = createdDate;
+    _createdBy = createdBy;
   }
 
   Data.fromJson(dynamic json) {
@@ -100,18 +111,23 @@ class Data {
     _okPcs = json['okPcs'];
     _woProcess = json['woProcess'];
     _createdDate = json['createdDate'];
+    _createdBy = json['createdBy'];
   }
+
   String? _orderCycleId;
   String? _pending;
   String? _okPcs;
   String? _woProcess;
   String? _createdDate;
+  String? _createdBy;
+
   Data copyWith({
     String? orderCycleId,
     String? pending,
     String? okPcs,
     String? woProcess,
     String? createdDate,
+    String? createdBy,
   }) =>
       Data(
         orderCycleId: orderCycleId ?? _orderCycleId,
@@ -119,12 +135,20 @@ class Data {
         okPcs: okPcs ?? _okPcs,
         woProcess: woProcess ?? _woProcess,
         createdDate: createdDate ?? _createdDate,
+        createdBy: createdBy ?? _createdBy,
       );
+
   String? get orderCycleId => _orderCycleId;
+
   String? get pending => _pending;
+
   String? get okPcs => _okPcs;
+
   String? get woProcess => _woProcess;
+
   String? get createdDate => _createdDate;
+
+  String? get createdBy => _createdBy;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -133,6 +157,7 @@ class Data {
     map['okPcs'] = _okPcs;
     map['woProcess'] = _woProcess;
     map['createdDate'] = _createdDate;
+    map['createdBy'] = _createdBy;
     return map;
   }
 }

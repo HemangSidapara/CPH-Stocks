@@ -14,6 +14,7 @@ import 'package:cph_stocks/Screens/home_screen/home_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_view.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_bindings.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_view.dart';
 import 'package:cph_stocks/Screens/splash_screen/splash_bindings.dart';
@@ -55,6 +56,15 @@ class AppPages {
         NotesBindings(),
         SettingsBindings(),
       ],
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Settings
+    GetPage(
+      name: Routes.settingsScreen,
+      page: () => const SettingsView(),
+      binding: SettingsBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

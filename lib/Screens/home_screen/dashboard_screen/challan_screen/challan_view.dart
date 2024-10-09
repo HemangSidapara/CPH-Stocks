@@ -14,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:whatsapp_share/whatsapp_share.dart';
 
 class ChallanView extends GetView<ChallanController> {
   const ChallanView({super.key});
@@ -397,24 +396,7 @@ class ChallanView extends GetView<ChallanController> {
 
                     ///Share
                     ElevatedButton(
-                      onPressed: () async {
-                        final isExist = await WhatsappShare.isInstalled();
-                        if (isExist == true) {
-                          final cacheFile = await Get.put(DownloaderService()).fileDownloadService(
-                            url: pdfUrl,
-                            fileName: fileName,
-                            showLoader: false,
-                          );
-                          if (cacheFile != null) {
-                            await WhatsappShare.shareFile(
-                              phone: '91$contactNumber',
-                              filePath: [cacheFile.path],
-                            );
-                          }
-                        } else {
-                          Utils.handleMessage(message: AppStrings.whatsappNotInstalled.tr, isWarning: true);
-                        }
-                      },
+                      onPressed: () async {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.LIGHT_BLUE_COLOR,
                         fixedSize: Size(35.w, 5.h),

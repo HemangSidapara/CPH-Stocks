@@ -100,4 +100,5 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.selectOrders: "ऑर्डर चुनें",
   AppStrings.recycleBin: "रीसायकल बिन",
   AppStrings.notes: "टिप्पणियाँ",
+  AppStrings.creator: "निर्माता",
 };

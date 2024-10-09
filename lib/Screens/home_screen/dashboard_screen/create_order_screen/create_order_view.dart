@@ -91,26 +91,31 @@ class CreateOrderView extends GetView<CreateOrderController> {
                           Obx(() {
                             return DropdownSearch<get_parties.Data>(
                               autoValidateMode: AutovalidateMode.onUserInteraction,
-                              asyncItems: (text) async {
-                                return controller.getPartiesApi();
+                              items: (filter, loadProps) async {
+                                return await controller.getPartiesApi();
+                              },
+                              compareFn: (item1, item2) {
+                                return true;
                               },
                               selectedItem: controller.selectedParty.value == -1 ? null : controller.partyList[controller.selectedParty.value],
-                              dropdownButtonProps: DropdownButtonProps(
-                                padding: EdgeInsets.zero,
-                                icon: Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  color: AppColors.SECONDARY_COLOR,
-                                  size: 5.w,
+                              suffixProps: DropdownSuffixProps(
+                                dropdownButtonProps: DropdownButtonProps(
+                                  padding: EdgeInsets.zero,
+                                  selectedIcon: Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: AppColors.SECONDARY_COLOR,
+                                    size: 5.w,
+                                  ),
                                 ),
                               ),
                               validator: controller.validatePartyList,
-                              dropdownDecoratorProps: DropDownDecoratorProps(
+                              decoratorProps: DropDownDecoratorProps(
                                 baseStyle: TextStyle(
                                   color: AppColors.SECONDARY_COLOR,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16.sp,
                                 ),
-                                dropdownSearchDecoration: InputDecoration(
+                                decoration: InputDecoration(
                                   filled: true,
                                   enabled: true,
                                   fillColor: AppColors.WHITE_COLOR,
@@ -191,7 +196,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     ),
                                   );
                                 },
-                                itemBuilder: (context, item, isSelected) {
+                                itemBuilder: (context, item, isDisabled, isSelected) {
                                   return TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);
@@ -648,24 +653,28 @@ class CreateOrderView extends GetView<CreateOrderController> {
         SizedBox(height: 1.h),
         DropdownSearch<String>(
           autoValidateMode: AutovalidateMode.onUserInteraction,
-          items: controller.pvdColorList,
+          items: (filter, loadProps) {
+            return controller.pvdColorList;
+          },
           selectedItem: controller.selectedPvdColorList[index] == -1 ? null : controller.pvdColorList[controller.selectedPvdColorList[index]],
-          dropdownButtonProps: DropdownButtonProps(
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: AppColors.SECONDARY_COLOR,
-              size: 5.w,
+          suffixProps: DropdownSuffixProps(
+            dropdownButtonProps: DropdownButtonProps(
+              padding: EdgeInsets.zero,
+              selectedIcon: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: AppColors.SECONDARY_COLOR,
+                size: 5.w,
+              ),
             ),
           ),
           validator: (value) => controller.validatePvdColorList(value, index),
-          dropdownDecoratorProps: DropDownDecoratorProps(
+          decoratorProps: DropDownDecoratorProps(
             baseStyle: TextStyle(
               color: AppColors.SECONDARY_COLOR,
               fontWeight: FontWeight.w600,
               fontSize: 16.sp,
             ),
-            dropdownSearchDecoration: InputDecoration(
+            decoration: InputDecoration(
               filled: true,
               enabled: true,
               fillColor: AppColors.WHITE_COLOR,
@@ -746,7 +755,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 ),
               );
             },
-            itemBuilder: (context, item, isSelected) {
+            itemBuilder: (context, item, isDisabled, isSelected) {
               return TextButton(
                 onPressed: () {
                   Navigator.pop(context);

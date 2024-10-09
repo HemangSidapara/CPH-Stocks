@@ -102,4 +102,5 @@ class AppStrings {
   static const String selectOrders = "Select orders";
   static const String recycleBin = "Recycle Bin";
   static const String notes = "Notes";
+  static const String creator = "Creator";
 }

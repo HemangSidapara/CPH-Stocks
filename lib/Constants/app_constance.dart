@@ -24,4 +24,8 @@ class AppConstance {
   static const String telegramAPKName = 'org.telegram.messenger';
   static const String telegramGroupLink = 'https://t.me/redflixiptv';
   static const String appVersion = 'v1.0.0';
+  static const String admin = 'Admin';
+  static const String employee = 'Employee';
+  static const String customer = 'Customer';
+  static const String userName = 'userName';
 }

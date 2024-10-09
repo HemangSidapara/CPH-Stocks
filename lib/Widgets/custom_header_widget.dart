@@ -1,6 +1,8 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CustomHeaderWidget extends StatelessWidget {
@@ -8,6 +10,7 @@ class CustomHeaderWidget extends StatelessWidget {
   final String titleIcon;
   final double? titleIconSize;
   final void Function()? onBackPressed;
+  final bool isCustomer;
 
   const CustomHeaderWidget({
     super.key,
@@ -15,6 +18,7 @@ class CustomHeaderWidget extends StatelessWidget {
     required this.titleIcon,
     this.onBackPressed,
     this.titleIconSize,
+    this.isCustomer = false,
   });
 
   @override
@@ -37,6 +41,29 @@ class CustomHeaderWidget extends StatelessWidget {
             ),
             icon: Image.asset(
               AppAssets.backIcon,
+              width: 8.w,
+            ),
+          ),
+          SizedBox(width: 2.w),
+        ],
+        if (isCustomer) ...[
+          IconButton(
+            onPressed: () {
+              Get.toNamed(Routes.settingsScreen);
+            },
+            style: IconButton.styleFrom(
+              backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+              surfaceTintColor: AppColors.PRIMARY_COLOR,
+              highlightColor: AppColors.PRIMARY_COLOR,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 4,
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            icon: Image.asset(
+              AppAssets.settingsIcon,
               width: 8.w,
             ),
           ),

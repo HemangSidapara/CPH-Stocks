@@ -605,24 +605,28 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                             SizedBox(height: 1.h),
                             DropdownSearch<String>(
                               autoValidateMode: AutovalidateMode.onUserInteraction,
-                              items: pvdColorList,
+                              items: (filter, loadProps) {
+                                return pvdColorList;
+                              },
                               selectedItem: selectedPvdColor == -1 ? null : pvdColorList[selectedPvdColor],
-                              dropdownButtonProps: DropdownButtonProps(
-                                padding: EdgeInsets.zero,
-                                icon: Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  color: AppColors.PRIMARY_COLOR,
-                                  size: 5.w,
+                              suffixProps: DropdownSuffixProps(
+                                dropdownButtonProps: DropdownButtonProps(
+                                  padding: EdgeInsets.zero,
+                                  selectedIcon: Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: AppColors.PRIMARY_COLOR,
+                                    size: 5.w,
+                                  ),
                                 ),
                               ),
                               validator: (value) => validatePvdColorList(value),
-                              dropdownDecoratorProps: DropDownDecoratorProps(
+                              decoratorProps: DropDownDecoratorProps(
                                 baseStyle: TextStyle(
                                   color: AppColors.PRIMARY_COLOR,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 16.sp,
                                 ),
-                                dropdownSearchDecoration: InputDecoration(
+                                decoration: InputDecoration(
                                   filled: true,
                                   enabled: true,
                                   fillColor: AppColors.SECONDARY_COLOR,
@@ -703,7 +707,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                     ),
                                   );
                                 },
-                                itemBuilder: (context, item, isSelected) {
+                                itemBuilder: (context, item, isDisabled, isSelected) {
                                   return TextButton(
                                     onPressed: () {
                                       Navigator.pop(context);

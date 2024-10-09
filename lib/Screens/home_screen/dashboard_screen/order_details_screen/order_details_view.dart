@@ -1,7 +1,9 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/sort_by_pvd_color_screen/sort_by_pvd_color_view.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
@@ -31,11 +33,14 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomHeaderWidget(
-                            title: AppStrings.orderDetails.tr,
+                            title: getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee ? AppStrings.orderDetails.tr : (getData(AppConstance.userName) ?? AppStrings.orderDetails.tr),
                             titleIcon: AppAssets.orderDetailsIcon,
-                            onBackPressed: () {
-                              Get.back(closeOverlays: true);
-                            },
+                            isCustomer: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
+                            onBackPressed: getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee
+                                ? () {
+                                    Get.back(closeOverlays: true);
+                                  }
+                                : null,
                           ),
                           Obx(() {
                             return IconButton(

@@ -101,4 +101,5 @@ Map<String, String> enIN = <String, String>{
   AppStrings.selectOrders: "Select orders",
   AppStrings.recycleBin: "Recycle Bin",
   AppStrings.notes: "Notes",
+  AppStrings.creator: "Creator",
 };

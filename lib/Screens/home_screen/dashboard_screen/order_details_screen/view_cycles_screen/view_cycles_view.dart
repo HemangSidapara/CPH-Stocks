@@ -2,19 +2,14 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
-import 'package:cph_stocks/Network/services/utils_services/download_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_controller.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:whatsapp_share/whatsapp_share.dart';
 
 class ViewCyclesView extends GetView<ViewCyclesController> {
   const ViewCyclesView({super.key});
@@ -208,6 +203,29 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                     ),
                                   ],
                                 ),
+                                SizedBox(height: 0.5.h),
+
+                                ///Creator
+                                Row(
+                                  children: [
+                                    Text(
+                                      "${AppStrings.creator.tr}: ",
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.SECONDARY_COLOR,
+                                      ),
+                                    ),
+                                    Text(
+                                      controller.orderCycleList[index].createdBy ?? '',
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.ROSEGOLD_COLOR,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           );
@@ -224,151 +242,6 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> showChallanBottomSheet({required String pdfUrl}) async {
-    await showModalBottomSheet(
-      context: Get.context!,
-      constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 95.h, minHeight: 0.h),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      clipBehavior: Clip.hardEdge,
-      backgroundColor: AppColors.PRIMARY_COLOR,
-      builder: (context) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ///Back & Title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ///Title
-                    Text(
-                      AppStrings.viewChallan.tr,
-                      style: TextStyle(
-                        color: AppColors.SECONDARY_COLOR,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18.sp,
-                      ),
-                    ),
-
-                    ///Back
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      style: IconButton.styleFrom(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      icon: Icon(
-                        Icons.close_rounded,
-                        color: AppColors.SECONDARY_COLOR,
-                        size: 6.w,
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: AppColors.HINT_GREY_COLOR,
-                  thickness: 1,
-                ),
-                SizedBox(height: 3.h),
-
-                ///Viewer
-                Flexible(
-                  child: SfPdfViewerTheme(
-                    data: SfPdfViewerThemeData(
-                      backgroundColor: AppColors.PRIMARY_COLOR,
-                      progressBarColor: AppColors.TERTIARY_COLOR,
-                    ),
-                    child: SfPdfViewer.network(
-                      pdfUrl,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ///Download
-                    ElevatedButton(
-                      onPressed: () async {
-                        await Get.put(DownloaderService()).fileDownloadService(
-                          url: pdfUrl,
-                          fileName: "${controller.arguments.partyName?.replaceAll(' ', '')}_${controller.arguments.itemName?.replaceAll(' ', '')}.pdf",
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.DARK_GREEN_COLOR,
-                        fixedSize: Size(35.w, 5.h),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.download_rounded,
-                        color: AppColors.PRIMARY_COLOR,
-                        size: 6.w,
-                      ),
-                    ),
-
-                    ///Share
-                    ElevatedButton(
-                      onPressed: () async {
-                        final isExist = await WhatsappShare.isInstalled();
-                        if (isExist == true) {
-                          final cacheFile = await Get.put(DownloaderService()).fileDownloadService(
-                            url: pdfUrl,
-                            fileName: "${controller.arguments.partyName?.replaceAll(' ', '')}_${controller.arguments.itemName?.replaceAll(' ', '')}.pdf",
-                            showLoader: false,
-                          );
-                          if (cacheFile != null) {
-                            await WhatsappShare.shareFile(
-                              phone: '91${controller.contactNumber.value}',
-                              filePath: [cacheFile.path],
-                            );
-                          }
-                        } else {
-                          Utils.handleMessage(message: AppStrings.whatsappNotInstalled.tr, isWarning: true);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.LIGHT_BLUE_COLOR,
-                        fixedSize: Size(35.w, 5.h),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Icon(
-                        FontAwesomeIcons.whatsapp,
-                        color: AppColors.PRIMARY_COLOR,
-                        size: 6.w,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 2.h),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 

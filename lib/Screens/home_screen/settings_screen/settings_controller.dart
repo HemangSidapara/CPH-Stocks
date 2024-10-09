@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 
 class SettingsController extends GetxController {
   RxString appVersion = ''.obs;
+  HomeController homeController = Get.isRegistered<HomeController>() ? Get.find<HomeController>() : Get.put(HomeController());
 
   ExpansionTileController expansionTileController = ExpansionTileController();
   RxBool isGujaratiLang = false.obs;
@@ -37,6 +38,9 @@ class SettingsController extends GetxController {
     } else {
       isGujaratiLang.value = false;
       isHindiLang.value = false;
+    }
+    if (getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee) {
+      await homeController.getLatestVersionApiCall();
     }
     appVersion.value = (await GetPackageInfoService.instance.getInfo()).version;
   }

@@ -52,7 +52,17 @@ class HomeController extends GetxController {
 
   Future<void> onBottomItemChange({required int index}) async {
     bottomIndex.value = index;
-    AuthServices.getLatestVersionService().then((response) async {
+    getLatestVersionApiCall();
+    if (index == 1) {
+      Get.find<RecycleBinController>().getOrdersApi(isLoading: false);
+    } else if (index == 2) {
+      Get.find<NotesController>().getNotesApi(isLoading: false);
+    }
+    pageController.jumpToPage(bottomIndex.value);
+  }
+
+  Future<void> getLatestVersionApiCall() async {
+    await AuthServices.getLatestVersionService().then((response) async {
       GetLatestVersionModel versionModel = GetLatestVersionModel.fromJson(response.response?.data);
       if (response.isSuccess) {
         newAPKUrl(versionModel.data?.firstOrNull?.appUrl ?? '');
@@ -65,11 +75,5 @@ class HomeController extends GetxController {
         isLatestVersionAvailable.value = Utils.isUpdateAvailable(currentVersion, versionModel.data?.firstOrNull?.appVersion ?? currentVersion);
       }
     });
-    if (index == 1) {
-      Get.find<RecycleBinController>().getOrdersApi(isLoading: false);
-    } else if (index == 2) {
-      Get.find<NotesController>().getNotesApi(isLoading: false);
-    }
-    pageController.jumpToPage(bottomIndex.value);
   }
 }
