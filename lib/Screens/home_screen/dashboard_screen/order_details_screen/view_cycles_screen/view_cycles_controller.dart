@@ -22,9 +22,9 @@ class ViewCyclesController extends GetxController {
     await getOrderCyclesApi();
   }
 
-  Future<void> getOrderCyclesApi() async {
+  Future<void> getOrderCyclesApi({bool isLoading = true}) async {
     try {
-      isGetOrderCycleLoading(true);
+      isGetOrderCycleLoading(isLoading);
       final response = await OrderServices.getOrderCyclesService(orderMetaId: arguments.itemId ?? '');
 
       if (response.isSuccess) {
@@ -66,7 +66,7 @@ class ViewCyclesController extends GetxController {
 
     if (response.isSuccess) {
       Utils.handleMessage(message: response.message);
-      Get.find<OrderDetailsController>().getOrdersApi(isLoading: false);
+      await getOrderCyclesApi(isLoading: false);
     }
   }
 }
