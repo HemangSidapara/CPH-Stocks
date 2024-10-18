@@ -13,7 +13,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         await showExitDialog(context);
       },
       child: SafeArea(

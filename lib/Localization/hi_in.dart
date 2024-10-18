@@ -102,4 +102,5 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.notes: "टिप्पणियाँ",
   AppStrings.creator: "निर्माता",
   AppStrings.thisIsLastBilledCycle: "आखिरी है साइकिल का बिल।",
+  AppStrings.sessionExpire: "सत्र समाप्ति।",
 };

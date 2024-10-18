@@ -103,4 +103,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.notes: "નોંધો",
   AppStrings.creator: "સર્જક",
   AppStrings.thisIsLastBilledCycle: "છેલ્લી આ સાયકલનું બિલ છે.",
+  AppStrings.sessionExpire: "સત્ર સમાપ્ત.",
 };

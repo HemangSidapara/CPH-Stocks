@@ -18,4 +18,5 @@ class ApiUrls {
   static const String getNotesApi = '${_apiPath}getNotes';
   static const String editNotesApi = '${_apiPath}editNotes';
   static const String lastBilledCycleApi = '${_apiPath}lastBilledCycle';
+  static const String checkTokenApi = '${_apiPath}checkToken';
 }

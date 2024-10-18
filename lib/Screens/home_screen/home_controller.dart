@@ -37,7 +37,7 @@ class HomeController extends GetxController {
   ].obs;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -48,6 +48,8 @@ class HomeController extends GetxController {
         statusBarBrightness: Brightness.light,
       ),
     );
+
+    await checkTokenApiCall();
   }
 
   Future<void> onBottomItemChange({required int index}) async {
@@ -75,5 +77,9 @@ class HomeController extends GetxController {
         isLatestVersionAvailable.value = Utils.isUpdateAvailable(currentVersion, versionModel.data?.firstOrNull?.appVersion ?? currentVersion);
       }
     });
+  }
+
+  Future<void> checkTokenApiCall() async {
+    await AuthServices.checkTokenService();
   }
 }

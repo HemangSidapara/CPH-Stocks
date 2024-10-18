@@ -103,4 +103,5 @@ Map<String, String> enIN = <String, String>{
   AppStrings.notes: "Notes",
   AppStrings.creator: "Creator",
   AppStrings.thisIsLastBilledCycle: "This is last billed cycle.",
+  AppStrings.sessionExpire: "Session Expire.",
 };
