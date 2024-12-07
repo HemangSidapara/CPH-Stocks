@@ -9,6 +9,8 @@ import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -81,6 +83,23 @@ class SettingsView extends GetView<SettingsController> {
                             ),
                           );
                         }),
+
+                        ///Copy URL
+                        if (getData(AppConstance.role) == AppConstance.admin) ...[
+                          SizedBox(width: 2.w),
+                          InkWell(
+                            onTap: () {
+                              Clipboard.setData(
+                                ClipboardData(text: controller.homeController.newAPKUrl.value),
+                              );
+                            },
+                            child: FaIcon(
+                              FontAwesomeIcons.link,
+                              color: AppColors.PRIMARY_COLOR,
+                              size: 4.w,
+                            ),
+                          ),
+                        ],
                       ],
                     );
                   }),
