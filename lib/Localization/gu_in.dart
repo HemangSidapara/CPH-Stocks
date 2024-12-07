@@ -104,4 +104,9 @@ Map<String, String> guIN = <String, String>{
   AppStrings.creator: "સર્જક",
   AppStrings.thisIsLastBilledCycle: "છેલ્લી આ સાયકલનું બિલ છે.",
   AppStrings.sessionExpire: "સત્ર સમાપ્ત.",
+  AppStrings.save: "સાચવો",
+  AppStrings.options: "વિકલ્પો",
+  AppStrings.thisCycleIsDispatched: "આ સાયકલ રવાના થાય છે.",
+  AppStrings.challanNumber: "ચલણ નં.",
+  AppStrings.pleaseEnterChallanNumber: "કૃપા કરીને ચલણ નંબર દાખલ કરો.",
 };

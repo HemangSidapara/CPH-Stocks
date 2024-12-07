@@ -10,6 +10,7 @@ class ViewCyclesController extends GetxController {
 
   RxBool isGetOrderCycleLoading = false.obs;
   RxBool isDeletingOrderCycleLoading = false.obs;
+  RxBool isBilledOrderCycleLoading = false.obs;
 
   RxString challanUrl = ''.obs;
   RxString contactNumber = ''.obs;
@@ -61,11 +62,39 @@ class ViewCyclesController extends GetxController {
     }
   }
 
-  Future<void> lastBilledCycleApi({required String orderCycleId}) async {
-    final response = await OrderServices.lastBilledCycleService(orderCycleId: orderCycleId);
+  Future<void> lastBilledCycleApi({
+    required String orderCycleId,
+    required String challanNumber,
+    required bool flag,
+    Function(String message)? onSuccess,
+  }) async {
+    try {
+      isBilledOrderCycleLoading(true);
+      final response = await OrderServices.lastBilledCycleService(
+        orderCycleId: orderCycleId,
+        challanNumber: challanNumber,
+        flag: flag,
+      );
+
+      if (response.isSuccess) {
+        await getOrderCyclesApi(isLoading: false);
+        onSuccess?.call(response.message);
+      }
+    } finally {
+      isBilledOrderCycleLoading(false);
+    }
+  }
+
+  Future<void> isDispatchedCycleApi({
+    required String orderCycleId,
+    required bool flag,
+  }) async {
+    final response = await OrderServices.isDispatchedCycleService(
+      orderCycleId: orderCycleId,
+      flag: flag,
+    );
 
     if (response.isSuccess) {
-      Utils.handleMessage(message: response.message);
       await getOrderCyclesApi(isLoading: false);
     }
   }

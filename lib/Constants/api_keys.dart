@@ -19,4 +19,6 @@ class ApiKeys {
   static const description = "description";
   static const notes = "notes";
   static const cycleId = "cycleId";
+  static const challanNumber = "challanNumber";
+  static const flag = "flag";
 }

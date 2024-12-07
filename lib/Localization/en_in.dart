@@ -104,4 +104,9 @@ Map<String, String> enIN = <String, String>{
   AppStrings.creator: "Creator",
   AppStrings.thisIsLastBilledCycle: "This is last billed cycle.",
   AppStrings.sessionExpire: "Session Expire.",
+  AppStrings.save: "Save",
+  AppStrings.options: "Options",
+  AppStrings.thisCycleIsDispatched: "This cycle is dispatched",
+  AppStrings.challanNumber: "Receipt No.",
+  AppStrings.pleaseEnterChallanNumber: "Please enter Receipt No.",
 };

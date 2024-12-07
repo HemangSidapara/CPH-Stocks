@@ -103,4 +103,8 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.creator: "निर्माता",
   AppStrings.thisIsLastBilledCycle: "आखिरी है साइकिल का बिल।",
   AppStrings.sessionExpire: "सत्र समाप्ति।",
+  AppStrings.options: "विकल्प",
+  AppStrings.thisCycleIsDispatched: "यह साइकिल भेजा गया है।",
+  AppStrings.challanNumber: "चालान नं.",
+  AppStrings.pleaseEnterChallanNumber: "कृपया चालान नंबर दर्ज करें.",
 };

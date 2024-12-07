@@ -105,4 +105,9 @@ class AppStrings {
   static const String creator = "Creator";
   static const String thisIsLastBilledCycle = "This is last billed cycle.";
   static const String sessionExpire = "Session Expire.";
+  static const String save = "Save";
+  static const String options = "Options";
+  static const String thisCycleIsDispatched = "This cycle is dispatched.";
+  static const String challanNumber = "Challan No.";
+  static const String pleaseEnterChallanNumber = "Please enter Challan No.";
 }

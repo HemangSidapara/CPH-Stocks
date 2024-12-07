@@ -321,9 +321,13 @@ class OrderServices {
   /// Last Billed Cycle
   static Future<ResponseModel> lastBilledCycleService({
     required String orderCycleId,
+    required String challanNumber,
+    required bool flag,
   }) async {
     final params = {
       ApiKeys.orderCycleId: orderCycleId,
+      ApiKeys.challanNumber: challanNumber,
+      ApiKeys.flag: flag.toString(),
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.lastBilledCycleApi,
@@ -340,6 +344,38 @@ class OrderServices {
         } else {
           if (kDebugMode) {
             print("lastBilledCycleApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Is Dispatched
+  static Future<ResponseModel> isDispatchedCycleService({
+    required String orderCycleId,
+    required bool flag,
+  }) async {
+    final params = {
+      ApiKeys.orderCycleId: orderCycleId,
+      ApiKeys.flag: flag.toString(),
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.isDispatchedApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("isDispatchedApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("isDispatchedApi error :: ${res.message}");
           }
           Utils.handleMessage(message: res.message, isError: true);
         }

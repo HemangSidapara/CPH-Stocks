@@ -96,7 +96,9 @@ class Data {
     String? woProcess,
     String? createdDate,
     String? createdBy,
+    String? challanNumber,
     bool? isLastBilled,
+    bool? isDispatched,
   }) {
     _orderCycleId = orderCycleId;
     _pending = pending;
@@ -104,7 +106,9 @@ class Data {
     _woProcess = woProcess;
     _createdDate = createdDate;
     _createdBy = createdBy;
+    _challanNumber = challanNumber;
     _isLastBilled = isLastBilled;
+    _isDispatched = isDispatched;
   }
 
   Data.fromJson(dynamic json) {
@@ -115,6 +119,8 @@ class Data {
     _createdDate = json['createdDate'];
     _createdBy = json['createdBy'];
     _isLastBilled = json['isLastBilled'];
+    _isDispatched = json['isDispatched'];
+    _challanNumber = json['challanNumber'];
   }
 
   String? _orderCycleId;
@@ -123,7 +129,9 @@ class Data {
   String? _woProcess;
   String? _createdDate;
   String? _createdBy;
+  String? _challanNumber;
   bool? _isLastBilled;
+  bool? _isDispatched;
 
   Data copyWith({
     String? orderCycleId,
@@ -132,7 +140,9 @@ class Data {
     String? woProcess,
     String? createdDate,
     String? createdBy,
+    String? challanNumber,
     bool? isLastBilled,
+    bool? isDispatched,
   }) =>
       Data(
         orderCycleId: orderCycleId ?? _orderCycleId,
@@ -142,6 +152,8 @@ class Data {
         createdDate: createdDate ?? _createdDate,
         createdBy: createdBy ?? _createdBy,
         isLastBilled: isLastBilled ?? _isLastBilled,
+        isDispatched: isDispatched ?? _isDispatched,
+        challanNumber: challanNumber ?? _challanNumber,
       );
 
   String? get orderCycleId => _orderCycleId;
@@ -156,7 +168,11 @@ class Data {
 
   String? get createdBy => _createdBy;
 
+  String? get challanNumber => _challanNumber;
+
   bool? get isLastBilled => _isLastBilled;
+
+  bool? get isDispatched => _isDispatched;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -167,6 +183,8 @@ class Data {
     map['createdDate'] = _createdDate;
     map['createdBy'] = _createdBy;
     map['isLastBilled'] = _isLastBilled;
+    map['isDispatched'] = _isDispatched;
+    map['challanNumber'] = _challanNumber;
     return map;
   }
 }

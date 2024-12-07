@@ -6,6 +6,7 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_sc
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
+import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -66,7 +67,42 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                             child: ExpansionTile(
                               title: GestureDetector(
                                 onLongPress: () async {
-                                  await controller.lastBilledCycleApi(orderCycleId: controller.orderCycleList[index].orderCycleId ?? '');
+                                  showBottomSheetOptions(
+                                    onSelect: (isBilledSelect) async {
+                                      Get.back();
+                                      if (isBilledSelect) {
+                                        if (controller.orderCycleList[index].isLastBilled == true) {
+                                          await controller.lastBilledCycleApi(
+                                            orderCycleId: controller.orderCycleList[index].orderCycleId ?? '',
+                                            flag: false,
+                                            challanNumber: "",
+                                          );
+                                        } else {
+                                          await Future.delayed(const Duration(milliseconds: 350));
+                                          showBottomSheetChallanBilled(
+                                            onSave: (value) async {
+                                              await controller.lastBilledCycleApi(
+                                                orderCycleId: controller.orderCycleList[index].orderCycleId ?? '',
+                                                flag: true,
+                                                challanNumber: value,
+                                                onSuccess: (message) {
+                                                  Get.back();
+                                                  Utils.handleMessage(message: message);
+                                                },
+                                              );
+                                            },
+                                          );
+                                        }
+                                      } else {
+                                        await controller.isDispatchedCycleApi(
+                                          orderCycleId: controller.orderCycleList[index].orderCycleId ?? '',
+                                          flag: !(controller.orderCycleList[index].isDispatched == true),
+                                        );
+                                      }
+                                    },
+                                    isBilled: controller.orderCycleList[index].isLastBilled == true,
+                                    isDispatched: controller.orderCycleList[index].isDispatched == true,
+                                  );
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -104,6 +140,19 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                             child: Icon(
                                               Icons.receipt_long,
                                               color: AppColors.LIGHT_BLUE_COLOR,
+                                              size: 6.w,
+                                            ),
+                                          ),
+                                          SizedBox(width: 2.w),
+                                        ],
+
+                                        ///Is Dispatched Cycle
+                                        if (controller.orderCycleList[index].isDispatched == true) ...[
+                                          Tooltip(
+                                            message: AppStrings.thisCycleIsDispatched.tr,
+                                            child: Icon(
+                                              Icons.delivery_dining_rounded,
+                                              color: AppColors.ORANGE_COLOR,
                                               size: 6.w,
                                             ),
                                           ),
@@ -229,6 +278,31 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                 ),
                                 SizedBox(height: 0.5.h),
 
+                                ///Challan Number
+                                if (controller.orderCycleList[index].isLastBilled == true && controller.orderCycleList[index].challanNumber != null && controller.orderCycleList[index].challanNumber?.isNotEmpty == true) ...[
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${AppStrings.challanNumber.tr}: ",
+                                        style: TextStyle(
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.SECONDARY_COLOR,
+                                        ),
+                                      ),
+                                      Text(
+                                        controller.orderCycleList[index].challanNumber ?? '',
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.DARK_BLACK_COLOR,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 0.5.h),
+                                ],
+
                                 ///Creator
                                 Row(
                                   children: [
@@ -350,6 +424,210 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                           isLoading: controller.isDeletingOrderCycleLoading.value,
                           fixedSize: Size(30.w, 5.h),
                           buttonTitle: AppStrings.delete.tr,
+                          buttonColor: AppColors.DARK_RED_COLOR,
+                          buttonTitleColor: AppColors.PRIMARY_COLOR,
+                          loaderColor: AppColors.PRIMARY_COLOR,
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 3.h),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showBottomSheetOptions({
+    required void Function(bool isBilledSelect) onSelect,
+    required bool isBilled,
+    required bool isDispatched,
+  }) async {
+    await showModalBottomSheet(
+      context: Get.context!,
+      constraints: BoxConstraints(maxHeight: 90.h),
+      backgroundColor: AppColors.PRIMARY_COLOR,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      useRootNavigator: true,
+      barrierLabel: 'string',
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => Utils.unfocus(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 1.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ///Title
+                Text(
+                  AppStrings.options.tr,
+                  style: TextStyle(
+                    color: AppColors.SECONDARY_COLOR,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Divider(
+                  color: AppColors.SECONDARY_COLOR,
+                  thickness: 1,
+                ),
+                SizedBox(height: 5.h),
+
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ///Billed
+                    ElevatedButton(
+                      onPressed: () {
+                        onSelect.call(true);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isBilled ? AppColors.DARK_GREEN_COLOR : AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                        shape: const CircleBorder(),
+                        elevation: 4,
+                        maximumSize: Size(18.w, 18.w),
+                        minimumSize: Size(18.w, 18.w),
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Icon(
+                        Icons.receipt_long_rounded,
+                        color: AppColors.WHITE_COLOR,
+                        size: 12.w,
+                      ),
+                    ),
+
+                    ///Dispatch
+                    ElevatedButton(
+                      onPressed: () {
+                        onSelect.call(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isDispatched ? AppColors.ORANGE_COLOR : AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                        shape: const CircleBorder(),
+                        elevation: 4,
+                        maximumSize: Size(18.w, 18.w),
+                        minimumSize: Size(18.w, 18.w),
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Icon(
+                        Icons.delivery_dining_rounded,
+                        color: AppColors.WHITE_COLOR,
+                        size: 12.w,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5.h),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showBottomSheetChallanBilled({
+    required void Function(String value) onSave,
+  }) async {
+    GlobalKey<FormState> challanFormKey = GlobalKey<FormState>();
+    TextEditingController challanController = TextEditingController();
+    await showModalBottomSheet(
+      context: Get.context!,
+      backgroundColor: AppColors.PRIMARY_COLOR,
+      constraints: BoxConstraints(maxHeight: 90.h),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      useRootNavigator: true,
+      isScrollControlled: true,
+      barrierLabel: 'string',
+      builder: (context) {
+        final keyboardPadding = MediaQuery.viewInsetsOf(context).bottom;
+        return GestureDetector(
+          onTap: () => Utils.unfocus(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 1.h).copyWith(bottom: keyboardPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ///Title
+                Text(
+                  AppStrings.challanNumber.tr,
+                  style: TextStyle(
+                    color: AppColors.SECONDARY_COLOR,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Divider(
+                  color: AppColors.SECONDARY_COLOR,
+                  thickness: 1,
+                ),
+                SizedBox(height: 3.h),
+
+                Form(
+                  key: challanFormKey,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    child: TextFieldWidget(
+                      controller: challanController,
+                      title: AppStrings.challan.tr,
+                      hintText: '123456',
+                      secondaryColor: AppColors.PRIMARY_COLOR,
+                      primaryColor: AppColors.SECONDARY_COLOR,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return AppStrings.pleaseEnterChallanNumber.tr;
+                        }
+                        return null;
+                      },
+                      maxLength: 10,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ///Cancel
+                      ButtonWidget(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        fixedSize: Size(30.w, 5.h),
+                        buttonTitle: AppStrings.cancel.tr,
+                        buttonColor: AppColors.DARK_GREEN_COLOR,
+                        buttonTitleColor: AppColors.PRIMARY_COLOR,
+                      ),
+
+                      ///Save
+                      Obx(() {
+                        return ButtonWidget(
+                          onPressed: () {
+                            if (challanFormKey.currentState?.validate() == true) {
+                              onSave.call(challanController.text.trim());
+                            }
+                          },
+                          isLoading: controller.isBilledOrderCycleLoading.value,
+                          fixedSize: Size(30.w, 5.h),
+                          buttonTitle: AppStrings.save.tr,
                           buttonColor: AppColors.DARK_RED_COLOR,
                           buttonTitleColor: AppColors.PRIMARY_COLOR,
                           loaderColor: AppColors.PRIMARY_COLOR,
