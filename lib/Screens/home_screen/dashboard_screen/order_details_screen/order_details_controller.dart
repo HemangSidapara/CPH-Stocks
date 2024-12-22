@@ -208,6 +208,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> getOrdersMetaApi({
     required String createdDate,
     required String createdTime,
+    required String pvdColor,
     required void Function(bool isSuccess, List<get_orders_meta.Data>? data) onResponse,
   }) async {
     try {
@@ -215,6 +216,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
       final response = await OrderServices.getOrdersMetaService(
         createdDate: createdDate,
         createdTime: createdTime,
+        pvdColor: pvdColor,
       );
 
       onResponse.call(response.isSuccess, get_orders_meta.GetOrdersMetaModel.fromJson(response.response?.data).data);

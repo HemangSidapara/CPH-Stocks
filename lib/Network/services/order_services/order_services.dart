@@ -388,10 +388,12 @@ class OrderServices {
   static Future<ResponseModel> getOrdersMetaService({
     required String createdDate,
     required String createdTime,
+    required String pvdColor,
   }) async {
     final params = {
       ApiKeys.createdDate: createdDate,
       ApiKeys.createdTime: createdTime,
+      ApiKeys.pvdColor: pvdColor,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.getOrdersMetaApi,

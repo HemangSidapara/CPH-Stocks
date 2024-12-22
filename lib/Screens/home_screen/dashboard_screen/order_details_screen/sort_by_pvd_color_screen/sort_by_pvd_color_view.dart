@@ -432,6 +432,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                 : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
                                             createdDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? "",
                                             createdTime: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? "",
+                                            pvdColor: controller.searchedColorDataList[index].pvdColor ?? "",
                                           );
                                         },
                                         style: IconButton.styleFrom(
@@ -1389,6 +1390,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
     required String orderDate,
     required String createdDate,
     required String createdTime,
+    required String pvdColor,
   }) async {
     GlobalKey<FormState> billFormKey = GlobalKey<FormState>();
     TextEditingController billController = TextEditingController();
@@ -1399,9 +1401,10 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
     controller.getOrdersMetaApi(
       createdDate: createdDate,
       createdTime: createdTime,
+      pvdColor: pvdColor,
       onResponse: (isSuccess, data) {
         itemsList.clear();
-        itemsList.addAll(data ?? []);
+        itemsList.addAll(data?.where((element) => element.pvdColor?.toLowerCase() == pvdColor.toLowerCase()) ?? []);
       },
     );
 
@@ -1640,13 +1643,15 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                         ],
                                         for (int cycleIndex = 0; cycleIndex < (itemsList[orderIndex].orderCycles?.length ?? 0); cycleIndex++) ...[
                                           InkWell(
-                                            onTap: () {
-                                              if (selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId)) {
-                                                selectedCycleIds.removeWhere((element) => element == itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId);
-                                              } else if (itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId != null) {
-                                                selectedCycleIds.add(itemsList[orderIndex].orderCycles![cycleIndex].orderCycleId!);
-                                              }
-                                            },
+                                            onTap: itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true
+                                                ? null
+                                                : () {
+                                                    if (selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId)) {
+                                                      selectedCycleIds.removeWhere((element) => element == itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId);
+                                                    } else if (itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId != null) {
+                                                      selectedCycleIds.add(itemsList[orderIndex].orderCycles![cycleIndex].orderCycleId!);
+                                                    }
+                                                  },
                                             child: DecoratedBox(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
@@ -1660,47 +1665,81 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        ///CheckMark
-                                                        Obx(() {
-                                                          return AnimatedContainer(
-                                                            height: 6.w,
-                                                            width: 6.w,
-                                                            decoration: BoxDecoration(
-                                                              color: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? AppColors.DARK_GREEN_COLOR : AppColors.WHITE_COLOR,
-                                                              border: Border.all(
-                                                                color: AppColors.HINT_GREY_COLOR,
-                                                                width: 1,
-                                                              ),
-                                                              shape: BoxShape.circle,
-                                                            ),
-                                                            duration: const Duration(milliseconds: 300),
-                                                            padding: EdgeInsets.all(1.w),
-                                                            child: AnimatedOpacity(
-                                                              opacity: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? 1 : 0,
-                                                              duration: const Duration(milliseconds: 300),
-                                                              child: Icon(
-                                                                Icons.check_rounded,
-                                                                color: AppColors.PRIMARY_COLOR,
-                                                                size: 3.5.w,
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }),
-                                                        SizedBox(width: 2.w),
+                                                    Obx(() {
+                                                      return Row(
+                                                        children: [
+                                                          ///CheckMark
+                                                          Obx(() {
+                                                            if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) {
+                                                              return const SizedBox();
+                                                            } else {
+                                                              return AnimatedContainer(
+                                                                height: 6.w,
+                                                                width: 6.w,
+                                                                decoration: BoxDecoration(
+                                                                  color: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? AppColors.DARK_GREEN_COLOR : AppColors.WHITE_COLOR,
+                                                                  border: Border.all(
+                                                                    color: AppColors.HINT_GREY_COLOR,
+                                                                    width: 1,
+                                                                  ),
+                                                                  shape: BoxShape.circle,
+                                                                ),
+                                                                duration: const Duration(milliseconds: 300),
+                                                                padding: EdgeInsets.all(1.w),
+                                                                child: AnimatedOpacity(
+                                                                  opacity: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? 1 : 0,
+                                                                  duration: const Duration(milliseconds: 300),
+                                                                  child: Icon(
+                                                                    Icons.check_rounded,
+                                                                    color: AppColors.PRIMARY_COLOR,
+                                                                    size: 3.5.w,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }
+                                                          }),
+                                                          SizedBox(width: 2.w),
 
-                                                        ///Cycle Date
-                                                        Text(
-                                                          itemsList[orderIndex].orderCycles?[cycleIndex].createdDate ?? "",
-                                                          style: TextStyle(
-                                                            color: AppColors.DARK_BLACK_COLOR,
-                                                            fontSize: 16.sp,
-                                                            fontWeight: FontWeight.w500,
+                                                          ///Cycle Date
+                                                          Text(
+                                                            itemsList[orderIndex].orderCycles?[cycleIndex].createdDate ?? "",
+                                                            style: TextStyle(
+                                                              color: AppColors.DARK_BLACK_COLOR,
+                                                              fontSize: 16.sp,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                          SizedBox(width: 2.w),
+
+                                                          ///Bill No.
+                                                          if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) ...[
+                                                            Tooltip(
+                                                              message: AppStrings.challanNumber.tr,
+                                                              child: DecoratedBox(
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                    color: AppColors.DARK_GREEN_COLOR,
+                                                                    width: 1.5,
+                                                                  ),
+                                                                  shape: BoxShape.circle,
+                                                                ),
+                                                                child: Padding(
+                                                                  padding: EdgeInsets.all(1.1.w),
+                                                                  child: Text(
+                                                                    itemsList[orderIndex].orderCycles?[cycleIndex].challanNumber ?? "",
+                                                                    style: TextStyle(
+                                                                      color: AppColors.DARK_GREEN_COLOR,
+                                                                      fontSize: 15.sp,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ],
+                                                      );
+                                                    }),
 
                                                     ///Ok Pcs., W/O Process & Pending
                                                     Row(
