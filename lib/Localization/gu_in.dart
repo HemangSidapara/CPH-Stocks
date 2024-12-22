@@ -109,4 +109,6 @@ Map<String, String> guIN = <String, String>{
   AppStrings.thisCycleIsDispatched: "આ સાયકલ રવાના થાય છે.",
   AppStrings.challanNumber: "ચલણ નં.",
   AppStrings.pleaseEnterChallanNumber: "કૃપા કરીને ચલણ નંબર દાખલ કરો.",
+  AppStrings.selectCycles: "સાયકલ પસંદ કરો",
+  AppStrings.pleaseSelectAtLeastOneCycle: "કૃપા કરીને ઓછામાં ઓછી એક સાયકલ પસંદ કરો.",
 };

@@ -21,4 +21,6 @@ class ApiKeys {
   static const cycleId = "cycleId";
   static const challanNumber = "challanNumber";
   static const flag = "flag";
+  static const createdDate = "createdDate";
+  static const createdTime = "createdTime";
 }

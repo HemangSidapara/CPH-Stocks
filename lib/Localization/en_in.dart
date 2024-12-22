@@ -109,4 +109,6 @@ Map<String, String> enIN = <String, String>{
   AppStrings.thisCycleIsDispatched: "This cycle is dispatched",
   AppStrings.challanNumber: "Receipt No.",
   AppStrings.pleaseEnterChallanNumber: "Please enter Receipt No.",
+  AppStrings.selectCycles: "Select Cycles",
+  AppStrings.pleaseSelectAtLeastOneCycle: "Please select at-least one cycle.",
 };

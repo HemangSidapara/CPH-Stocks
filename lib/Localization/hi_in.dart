@@ -107,4 +107,6 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.thisCycleIsDispatched: "यह साइकिल भेजा गया है।",
   AppStrings.challanNumber: "चालान नं.",
   AppStrings.pleaseEnterChallanNumber: "कृपया चालान नंबर दर्ज करें.",
+  AppStrings.selectCycles: "साइकिल चुनें",
+  AppStrings.pleaseSelectAtLeastOneCycle: "कृपया कम से कम एक साइकिल चुनें।",
 };

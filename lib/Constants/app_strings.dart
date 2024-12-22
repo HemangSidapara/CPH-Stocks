@@ -110,4 +110,6 @@ class AppStrings {
   static const String thisCycleIsDispatched = "This cycle is dispatched.";
   static const String challanNumber = "Challan No.";
   static const String pleaseEnterChallanNumber = "Please enter Challan No.";
+  static const String selectCycles = "Select Cycles";
+  static const String pleaseSelectAtLeastOneCycle = "Please select at-least one cycle.";
 }

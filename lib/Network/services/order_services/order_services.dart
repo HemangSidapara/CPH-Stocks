@@ -383,4 +383,70 @@ class OrderServices {
     );
     return response;
   }
+
+  /// Get Orders Meta
+  static Future<ResponseModel> getOrdersMetaService({
+    required String createdDate,
+    required String createdTime,
+  }) async {
+    final params = {
+      ApiKeys.createdDate: createdDate,
+      ApiKeys.createdTime: createdTime,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.getOrdersMetaApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getOrdersMetaApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getOrdersMetaApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Multiple Last Billed Cycle
+  static Future<ResponseModel> multipleLastBilledCycleService({
+    required List<String> orderCycleId,
+    required String challanNumber,
+    required bool flag,
+  }) async {
+    final params = {
+      ApiKeys.orderCycleId: orderCycleId,
+      ApiKeys.challanNumber: challanNumber,
+      ApiKeys.flag: flag.toString(),
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.multipleLastBilledCycleApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("multipleLastBilledCycleApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("multipleLastBilledCycleApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

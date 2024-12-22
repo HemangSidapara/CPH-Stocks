@@ -20,4 +20,6 @@ class ApiUrls {
   static const String lastBilledCycleApi = '${_apiPath}lastBilledCycle';
   static const String checkTokenApi = '${_apiPath}checkToken';
   static const String isDispatchedApi = '${_apiPath}isDispatched';
+  static const String getOrdersMetaApi = '${_apiPath}getOrdersMeta';
+  static const String multipleLastBilledCycleApi = '${_apiPath}multipleLastBilledCycle';
 }

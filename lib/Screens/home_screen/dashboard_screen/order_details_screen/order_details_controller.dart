@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/order_models/get_orders_meta_model.dart' as get_orders_meta;
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
@@ -47,6 +48,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   RxList<String> selectedOrderMetaIdForDeletion = RxList();
   RxBool isDeletingMultipleOrders = false.obs;
   RxString selectedPartyForDeletingMultipleOrders = "".obs;
+
+  RxBool isGetCyclesLoading = false.obs;
+  RxBool isBilledOrderCycleLoading = false.obs;
 
   @override
   void onInit() async {
@@ -198,6 +202,47 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
       } else {
         Utils.handleMessage(message: AppStrings.pleaseAddItemImage.tr, isError: true);
       }
+    }
+  }
+
+  Future<void> getOrdersMetaApi({
+    required String createdDate,
+    required String createdTime,
+    required void Function(bool isSuccess, List<get_orders_meta.Data>? data) onResponse,
+  }) async {
+    try {
+      isGetCyclesLoading(true);
+      final response = await OrderServices.getOrdersMetaService(
+        createdDate: createdDate,
+        createdTime: createdTime,
+      );
+
+      onResponse.call(response.isSuccess, get_orders_meta.GetOrdersMetaModel.fromJson(response.response?.data).data);
+    } finally {
+      isGetCyclesLoading(false);
+    }
+  }
+
+  Future<void> multipleLastBilledCycleApi({
+    required List<String> orderCycleId,
+    required String challanNumber,
+    required bool flag,
+    Function(String message)? onSuccess,
+  }) async {
+    try {
+      isBilledOrderCycleLoading(true);
+      final response = await OrderServices.multipleLastBilledCycleService(
+        orderCycleId: orderCycleId,
+        challanNumber: challanNumber,
+        flag: flag,
+      );
+
+      if (response.isSuccess) {
+        Get.back();
+        Utils.handleMessage(message: response.message);
+      }
+    } finally {
+      isBilledOrderCycleLoading(false);
     }
   }
 
