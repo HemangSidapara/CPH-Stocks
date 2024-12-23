@@ -60,7 +60,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
         ),
 
         Obx(() {
-          if (controller.isGetOrdersLoading.value) {
+          if (controller.isGetOrdersLoading.isTrue) {
             return const Expanded(
               child: Center(
                 child: LoadingWidget(),
@@ -277,26 +277,11 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                       fontSize: 15.sp,
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 32.5.w,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          AppStrings.quantity.tr,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15.sp,
-                                          ),
-                                        ),
-                                        SizedBox(width: 1.w),
-                                        Text(
-                                          AppStrings.pending.tr,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15.sp,
-                                          ),
-                                        ),
-                                      ],
+                                  Text(
+                                    AppStrings.quantity.tr,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.sp,
                                     ),
                                   ),
                                 ],
@@ -434,15 +419,18 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                                   ),
                                                 ),
 
-                                                ///Quantity & Pending
+                                                ///Ok pcs., W/O Process & Pending
                                                 Row(
                                                   children: [
-                                                    Text(
-                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].quantity ?? '',
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.w700,
-                                                        fontSize: 16.sp,
-                                                        color: AppColors.LIGHT_BLUE_COLOR,
+                                                    Tooltip(
+                                                      message: AppStrings.okPcs.tr,
+                                                      child: Text(
+                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 16.sp,
+                                                          color: AppColors.LIGHT_BLUE_COLOR,
+                                                        ),
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -452,12 +440,33 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                                         thickness: 1,
                                                       ),
                                                     ),
-                                                    Text(
-                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.w700,
-                                                        fontSize: 16.sp,
-                                                        color: AppColors.DARK_RED_COLOR,
+                                                    Tooltip(
+                                                      message: AppStrings.woProcess.tr,
+                                                      child: Text(
+                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 16.sp,
+                                                          color: AppColors.SECONDARY_COLOR,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3.h,
+                                                      child: VerticalDivider(
+                                                        color: AppColors.SECONDARY_COLOR,
+                                                        thickness: 1,
+                                                      ),
+                                                    ),
+                                                    Tooltip(
+                                                      message: AppStrings.pending.tr,
+                                                      child: Text(
+                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                          fontSize: 16.sp,
+                                                          color: AppColors.DARK_RED_COLOR,
+                                                        ),
                                                       ),
                                                     ),
                                                   ],

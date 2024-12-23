@@ -56,7 +56,7 @@ class HomeController extends GetxController {
     bottomIndex.value = index;
     getLatestVersionApiCall();
     if (index == 1) {
-      Get.find<RecycleBinController>().getOrdersApi(isLoading: false);
+      Get.find<RecycleBinController>().getOrdersApi(isLoading: Get.find<RecycleBinController>().isGetOrdersLoading.isTrue);
     } else if (index == 2) {
       Get.find<NotesController>().getNotesApi(isLoading: false);
     }
