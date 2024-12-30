@@ -241,6 +241,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
 
       if (response.isSuccess) {
         Get.back();
+        getOrdersApi(isLoading: false);
         Utils.handleMessage(message: response.message);
       }
     } finally {
