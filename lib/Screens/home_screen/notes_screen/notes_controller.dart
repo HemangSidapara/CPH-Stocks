@@ -1,6 +1,7 @@
+import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/notes_models/notes_model.dart';
 import 'package:cph_stocks/Network/services/notes_services/notes_service.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_delta_from_html/flutter_quill_delta_from_html.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,7 @@ class NotesController extends GetxController {
         },
       ),
     );
+  FocusNode focusNode = FocusNode();
 
   RxBool isNotesEdited = false.obs;
 
@@ -62,7 +64,8 @@ class NotesController extends GetxController {
         if (notesModel.notes != null && notesModel.notes?.isNotEmpty == true) {
           quillController.document = Document.fromDelta(HtmlToDelta().convert(notesModel.notes!));
           editedQuillController.document = Document.fromDelta(HtmlToDelta().convert(notesModel.notes!));
-          editedQuillController.editorFocusNode?.unfocus();
+          focusNode.unfocus();
+          Utils.unfocus();
         }
       }
     } finally {

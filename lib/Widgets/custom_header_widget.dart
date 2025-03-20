@@ -29,7 +29,7 @@ class CustomHeaderWidget extends StatelessWidget {
           IconButton(
             onPressed: onBackPressed,
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+              backgroundColor: AppColors.PRIMARY_COLOR.withValues(alpha: 0.5),
               surfaceTintColor: AppColors.PRIMARY_COLOR,
               highlightColor: AppColors.PRIMARY_COLOR,
               shape: RoundedRectangleBorder(
@@ -52,7 +52,7 @@ class CustomHeaderWidget extends StatelessWidget {
               Get.toNamed(Routes.settingsScreen);
             },
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+              backgroundColor: AppColors.PRIMARY_COLOR.withValues(alpha: 0.5),
               surfaceTintColor: AppColors.PRIMARY_COLOR,
               highlightColor: AppColors.PRIMARY_COLOR,
               shape: RoundedRectangleBorder(

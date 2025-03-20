@@ -77,7 +77,7 @@ class SettingsView extends GetView<SettingsController> {
                           return Text(
                             AppConstance.appVersion.replaceAll('1.0.0', controller.appVersion.value),
                             style: TextStyle(
-                              color: AppColors.PRIMARY_COLOR.withOpacity(0.55),
+                              color: AppColors.PRIMARY_COLOR.withValues(alpha: 0.55),
                               fontWeight: FontWeight.w700,
                               fontSize: context.isPortrait ? 16.sp : 12.sp,
                             ),
@@ -284,7 +284,7 @@ class SettingsView extends GetView<SettingsController> {
                 child: Text(
                   AppStrings.copyrightContext.replaceAll('2024', DateTime.now().year.toString()),
                   style: TextStyle(
-                    color: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.55),
+                    color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.55),
                     fontWeight: FontWeight.w700,
                     fontSize: context.isPortrait ? 14.sp : 10.sp,
                   ),

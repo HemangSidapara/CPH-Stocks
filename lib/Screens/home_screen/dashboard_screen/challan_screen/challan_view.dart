@@ -161,8 +161,8 @@ class ChallanView extends GetView<ChallanController> {
                                 ],
                               ),
                               dense: true,
-                              collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
-                              backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                              collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                              backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                               iconColor: AppColors.SECONDARY_COLOR,
                               collapsedShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -190,7 +190,7 @@ class ChallanView extends GetView<ChallanController> {
                                           itemBuilder: (context, itemIndex) {
                                             return DecoratedBox(
                                               decoration: BoxDecoration(
-                                                color: AppColors.PRIMARY_COLOR.withOpacity(0.7),
+                                                color: AppColors.PRIMARY_COLOR.withValues(alpha: 0.7),
                                               ),
                                               child: Padding(
                                                 padding: EdgeInsets.symmetric(horizontal: 5.w),

@@ -121,7 +121,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                   fillColor: AppColors.WHITE_COLOR,
                                   hintText: AppStrings.selectParty.tr,
                                   hintStyle: TextStyle(
-                                    color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                                    color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -189,7 +189,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     child: Text(
                                       AppStrings.noDataFound.tr,
                                       style: TextStyle(
-                                        color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                                        color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -680,7 +680,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
               fillColor: AppColors.WHITE_COLOR,
               hintText: AppStrings.selectPvdColor.tr,
               hintStyle: TextStyle(
-                color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -748,7 +748,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 child: Text(
                   AppStrings.noDataFound.tr,
                   style: TextStyle(
-                    color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                    color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -892,7 +892,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                         controller.isImageSelectedList[index] = false;
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.SECONDARY_COLOR.withOpacity(0.9),
+                        backgroundColor: AppColors.SECONDARY_COLOR.withValues(alpha: 0.9),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -915,12 +915,12 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     Icon(
                       Icons.image_rounded,
                       size: 8.5.w,
-                      color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                      color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                     ),
                     Text(
                       AppStrings.selectOrCaptureAImage.tr,
                       style: TextStyle(
-                        color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                        color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),

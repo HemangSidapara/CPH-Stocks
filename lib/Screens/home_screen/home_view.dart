@@ -23,7 +23,7 @@ class HomeView extends GetView<HomeController> {
               color: AppColors.SECONDARY_COLOR,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.MAIN_BORDER_COLOR.withOpacity(0.2),
+                  color: AppColors.MAIN_BORDER_COLOR.withValues(alpha: 0.2),
                   spreadRadius: 5,
                   blurRadius: 80,
                 )

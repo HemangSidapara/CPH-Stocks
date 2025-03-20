@@ -2,7 +2,11 @@
 
 Stocks handle of CPH.
 
-## Getting Started
+## Flutter Version:
 
-- Flutter: v3.19.3
-- Dart: v3.3.1
+- v3.29.0 (Stable)
+
+## Notes:
+
+1) Run command to generate Native Splash
+    - `dart run flutter_native_splash:create`

@@ -219,8 +219,8 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                             right: 2.w,
                           ),
                           dense: true,
-                          collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
-                          backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                          collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                           iconColor: AppColors.SECONDARY_COLOR,
                           collapsedShape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -313,9 +313,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
-                                              ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
-                                              : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
+                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}")) : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
                                           style: TextStyle(
                                             color: AppColors.DARK_RED_COLOR,
                                             fontSize: 16.sp,
@@ -477,8 +475,8 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                             dense: true,
                                             collapsedShape: InputBorder.none,
                                             shape: InputBorder.none,
-                                            collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
-                                            backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                                            collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                            backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                                             iconColor: AppColors.SECONDARY_COLOR,
                                             tilePadding: EdgeInsets.only(left: 4.w, right: 2.w),
                                             childrenPadding: EdgeInsets.symmetric(horizontal: 3.w),

@@ -84,15 +84,15 @@ class NotesView extends GetView<NotesController> {
             ///Notes
             Align(
               alignment: Alignment.centerLeft,
-              child: quill.QuillToolbar.simple(
+              child: quill.QuillSimpleToolbar(
                 controller: controller.editedQuillController,
-                configurations: quill.QuillSimpleToolbarConfigurations(
+                config: quill.QuillSimpleToolbarConfig(
                   color: AppColors.SECONDARY_COLOR,
                   buttonOptions: quill.QuillSimpleToolbarButtonOptions(
                     undoHistory: quill.QuillToolbarHistoryButtonOptions(
                       iconTheme: quill.QuillIconTheme(
                         iconButtonUnselectedData: quill.IconButtonData(
-                          disabledColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                          disabledColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                           style: IconButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               side: BorderSide(color: AppColors.PRIMARY_COLOR, width: 1.5),
@@ -115,7 +115,7 @@ class NotesView extends GetView<NotesController> {
                     redoHistory: quill.QuillToolbarHistoryButtonOptions(
                       iconTheme: quill.QuillIconTheme(
                         iconButtonUnselectedData: quill.IconButtonData(
-                          disabledColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                          disabledColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                           style: IconButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               side: BorderSide(color: AppColors.PRIMARY_COLOR, width: 1.5),
@@ -193,9 +193,9 @@ class NotesView extends GetView<NotesController> {
                     padding: EdgeInsets.all(4.w),
                     child: quill.QuillEditor.basic(
                       controller: controller.editedQuillController,
-                      focusNode: FocusNode(),
+                      focusNode: controller.focusNode,
                       scrollController: ScrollController(),
-                      configurations: quill.QuillEditorConfigurations(
+                      config: quill.QuillEditorConfig(
                         placeholder: AppStrings.description.tr,
                         autoFocus: false,
                         expands: true,

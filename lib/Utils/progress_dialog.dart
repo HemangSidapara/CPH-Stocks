@@ -41,7 +41,6 @@ class ProgressDialog extends GetxController with GetSingleTickerProviderStateMix
         barrierColor: AppColors.TRANSPARENT,
         PopScope(
           canPop: false,
-          onPopInvoked: (value) => Future.value(true),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +51,7 @@ class ProgressDialog extends GetxController with GetSingleTickerProviderStateMix
                     color: AppColors.TERTIARY_COLOR,
                     minHeight: 4,
                     value: _progressValue.value,
-                    backgroundColor: AppColors.PRIMARY_COLOR.withOpacity(0.25),
+                    backgroundColor: AppColors.PRIMARY_COLOR.withValues(alpha: 0.25),
                     valueColor: AlwaysStoppedAnimation<Color>(AppColors.TERTIARY_COLOR),
                   );
                 }),

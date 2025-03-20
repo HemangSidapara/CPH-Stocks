@@ -680,7 +680,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                   fillColor: AppColors.SECONDARY_COLOR,
                                   hintText: AppStrings.selectPvdColor.tr,
                                   hintStyle: TextStyle(
-                                    color: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+                                    color: AppColors.PRIMARY_COLOR.withValues(alpha: 0.5),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -748,7 +748,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                     child: Text(
                                       AppStrings.noDataFound.tr,
                                       style: TextStyle(
-                                        color: AppColors.PRIMARY_COLOR.withOpacity(0.5),
+                                        color: AppColors.PRIMARY_COLOR.withValues(alpha: 0.5),
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -915,7 +915,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                             isImageSelected.value = false;
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColors.SECONDARY_COLOR.withOpacity(0.9),
+                                            backgroundColor: AppColors.SECONDARY_COLOR.withValues(alpha: 0.9),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(10),
                                             ),
@@ -938,12 +938,12 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                         Icon(
                                           Icons.image_rounded,
                                           size: 8.5.w,
-                                          color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                                          color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                                         ),
                                         Text(
                                           AppStrings.selectOrCaptureAImage.tr,
                                           style: TextStyle(
-                                            color: AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                                            color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
                                           ),

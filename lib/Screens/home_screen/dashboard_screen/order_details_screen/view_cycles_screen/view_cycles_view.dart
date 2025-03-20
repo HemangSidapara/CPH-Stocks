@@ -186,8 +186,8 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                                       ],
                                     ),
                               dense: true,
-                              collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
-                              backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withOpacity(0.7),
+                              collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                              backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                               iconColor: AppColors.SECONDARY_COLOR,
                               collapsedShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -492,7 +492,7 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                         onSelect.call(true);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isBilled ? AppColors.DARK_GREEN_COLOR : AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                        backgroundColor: isBilled ? AppColors.DARK_GREEN_COLOR : AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                         shape: const CircleBorder(),
                         elevation: 4,
                         maximumSize: Size(18.w, 18.w),
@@ -512,7 +512,7 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
                         onSelect.call(false);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDispatched ? AppColors.ORANGE_COLOR : AppColors.SECONDARY_COLOR.withOpacity(0.5),
+                        backgroundColor: isDispatched ? AppColors.ORANGE_COLOR : AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
                         shape: const CircleBorder(),
                         elevation: 4,
                         maximumSize: Size(18.w, 18.w),
