@@ -95,11 +95,13 @@ class OrderServices {
     required String orderMetaId,
     required String okPcs,
     required String woProcess,
+    required String repair,
   }) async {
     final params = {
       ApiKeys.orderMetaId: orderMetaId,
       ApiKeys.okPcs: okPcs,
       ApiKeys.woProcess: woProcess,
+      ApiKeys.repair: repair,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.createOrderCycleApi,
@@ -310,6 +312,36 @@ class OrderServices {
         } else {
           if (kDebugMode) {
             print("deleteOrderApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Generate Challan
+  static Future<ResponseModel> generateChallanService({
+    required List<String> orderMetaId,
+  }) async {
+    final params = {
+      ApiKeys.orderMetaId: orderMetaId,
+    };
+    final response = await ApiBaseHelper.deleteHTTP(
+      ApiUrls.generateChallanApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("generateChallanApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("generateChallanApi error :: ${res.message}");
           }
           Utils.handleMessage(message: res.message, isError: true);
         }

@@ -6,6 +6,7 @@ import 'package:cph_stocks/Localization/localization.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -37,6 +38,7 @@ class _MyAppState extends State<MyApp> {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppStrings.appName,
+          localizationsDelegates: [FlutterQuillLocalizations.delegate],
           translations: Localization(),
           locale: getString(AppConstance.languageCode) != null && getString(AppConstance.languageCode) != '' && getString(AppConstance.languageCountryCode) != null && getString(AppConstance.languageCountryCode) != '' ? Locale(getString(AppConstance.languageCode) ?? Get.deviceLocale?.languageCode ?? 'en', getString(AppConstance.languageCountryCode)) : Get.deviceLocale,
           fallbackLocale: const Locale('en', 'IN'),

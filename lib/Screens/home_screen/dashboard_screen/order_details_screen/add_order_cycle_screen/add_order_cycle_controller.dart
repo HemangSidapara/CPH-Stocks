@@ -16,9 +16,12 @@ class AddOrderCycleController extends GetxController {
 
   RxBool isAddOrderCycleLoading = false.obs;
 
+  RxBool isRepairFocus = false.obs;
+
   TextEditingController pendingController = TextEditingController();
   TextEditingController okPcsController = TextEditingController();
   TextEditingController woProcessController = TextEditingController();
+  TextEditingController repairController = TextEditingController();
 
   @override
   void onInit() {
@@ -50,6 +53,13 @@ class AddOrderCycleController extends GetxController {
     return null;
   }
 
+  String? validateRepair(String? value) {
+    if (value != null && value.isNotEmpty == true && value.toInt() > (int.tryParse(pendingController.text) ?? 0)) {
+      return AppStrings.pleaseEnterValidRepair.tr;
+    }
+    return null;
+  }
+
   Future<void> addOrderCycleApi() async {
     try {
       isAddOrderCycleLoading(true);
@@ -59,6 +69,7 @@ class AddOrderCycleController extends GetxController {
           orderMetaId: arguments.itemId ?? '',
           okPcs: okPcsController.text.trim(),
           woProcess: woProcessController.text.trim(),
+          repair: repairController.text.trim(),
         );
         if (response.isSuccess) {
           Get.back();

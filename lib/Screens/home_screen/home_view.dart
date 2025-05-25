@@ -16,9 +16,9 @@ class HomeView extends GetView<HomeController> {
       onPopInvokedWithResult: (didPop, result) async {
         await showExitDialog(context);
       },
-      child: SafeArea(
-        child: Scaffold(
-          bottomNavigationBar: Container(
+      child: Scaffold(
+        bottomNavigationBar: SafeArea(
+          child: Container(
             decoration: BoxDecoration(
               color: AppColors.SECONDARY_COLOR,
               boxShadow: [
@@ -44,7 +44,9 @@ class HomeView extends GetView<HomeController> {
               ],
             ),
           ),
-          body: PageView(
+        ),
+        body: SafeArea(
+          child: PageView(
             controller: controller.pageController,
             physics: const NeverScrollableScrollPhysics(),
             children: controller.bottomItemWidgetList,

@@ -5,6 +5,7 @@ class AppAssets {
   static const String updateAnim = "assets/animations/update_animation.gif";
   static const String recycleBinAnim = "assets/animations/recycle_bin.gif";
   static const String notesAnim = "assets/animations/notes.gif";
+  static const String noDataFoundAnim = "assets/animations/no_data_found_animation.json";
 
   ///Images
   static const String splashImage = "assets/images/splash_image.png";

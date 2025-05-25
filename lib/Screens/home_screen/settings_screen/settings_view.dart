@@ -19,14 +19,14 @@ class SettingsView extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
-      bottom: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
-      left: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
-      right: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
-      child: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 5.w),
+    return Scaffold(
+      body: SafeArea(
+        top: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
+        bottom: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
+        left: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
+        right: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,6 +290,7 @@ class SettingsView extends GetView<SettingsController> {
                   ),
                 ),
               ),
+              SizedBox(height: 2.h),
             ],
           ),
         ),

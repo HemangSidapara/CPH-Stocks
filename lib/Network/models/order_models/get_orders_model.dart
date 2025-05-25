@@ -295,6 +295,7 @@ class ModelMeta {
     String? okPcs,
     String? woProcess,
     String? pending,
+    String? repair,
     String? createdBy,
   }) {
     _orderMetaId = orderMetaId;
@@ -307,6 +308,7 @@ class ModelMeta {
     _okPcs = okPcs;
     _woProcess = woProcess;
     _pending = pending;
+    _repair = repair;
     _createdBy = createdBy;
   }
 
@@ -321,6 +323,7 @@ class ModelMeta {
     _okPcs = json['okPcs'];
     _woProcess = json['woProcess'];
     _pending = json['pending'];
+    _repair = json['repair'];
     _createdBy = json['createdBy'];
   }
 
@@ -334,6 +337,7 @@ class ModelMeta {
   String? _okPcs;
   String? _woProcess;
   String? _pending;
+  String? _repair;
   String? _createdBy;
 
   ModelMeta copyWith({
@@ -347,6 +351,7 @@ class ModelMeta {
     String? okPcs,
     String? woProcess,
     String? pending,
+    String? repair,
     String? createdBy,
   }) =>
       ModelMeta(
@@ -360,6 +365,7 @@ class ModelMeta {
         okPcs: okPcs ?? _okPcs,
         woProcess: woProcess ?? _woProcess,
         pending: pending ?? _pending,
+        repair: repair ?? _repair,
         createdBy: createdBy ?? _createdBy,
       );
 
@@ -383,6 +389,8 @@ class ModelMeta {
 
   String? get pending => _pending;
 
+  String? get repair => _repair;
+
   String? get createdBy => _createdBy;
 
   Map<String, dynamic> toJson() {
@@ -397,6 +405,7 @@ class ModelMeta {
     map['okPcs'] = _okPcs;
     map['woProcess'] = _woProcess;
     map['pending'] = _pending;
+    map['repair'] = _repair;
     map['createdBy'] = _createdBy;
     return map;
   }

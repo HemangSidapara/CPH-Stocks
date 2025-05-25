@@ -1,6 +1,7 @@
 import 'package:cph_stocks/Constants/api_keys.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/app_validators.dart';
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +34,7 @@ class CreateOrderController extends GetxController {
 
   RxBool isGetPartiesLoading = true.obs;
   RxList<get_parties.Data> partyList = RxList();
-  RxInt selectedParty = (-1).obs;
+  RxString selectedParty = "".obs;
   RxBool isCreateOrderLoading = false.obs;
   RxList<bool> isImageSelectedList = RxList();
 
@@ -51,7 +52,7 @@ class CreateOrderController extends GetxController {
 
   String? validatePartyName(String? value) {
     if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterPartyName.tr;
+      return AppStrings.pleaseSelectParty.tr;
     }
     return null;
   }
@@ -103,6 +104,8 @@ class CreateOrderController extends GetxController {
   String? validateSize(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterSize.tr;
+    } else if (!AppValidators.doubleValidator.hasMatch(value)) {
+      return AppStrings.pleaseEnterValidSize.tr;
     }
     return null;
   }

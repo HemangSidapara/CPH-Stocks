@@ -19,10 +19,10 @@ class ViewCyclesView extends GetView<ViewCyclesController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Utils.unfocus(),
-      child: SafeArea(
-        child: Scaffold(
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 1.5.h),
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
             child: Column(
               children: [
                 ///Header

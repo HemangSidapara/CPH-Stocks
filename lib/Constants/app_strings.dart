@@ -112,4 +112,11 @@ class AppStrings {
   static const String pleaseEnterChallanNumber = "Please enter Challan No.";
   static const String selectCycles = "Select Cycles";
   static const String pleaseSelectAtLeastOneCycle = "Please select at-least one cycle.";
+  static const String party = "Party";
+  static const String repair = "Repair";
+  static const String enterRepair = "Enter Repair";
+  static const String pleaseEnterValidRepair = "Please enter valid repair";
+  static const String generateChallan = "Generate Challan";
+  static const String pleaseEnterValidSize = "Please enter valid size";
+  static const String imageNotFound = "Image not found";
 }

@@ -73,7 +73,7 @@ class SplashController extends GetxController {
         systemNavigationBarColor: AppColors.SECONDARY_COLOR,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark,
-        statusBarColor: AppColors.TRANSPARENT,
+        statusBarColor: AppColors.SECONDARY_COLOR,
         statusBarBrightness: Brightness.light,
       ),
     );

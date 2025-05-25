@@ -47,6 +47,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   RxBool isDeleteMultipleOrdersEnable = false.obs;
   RxList<String> selectedOrderMetaIdForDeletion = RxList();
   RxBool isDeletingMultipleOrders = false.obs;
+  RxBool isGenerateChallan = false.obs;
   RxString selectedPartyForDeletingMultipleOrders = "".obs;
 
   RxBool isGetCyclesLoading = false.obs;
@@ -110,6 +111,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
 
       if (response.isSuccess) {
         get_orders.GetOrdersModel ordersModel = get_orders.GetOrdersModel.fromJson(response.response?.data);
+        String currentTab = searchedColorDataList.isNotEmpty ? searchedColorDataList[sortByColorTabController.index].pvdColor ?? "" : "";
         colorDataList.clear();
         searchedColorDataList.clear();
         colorDataList.addAll(ordersModel.colorData ?? []);
@@ -118,7 +120,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         sortByColorTabController.addListener(tabListener);
         sortByColorTabController.animateTo(selectedSortByColorTabIndex.value);
         if (searchPartyController.text.trim().isNotEmpty) {
-          searchPartyName(searchPartyController.text.trim());
+          searchPartyName(searchPartyController.text.trim(), selectedTab: currentTab);
         }
       }
     } finally {
@@ -165,6 +167,19 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     required List<String> orderMetaId,
   }) async {
     final response = await OrderServices.deleteOrderService(
+      orderMetaId: orderMetaId,
+    );
+
+    if (response.isSuccess) {
+      Get.back();
+      await getOrdersApi(isLoading: false).then((value) => Utils.handleMessage(message: response.message));
+    }
+  }
+
+  Future<void> generateChallanOrderApi({
+    required List<String> orderMetaId,
+  }) async {
+    final response = await OrderServices.generateChallanService(
       orderMetaId: orderMetaId,
     );
 
@@ -249,7 +264,8 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     }
   }
 
-  Future<void> searchPartyName(String searchedValue) async {
+  Future<void> searchPartyName(String searchedValue, {String? selectedTab}) async {
+    String currentTab = selectedTab ?? searchedColorDataList[sortByColorTabController.index].pvdColor ?? '';
     searchedColorDataList.clear();
     if (searchedValue.isNotEmpty) {
       for (var colorData in colorDataList) {
@@ -265,6 +281,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     }
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
     sortByColorTabController.addListener(tabListener);
+    if (currentTab.isNotEmpty) {
+      sortByColorTabController.animateTo(searchedColorDataList.indexWhere((element) => element.pvdColor == currentTab));
+    }
   }
 
   void tabListener() {
@@ -325,44 +344,47 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                   Center(
                     child: SizedBox(
                       height: 80.h,
-                      child: CachedNetworkImage(
-                        imageUrl: itemImage,
-                        fit: BoxFit.contain,
-                        cacheKey: itemImage,
-                        progressIndicatorBuilder: (context, url, progress) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.SECONDARY_COLOR,
-                              value: progress.progress,
-                              strokeWidth: 2,
-                            ),
-                          );
-                        },
-                        errorWidget: (context, error, stackTrace) {
-                          return SizedBox(
-                            height: 15.h,
-                            width: double.maxFinite,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.error_rounded,
-                                  size: 6.w,
-                                  color: AppColors.ERROR_COLOR,
-                                ),
-                                Text(
-                                  error.toString().replaceAll('Exception: ', ''),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: AppColors.SECONDARY_COLOR,
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
+                      child: InteractiveViewer(
+                        maxScale: 5.0,
+                        child: CachedNetworkImage(
+                          imageUrl: itemImage,
+                          fit: BoxFit.contain,
+                          cacheKey: itemImage,
+                          progressIndicatorBuilder: (context, url, progress) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.SECONDARY_COLOR,
+                                value: progress.progress,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          },
+                          errorWidget: (context, error, stackTrace) {
+                            return SizedBox(
+                              height: 15.h,
+                              width: double.maxFinite,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error_rounded,
+                                    size: 6.w,
+                                    color: AppColors.ERROR_COLOR,
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                                  Text(
+                                    error.toString().replaceAll('Exception: ', ''),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: AppColors.SECONDARY_COLOR,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),

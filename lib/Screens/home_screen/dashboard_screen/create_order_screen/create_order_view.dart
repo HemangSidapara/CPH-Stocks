@@ -3,15 +3,21 @@ import 'dart:convert';
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_controller.dart';
+import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
+import 'package:cph_stocks/Widgets/close_button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
+import 'package:cph_stocks/Widgets/divider_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
+import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
+import 'package:cph_stocks/Widgets/show_bottom_sheet_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:cph_stocks/Widgets/unfocus_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -26,10 +32,10 @@ class CreateOrderView extends GetView<CreateOrderController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Utils.unfocus(),
-      child: SafeArea(
-        child: Scaffold(
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 1.5.h),
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
             child: Column(
               children: [
                 ///Header
@@ -40,7 +46,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     Get.back(closeOverlays: true);
                   },
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 2.h),
 
                 ///Fields
                 Expanded(
@@ -63,203 +69,54 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                TextButton(
+                                IconButton(
                                   onPressed: () {
                                     controller.partyNameController.clear();
                                     controller.contactNumberController.clear();
-                                    controller.selectedParty(-1);
+                                    controller.selectedParty("");
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
-                                    maximumSize: Size(10.w, 2.5.h),
-                                    minimumSize: Size(10.w, 2.5.h),
+                                    maximumSize: Size(6.w, 6.w),
+                                    minimumSize: Size(6.w, 6.w),
                                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
-                                  child: Text(
-                                    AppStrings.reset.tr,
-                                    style: TextStyle(
-                                      color: AppColors.LIGHT_BLUE_COLOR,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 16.sp,
-                                    ),
+                                  icon: Icon(
+                                    Icons.refresh_rounded,
+                                    color: AppColors.LIGHT_BLUE_COLOR,
+                                    size: 5.w,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           SizedBox(height: 1.h),
-                          Obx(() {
-                            return DropdownSearch<get_parties.Data>(
-                              autoValidateMode: AutovalidateMode.onUserInteraction,
-                              items: (filter, loadProps) async {
-                                return await controller.getPartiesApi();
-                              },
-                              compareFn: (item1, item2) {
-                                return true;
-                              },
-                              selectedItem: controller.selectedParty.value == -1 ? null : controller.partyList[controller.selectedParty.value],
-                              suffixProps: DropdownSuffixProps(
-                                dropdownButtonProps: DropdownButtonProps(
-                                  padding: EdgeInsets.zero,
-                                  selectedIcon: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: AppColors.SECONDARY_COLOR,
-                                    size: 5.w,
-                                  ),
-                                ),
-                              ),
-                              validator: controller.validatePartyList,
-                              decoratorProps: DropDownDecoratorProps(
-                                baseStyle: TextStyle(
-                                  color: AppColors.SECONDARY_COLOR,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.sp,
-                                ),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  enabled: true,
-                                  fillColor: AppColors.WHITE_COLOR,
-                                  hintText: AppStrings.selectParty.tr,
-                                  hintStyle: TextStyle(
-                                    color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  errorStyle: TextStyle(
-                                    color: AppColors.ERROR_COLOR,
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppColors.PRIMARY_COLOR,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppColors.PRIMARY_COLOR,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppColors.PRIMARY_COLOR,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppColors.ERROR_COLOR,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppColors.ERROR_COLOR,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0).copyWith(right: 1.w),
-                                ),
-                              ),
-                              itemAsString: (item) {
-                                return item.partyName ?? '';
-                              },
-                              popupProps: PopupProps.menu(
-                                menuProps: MenuProps(
-                                  backgroundColor: AppColors.WHITE_COLOR,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                loadingBuilder: (context, searchEntry) {
-                                  return Center(
-                                    child: LoadingWidget(
-                                      loaderColor: AppColors.SECONDARY_COLOR,
-                                    ),
-                                  );
-                                },
-                                emptyBuilder: (context, searchEntry) {
-                                  return Center(
-                                    child: Text(
-                                      AppStrings.noDataFound.tr,
-                                      style: TextStyle(
-                                        color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                itemBuilder: (context, item, isDisabled, isSelected) {
-                                  return TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      controller.selectedParty.value = controller.partyList.indexWhere((element) => element.orderId == item.orderId);
-                                      if (controller.selectedParty.value != -1) {
-                                        controller.partyNameController.text = controller.partyList[controller.selectedParty.value].partyName ?? '';
-                                        controller.contactNumberController.text = controller.partyList[controller.selectedParty.value].contactNumber ?? '';
-                                      }
-                                    },
-                                    style: TextButton.styleFrom(
-                                      alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 5.w : 5.h, vertical: context.isPortrait ? 1.h : 1.w),
-                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                                    ),
-                                    child: Text(
-                                      item.partyName ?? '',
-                                      style: TextStyle(
-                                        color: AppColors.SECONDARY_COLOR,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                interceptCallBacks: true,
-                                showSearchBox: true,
-                                searchFieldProps: TextFieldProps(
-                                  cursorColor: AppColors.TERTIARY_COLOR,
-                                  style: TextStyle(
-                                    color: AppColors.SECONDARY_COLOR,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16.sp,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: AppStrings.searchParty.tr,
-                                    hintStyle: TextStyle(
-                                      color: AppColors.HINT_GREY_COLOR,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(width: 1, color: AppColors.SECONDARY_COLOR),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(width: 1, color: AppColors.SECONDARY_COLOR),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 4.w : 4.h, vertical: context.isPortrait ? 1.2.h : 1.2.w),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                          SizedBox(height: 1.h),
-
-                          ///Party Name
                           TextFieldWidget(
                             controller: controller.partyNameController,
-                            hintText: AppStrings.enterPartyName.tr,
+                            hintText: AppStrings.selectParty.tr,
                             validator: controller.validatePartyName,
                             textInputAction: TextInputAction.next,
                             maxLength: 50,
-                            isDisable: controller.selectedParty.value != -1,
+                            readOnly: true,
+                            onTap: () async {
+                              await showBottomSheetSelectAndAdd(
+                                ctx: context,
+                                items: controller.partyList,
+                                title: AppStrings.party.tr,
+                                fieldHint: AppStrings.enterPartyName.tr,
+                                searchHint: AppStrings.searchParty.tr,
+                                selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
+                                controller: controller.partyNameController,
+                                onInit: () async {
+                                  return await controller.getPartiesApi();
+                                },
+                                onSelect: (id) {
+                                  controller.selectedParty.value = id.toString();
+                                  controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? "";
+                                  controller.contactNumberController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.contactNumber ?? "";
+                                },
+                              );
+                            },
                           ),
                           SizedBox(height: 2.h),
 
@@ -526,48 +383,34 @@ class CreateOrderView extends GetView<CreateOrderController> {
             Row(
               children: [
                 ///Add
-                if (index != 0) ...[
-                  TextButton(
-                    onPressed: () {
-                      controller.itemNameControllerList.add(TextEditingController());
-                      controller.pvdColorControllerList.add(TextEditingController());
-                      controller.quantityControllerList.add(TextEditingController());
-                      controller.sizeControllerList.add(TextEditingController());
-                      controller.base64ImageList.add('');
-                      controller.isImageSelectedList.add(false);
-                      controller.selectedPvdColorList.add(-1);
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      maximumSize: Size(10.w, 2.5.h),
-                      minimumSize: Size(10.w, 2.5.h),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      AppStrings.add.tr,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: AppColors.DARK_GREEN_COLOR,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
-                ],
-
-                ///Add & Remove
-                TextButton(
+                IconButton(
                   onPressed: () {
-                    if (index == 0) {
-                      controller.itemNameControllerList.add(TextEditingController());
-                      controller.pvdColorControllerList.add(TextEditingController());
-                      controller.quantityControllerList.add(TextEditingController());
-                      controller.sizeControllerList.add(TextEditingController());
-                      controller.base64ImageList.add('');
-                      controller.isImageSelectedList.add(false);
-                      controller.selectedPvdColorList.add(-1);
-                    } else {
+                    controller.itemNameControllerList.add(TextEditingController());
+                    controller.pvdColorControllerList.add(TextEditingController());
+                    controller.quantityControllerList.add(TextEditingController());
+                    controller.sizeControllerList.add(TextEditingController());
+                    controller.base64ImageList.add('');
+                    controller.isImageSelectedList.add(false);
+                    controller.selectedPvdColorList.add(-1);
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    maximumSize: Size(8.w, 8.w),
+                    minimumSize: Size(8.w, 8.w),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  icon: Icon(
+                    Icons.add_circle_rounded,
+                    color: AppColors.DARK_GREEN_COLOR,
+                    size: 5.w,
+                  ),
+                ),
+
+                ///Remove
+                if (index != 0) ...[
+                  SizedBox(width: 2.w),
+                  IconButton(
+                    onPressed: () {
                       controller.itemNameControllerList.removeAt(index);
                       controller.pvdColorControllerList.removeAt(index);
                       controller.quantityControllerList.removeAt(index);
@@ -575,23 +418,20 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       controller.base64ImageList.removeAt(index);
                       controller.isImageSelectedList.removeAt(index);
                       controller.selectedPvdColorList.removeAt(index);
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    maximumSize: Size(index == 0 ? 10.w : 15.w, 2.5.h),
-                    minimumSize: Size(index == 0 ? 10.w : 15.w, 2.5.h),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(
-                    index == 0 ? AppStrings.add.tr : AppStrings.remove.tr,
-                    style: TextStyle(
-                      color: index == 0 ? AppColors.DARK_GREEN_COLOR : AppColors.DARK_RED_COLOR,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      maximumSize: Size(8.w, 8.w),
+                      minimumSize: Size(8.w, 8.w),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    icon: Icon(
+                      Icons.remove_circle_rounded,
+                      color: AppColors.DARK_RED_COLOR,
+                      size: 5.w,
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ],
@@ -626,195 +466,50 @@ class CreateOrderView extends GetView<CreateOrderController> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              TextButton(
+              IconButton(
                 onPressed: () {
                   controller.pvdColorControllerList[index].clear();
                   controller.selectedPvdColorList[index] = -1;
                 },
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  maximumSize: Size(10.w, 2.5.h),
-                  minimumSize: Size(10.w, 2.5.h),
+                  maximumSize: Size(6.w, 6.w),
+                  minimumSize: Size(6.w, 6.w),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: Text(
-                  AppStrings.reset.tr,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: AppColors.LIGHT_BLUE_COLOR,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16.sp,
-                  ),
+                icon: Icon(
+                  Icons.refresh_rounded,
+                  color: AppColors.LIGHT_BLUE_COLOR,
+                  size: 5.w,
                 ),
               ),
             ],
           ),
         ),
         SizedBox(height: 1.h),
-        DropdownSearch<String>(
-          autoValidateMode: AutovalidateMode.onUserInteraction,
-          items: (filter, loadProps) {
-            return controller.pvdColorList;
-          },
-          selectedItem: controller.selectedPvdColorList[index] == -1 ? null : controller.pvdColorList[controller.selectedPvdColorList[index]],
-          suffixProps: DropdownSuffixProps(
-            dropdownButtonProps: DropdownButtonProps(
-              padding: EdgeInsets.zero,
-              selectedIcon: Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: AppColors.SECONDARY_COLOR,
-                size: 5.w,
-              ),
-            ),
-          ),
-          validator: (value) => controller.validatePvdColorList(value, index),
-          decoratorProps: DropDownDecoratorProps(
-            baseStyle: TextStyle(
-              color: AppColors.SECONDARY_COLOR,
-              fontWeight: FontWeight.w600,
-              fontSize: 16.sp,
-            ),
-            decoration: InputDecoration(
-              filled: true,
-              enabled: true,
-              fillColor: AppColors.WHITE_COLOR,
-              hintText: AppStrings.selectPvdColor.tr,
-              hintStyle: TextStyle(
-                color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              errorStyle: TextStyle(
-                color: AppColors.ERROR_COLOR,
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w500,
-              ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: AppColors.PRIMARY_COLOR,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: AppColors.PRIMARY_COLOR,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: AppColors.PRIMARY_COLOR,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: AppColors.ERROR_COLOR,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: AppColors.ERROR_COLOR,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0).copyWith(right: 1.w),
-            ),
-          ),
-          itemAsString: (item) {
-            return item;
-          },
-          popupProps: PopupProps.menu(
-            menuProps: MenuProps(
-              backgroundColor: AppColors.WHITE_COLOR,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            loadingBuilder: (context, searchEntry) {
-              return Center(
-                child: LoadingWidget(
-                  loaderColor: AppColors.SECONDARY_COLOR,
-                ),
-              );
-            },
-            emptyBuilder: (context, searchEntry) {
-              return Center(
-                child: Text(
-                  AppStrings.noDataFound.tr,
-                  style: TextStyle(
-                    color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              );
-            },
-            itemBuilder: (context, item, isDisabled, isSelected) {
-              return TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  controller.selectedPvdColorList[index] = controller.pvdColorList.indexWhere((element) => element == item);
-                  if (controller.selectedPvdColorList[index] != -1) {
-                    controller.pvdColorControllerList[index].text = controller.pvdColorList[controller.selectedPvdColorList[index]];
-                  }
-                },
-                style: TextButton.styleFrom(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 5.w : 5.h, vertical: context.isPortrait ? 1.h : 1.w),
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                ),
-                child: Text(
-                  item,
-                  style: TextStyle(
-                    color: AppColors.SECONDARY_COLOR,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              );
-            },
-            interceptCallBacks: true,
-            showSearchBox: true,
-            searchFieldProps: TextFieldProps(
-              cursorColor: AppColors.TERTIARY_COLOR,
-              style: TextStyle(
-                color: AppColors.SECONDARY_COLOR,
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-              ),
-              decoration: InputDecoration(
-                hintText: AppStrings.searchPvdColor.tr,
-                hintStyle: TextStyle(
-                  color: AppColors.HINT_GREY_COLOR,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(width: 1, color: AppColors.SECONDARY_COLOR),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(width: 1, color: AppColors.SECONDARY_COLOR),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 4.w : 4.h, vertical: context.isPortrait ? 1.2.h : 1.2.w),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: 1.h),
         TextFieldWidget(
           controller: controller.pvdColorControllerList[index],
-          hintText: AppStrings.enterPVDColor.tr,
-          validator: controller.validatePVDColor,
+          hintText: AppStrings.selectPvdColor.tr,
+          validator: (value) {
+            return controller.validatePvdColorList(value, index);
+          },
           textInputAction: TextInputAction.next,
-          maxLength: 30,
-          isDisable: controller.selectedPvdColorList[index] != -1,
+          maxLength: 50,
+          readOnly: true,
+          onTap: () async {
+            await showBottomSheetSelectAndAdd(
+              ctx: context,
+              items: controller.pvdColorList,
+              title: AppStrings.pvdColor.tr,
+              fieldHint: AppStrings.enterPVDColor.tr,
+              searchHint: AppStrings.searchPvdColor.tr,
+              selectedId: controller.selectedPvdColorList[index],
+              controller: controller.pvdColorControllerList[index],
+              onSelect: (id) {
+                controller.selectedPvdColorList[index] = id;
+              },
+            );
+          },
         ),
         SizedBox(height: 2.h),
 
@@ -836,6 +531,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
           title: AppStrings.size.tr,
           hintText: AppStrings.enterSize.tr,
           validator: controller.validateSize,
+          keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
           maxLength: 20,
         ),
@@ -933,6 +629,235 @@ class CreateOrderView extends GetView<CreateOrderController> {
         ),
         SizedBox(height: index < controller.itemNameControllerList.length - 1 ? 2.h : 1.h),
       ],
+    );
+  }
+
+  Future<void> showBottomSheetSelectAndAdd({
+    required BuildContext ctx,
+    required List items,
+    Future<List> Function()? onInit,
+    required String title,
+    required String fieldHint,
+    required String searchHint,
+    required int selectedId,
+    required TextEditingController controller,
+    required Function(int id) onSelect,
+  }) async {
+    RxBool isSearch = true.obs;
+    RxList itemsList = items.obs;
+    RxList searchItemsList = items.obs;
+    RxInt selectedIndex = selectedId.obs;
+    TextEditingController newController = TextEditingController(text: selectedId == -1 ? controller.text : null);
+    if (selectedId == -1 && newController.text.trim().isNotEmpty) {
+      isSearch(false);
+    }
+
+    RxBool isLoading = false.obs;
+    if (onInit != null) {
+      isLoading(true);
+      onInit.call().then((value) {
+        itemsList.clear();
+        searchItemsList.clear();
+        itemsList.addAll(value);
+        searchItemsList.addAll(value);
+        isLoading(false);
+      });
+    }
+
+    void searchItems(value) {
+      searchItemsList.clear();
+      if (value.isNotEmpty) {
+        searchItemsList.addAll(itemsList
+            .where((element) => element is get_parties.Data ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true : element.toString().toLowerCase().contains(value.toLowerCase())));
+      } else {
+        searchItemsList.addAll([...itemsList]);
+      }
+    }
+
+    await showBottomSheetWidget(
+      context: ctx,
+      builder: (context) {
+        final keyboardPadding = MediaQuery.viewInsetsOf(context).bottom;
+        return UnfocusWidget(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: keyboardPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ///Close, Title & Select
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CloseButtonWidget(),
+                      SizedBox(width: 2.w),
+                      Flexible(child: Text(title, textAlign: TextAlign.center, style: AppStyles.size18w600)),
+                      SizedBox(width: 2.w),
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                          if (isSearch.isFalse && newController.text.trim().isNotEmpty && items.every((element) => element.toString().toLowerCase() != newController.text.trim().toLowerCase())) {
+                            controller.text = newController.text;
+                            onSelect.call(-1);
+                          } else if (selectedIndex.value != -1) {
+                            controller.text = itemsList.firstOrNull is get_parties.Data
+                                ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "")
+                                : searchItemsList[selectedIndex.value].toString();
+                            onSelect.call(selectedIndex.value);
+                          } else {
+                            controller.clear();
+                            onSelect.call(-1);
+                          }
+                        },
+                        child: Text(AppStrings.select.tr, style: AppStyles.size16w600.copyWith(color: AppColors.DARK_GREEN_COLOR)),
+                      ),
+                    ],
+                  ),
+                ),
+                DividerWidget(),
+                SizedBox(height: 2.h),
+
+                ///New Item
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Obx(() {
+                          return TextFieldWidget(
+                            hintText: isSearch.isTrue ? searchHint : fieldHint,
+                            controller: newController,
+                            maxLength: 20,
+                            textFieldWidth: double.maxFinite,
+                            onChanged: (value) {
+                              if (isSearch.isFalse && value.isNotEmpty) {
+                                selectedIndex(-1);
+                              } else {
+                                searchItems(value);
+                              }
+                            },
+                          );
+                        }),
+                      ),
+                      SizedBox(width: 3.w),
+                      ElevatedButton(
+                        onPressed: () {
+                          isSearch.toggle();
+                          newController.clear();
+                          searchItems("");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.9),
+                          shape: CircleBorder(),
+                          maximumSize: Size(4.5.h, 4.5.h),
+                          minimumSize: Size(4.5.h, 4.5.h),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: EdgeInsets.zero,
+                        ),
+                        child: Obx(() {
+                          return Icon(
+                            isSearch.isTrue ? Icons.add_rounded : Icons.search_rounded,
+                            color: AppColors.PRIMARY_COLOR,
+                            size: 5.w,
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 2.h),
+
+                ///Items
+                Flexible(
+                  child: Obx(() {
+                    if (isLoading.isTrue) {
+                      return SizedBox(
+                        height: 20.h,
+                        child: Center(
+                          child: LoadingWidget(),
+                        ),
+                      );
+                    } else if (searchItemsList.isEmpty) {
+                      return NoDataFoundWidget(
+                        subtitle: AppStrings.noDataFound.tr,
+                        bottomMargin: 0,
+                      );
+                    } else {
+                      return ListView.separated(
+                        itemCount: searchItemsList.length,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              if (searchItemsList[index] is get_parties.Data) {
+                                if (selectedIndex.value.toString() != searchItemsList[index].orderId) {
+                                  selectedIndex(searchItemsList[index].orderId.toString().toInt());
+                                } else {
+                                  selectedIndex(-1);
+                                }
+                              } else {
+                                if (selectedIndex.value != index) {
+                                  selectedIndex(index);
+                                } else {
+                                  selectedIndex(-1);
+                                }
+                              }
+                              if (isSearch.isFalse && newController.text.trim().isNotEmpty) {
+                                newController.clear();
+                              }
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      (searchItemsList[index] is get_parties.Data ? searchItemsList[index].partyName : searchItemsList[index]).toString().tr,
+                                      style: AppStyles.size16w600.copyWith(fontSize: 16.sp),
+                                    ),
+                                  ),
+                                  SizedBox(width: 2.w),
+                                  Obx(() {
+                                    return AnimatedContainer(
+                                      duration: 375.milliseconds,
+                                      decoration: BoxDecoration(
+                                        color: (searchItemsList[index] is get_parties.Data ? searchItemsList[index].orderId == selectedIndex.value.toString() : selectedIndex.value == index)
+                                            ? AppColors.PRIMARY_COLOR
+                                            : AppColors.SECONDARY_COLOR,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: AppColors.PRIMARY_COLOR,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      padding: EdgeInsets.all(1.w),
+                                      child: Icon(
+                                        Icons.check_rounded,
+                                        color: AppColors.SECONDARY_COLOR,
+                                        size: 4.5.w,
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return DividerWidget(color: AppColors.LIGHT_BLACK_COLOR);
+                        },
+                      );
+                    }
+                  }),
+                ),
+                SizedBox(height: 2.h),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
