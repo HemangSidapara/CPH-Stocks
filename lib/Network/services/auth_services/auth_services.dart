@@ -48,6 +48,7 @@ class AuthServices {
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.loginApi,
       params: params,
+      showProgress: false,
       onError: (dioExceptions) {
         Utils.handleMessage(message: dioExceptions.message, isError: true);
       },

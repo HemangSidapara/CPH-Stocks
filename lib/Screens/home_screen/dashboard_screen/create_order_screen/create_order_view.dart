@@ -30,8 +30,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Utils.unfocus(),
+    return UnfocusWidget(
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -389,6 +388,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     controller.pvdColorControllerList.add(TextEditingController());
                     controller.quantityControllerList.add(TextEditingController());
                     controller.sizeControllerList.add(TextEditingController());
+                    controller.categoryNameControllerList.add(TextEditingController());
                     controller.base64ImageList.add('');
                     controller.isImageSelectedList.add(false);
                     controller.selectedPvdColorList.add(-1);
@@ -415,6 +415,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       controller.pvdColorControllerList.removeAt(index);
                       controller.quantityControllerList.removeAt(index);
                       controller.sizeControllerList.removeAt(index);
+                      controller.categoryNameControllerList.removeAt(index);
                       controller.base64ImageList.removeAt(index);
                       controller.isImageSelectedList.removeAt(index);
                       controller.selectedPvdColorList.removeAt(index);
@@ -449,6 +450,17 @@ class CreateOrderView extends GetView<CreateOrderController> {
           validator: controller.validateItemName,
           textInputAction: TextInputAction.next,
           maxLength: 30,
+        ),
+        SizedBox(height: 2.h),
+
+        ///Category Name
+        TextFieldWidget(
+          controller: controller.categoryNameControllerList[index],
+          title: AppStrings.categoryName.tr,
+          hintText: AppStrings.enterCategoryName.tr,
+          validator: controller.validateCategoryName,
+          textInputAction: TextInputAction.next,
+          maxLength: 10,
         ),
         SizedBox(height: 2.h),
 
@@ -521,7 +533,10 @@ class CreateOrderView extends GetView<CreateOrderController> {
           validator: controller.validateQuantity,
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.number,
-          maxLength: 10,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+          ],
+          maxLength: 5,
         ),
         SizedBox(height: 2.h),
 
@@ -533,7 +548,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
           validator: controller.validateSize,
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
-          maxLength: 20,
+          maxLength: 10,
         ),
         SizedBox(height: 2.h),
 
@@ -640,6 +655,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
     required String fieldHint,
     required String searchHint,
     required int selectedId,
+    bool selectOnly = false,
     required TextEditingController controller,
     required Function(int id) onSelect,
   }) async {
@@ -654,7 +670,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
 
     RxBool isLoading = false.obs;
     if (onInit != null) {
-      isLoading(true);
+      isLoading(itemsList.isEmpty);
       onInit.call().then((value) {
         itemsList.clear();
         searchItemsList.clear();
@@ -667,8 +683,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
     void searchItems(value) {
       searchItemsList.clear();
       if (value.isNotEmpty) {
-        searchItemsList.addAll(itemsList
-            .where((element) => element is get_parties.Data ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true : element.toString().toLowerCase().contains(value.toLowerCase())));
+        searchItemsList.addAll(itemsList.where((element) => element is get_parties.Data ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true : element.toString().toLowerCase().contains(value.toLowerCase())));
       } else {
         searchItemsList.addAll([...itemsList]);
       }
@@ -701,9 +716,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             controller.text = newController.text;
                             onSelect.call(-1);
                           } else if (selectedIndex.value != -1) {
-                            controller.text = itemsList.firstOrNull is get_parties.Data
-                                ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "")
-                                : searchItemsList[selectedIndex.value].toString();
+                            controller.text = itemsList.firstOrNull is get_parties.Data ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "") : searchItemsList[selectedIndex.value].toString();
                             onSelect.call(selectedIndex.value);
                           } else {
                             controller.clear();
@@ -740,29 +753,31 @@ class CreateOrderView extends GetView<CreateOrderController> {
                           );
                         }),
                       ),
-                      SizedBox(width: 3.w),
-                      ElevatedButton(
-                        onPressed: () {
-                          isSearch.toggle();
-                          newController.clear();
-                          searchItems("");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.9),
-                          shape: CircleBorder(),
-                          maximumSize: Size(4.5.h, 4.5.h),
-                          minimumSize: Size(4.5.h, 4.5.h),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: EdgeInsets.zero,
+                      if (!selectOnly) ...[
+                        SizedBox(width: 3.w),
+                        ElevatedButton(
+                          onPressed: () {
+                            isSearch.toggle();
+                            newController.clear();
+                            searchItems("");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.9),
+                            shape: CircleBorder(),
+                            maximumSize: Size(4.5.h, 4.5.h),
+                            minimumSize: Size(4.5.h, 4.5.h),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,
+                          ),
+                          child: Obx(() {
+                            return Icon(
+                              isSearch.isTrue ? Icons.add_rounded : Icons.search_rounded,
+                              color: AppColors.PRIMARY_COLOR,
+                              size: 5.w,
+                            );
+                          }),
                         ),
-                        child: Obx(() {
-                          return Icon(
-                            isSearch.isTrue ? Icons.add_rounded : Icons.search_rounded,
-                            color: AppColors.PRIMARY_COLOR,
-                            size: 5.w,
-                          );
-                        }),
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -823,9 +838,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     return AnimatedContainer(
                                       duration: 375.milliseconds,
                                       decoration: BoxDecoration(
-                                        color: (searchItemsList[index] is get_parties.Data ? searchItemsList[index].orderId == selectedIndex.value.toString() : selectedIndex.value == index)
-                                            ? AppColors.PRIMARY_COLOR
-                                            : AppColors.SECONDARY_COLOR,
+                                        color: (searchItemsList[index] is get_parties.Data ? searchItemsList[index].orderId == selectedIndex.value.toString() : selectedIndex.value == index) ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
                                         shape: BoxShape.circle,
                                         border: Border.all(
                                           color: AppColors.PRIMARY_COLOR,

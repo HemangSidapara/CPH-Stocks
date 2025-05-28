@@ -3,6 +3,8 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/c
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/ledger_screen/ledger_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/ledger_screen/ledger_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_bindings.dart';
@@ -110,6 +112,15 @@ class AppPages {
       name: Routes.challanScreen,
       page: () => const ChallanView(),
       binding: ChallanBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Ledger Screen
+    GetPage(
+      name: Routes.ledgerScreen,
+      page: () => const LedgerView(),
+      binding: LedgerBinding(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

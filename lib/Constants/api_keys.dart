@@ -24,4 +24,5 @@ class ApiKeys {
   static const createdDate = "createdDate";
   static const createdTime = "createdTime";
   static const repair = "repair";
+  static const categoryName = "categoryName";
 }

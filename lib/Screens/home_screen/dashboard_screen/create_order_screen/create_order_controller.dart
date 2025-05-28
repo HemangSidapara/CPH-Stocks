@@ -18,6 +18,7 @@ class CreateOrderController extends GetxController {
   RxList<TextEditingController> pvdColorControllerList = RxList<TextEditingController>();
   RxList<TextEditingController> quantityControllerList = RxList<TextEditingController>();
   RxList<TextEditingController> sizeControllerList = RxList<TextEditingController>();
+  RxList<TextEditingController> categoryNameControllerList = RxList<TextEditingController>();
   RxList<String> base64ImageList = RxList();
 
   RxList<String> pvdColorList = RxList(
@@ -45,6 +46,7 @@ class CreateOrderController extends GetxController {
     pvdColorControllerList.add(TextEditingController());
     quantityControllerList.add(TextEditingController());
     sizeControllerList.add(TextEditingController());
+    categoryNameControllerList.add(TextEditingController());
     base64ImageList.add('');
     isImageSelectedList.add(false);
     selectedPvdColorList.add(-1);
@@ -101,6 +103,13 @@ class CreateOrderController extends GetxController {
     return null;
   }
 
+  String? validateCategoryName(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseEnterCategoryName.tr;
+    }
+    return null;
+  }
+
   String? validateSize(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterSize.tr;
@@ -135,10 +144,11 @@ class CreateOrderController extends GetxController {
           List<Map<String, dynamic>> tempMetaList = [];
           for (int i = 0; i < itemNameControllerList.length; i++) {
             tempMetaList.add({
-              ApiKeys.itemName: itemNameControllerList[i].text,
-              ApiKeys.pvdColor: pvdColorControllerList[i].text,
-              ApiKeys.quantity: quantityControllerList[i].text,
-              ApiKeys.size: sizeControllerList[i].text,
+              ApiKeys.itemName: itemNameControllerList[i].text.trim(),
+              ApiKeys.pvdColor: pvdColorControllerList[i].text.trim(),
+              ApiKeys.quantity: quantityControllerList[i].text.trim(),
+              ApiKeys.size: sizeControllerList[i].text.trim(),
+              ApiKeys.categoryName: categoryNameControllerList[i].text.trim(),
               ApiKeys.itemImage: base64ImageList[i],
             });
           }

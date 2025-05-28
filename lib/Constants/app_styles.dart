@@ -18,4 +18,6 @@ class AppStyles {
   static TextStyle get size19w600 => TextStyle(fontSize: 19.sp, fontWeight: FontWeight.w600, color: AppColors.PRIMARY_COLOR);
 
   static TextStyle get size20w700 => TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700, color: AppColors.PRIMARY_COLOR);
+
+  static TextStyle get size22w900 => TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w900, color: AppColors.PRIMARY_COLOR);
 }

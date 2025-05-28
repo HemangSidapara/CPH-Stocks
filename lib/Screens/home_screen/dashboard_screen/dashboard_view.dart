@@ -1,6 +1,9 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/hand_shaken_animation.dart';
@@ -23,14 +26,12 @@ class DashboardView extends GetView<DashboardController> {
             children: [
               Flexible(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      AppStrings.hello.tr,
-                      style: TextStyle(
-                        color: AppColors.PRIMARY_COLOR.withValues(alpha: 0.8),
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w900,
+                    Flexible(
+                      child: Text(
+                        "${AppStrings.hello.tr}${getData(AppConstance.userName) ?? ""} ",
+                        style: AppStyles.size22w900.copyWith(color: AppColors.WHITE_COLOR.withValues(alpha: 0.8)),
                       ),
                     ),
                     const HandShakenAnimation(),
@@ -134,6 +135,61 @@ class DashboardView extends GetView<DashboardController> {
                                 SizedBox(width: 3.w),
                                 Text(
                                   AppStrings.orderDetails.tr,
+                                  style: TextStyle(
+                                    color: AppColors.SECONDARY_COLOR,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Image.asset(
+                            AppAssets.frontIcon,
+                            width: 9.w,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 2.h),
+                ),
+
+                ///Ledger
+                SliverToBoxAdapter(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Get.toNamed(Routes.ledgerScreen);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.LIGHT_SECONDARY_COLOR,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 65.w,
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  AppAssets.ledgerIcon,
+                                  width: 18.w,
+                                ),
+                                SizedBox(width: 3.w),
+                                Text(
+                                  AppStrings.ledger.tr,
                                   style: TextStyle(
                                     color: AppColors.SECONDARY_COLOR,
                                     fontWeight: FontWeight.w600,

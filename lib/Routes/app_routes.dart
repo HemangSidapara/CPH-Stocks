@@ -12,4 +12,5 @@ class Routes {
   static const challanScreen = '/challanScreen';
   static const viewCyclesScreen = '/viewCyclesScreen';
   static const settingsScreen = '/settingsScreen';
+  static const ledgerScreen = '/ledgerScreen';
 }

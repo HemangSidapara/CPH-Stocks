@@ -119,4 +119,9 @@ class AppStrings {
   static const String generateChallan = "Generate Challan";
   static const String pleaseEnterValidSize = "Please enter valid size";
   static const String imageNotFound = "Image not found";
+  static const String pleaseEnterCategoryName = "Please enter category name";
+  static const String categoryName = "Category Name";
+  static const String enterCategoryName = "Enter Category Name";
+  static const String ledger = "Ledger";
+  static const String generate = "Generate";
 }
