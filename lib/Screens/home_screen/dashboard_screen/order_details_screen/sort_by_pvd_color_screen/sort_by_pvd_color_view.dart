@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
@@ -187,7 +185,6 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
   }
 
   ///PartyData
-  // ignore: non_constant_identifier_names
   Widget ColorDataWidget({required int index}) {
     return Column(
       children: [
@@ -239,7 +236,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                             left: 3.w,
                             right: 2.w,
                           ),
-                          trailing: (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) && controller.isDeleteMultipleOrdersEnable.isFalse
+                          trailing: (getData(AppConstance.role) == AppConstance.admin) && controller.isDeleteMultipleOrdersEnable.isFalse
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -539,15 +536,34 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                           );
                                                         },
                                                         child: CircleAvatar(
-                                                          radius: 18.sp,
-                                                          onForegroundImageError: (exception, stackTrace) {
-                                                            log("Error: $exception");
-                                                          },
+                                                          radius: 6.w,
                                                           backgroundColor: AppColors.SECONDARY_COLOR,
-                                                          backgroundImage: AssetImage(AppAssets.createOrderImage),
-                                                          foregroundImage: CachedNetworkImageProvider(
-                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
-                                                            cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.circular(360),
+                                                            child: SizedBox(
+                                                              width: 12.w,
+                                                              height: 12.w,
+                                                              child: ColoredBox(
+                                                                color: AppColors.SECONDARY_COLOR,
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
+                                                                  cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
+                                                                  errorWidget: (context, url, error) {
+                                                                    return Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                      children: [
+                                                                        Image.asset(
+                                                                          AppAssets.createOrderImage,
+                                                                          width: 10.w,
+                                                                          height: 10.w,
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),

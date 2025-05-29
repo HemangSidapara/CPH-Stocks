@@ -1,4 +1,6 @@
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +26,25 @@ class Utils {
       }
     }
     return false;
+  }
+
+  /// Sets the order data in the local storage.
+  ///
+  /// The method updates the existing order data with the provided [data].
+  /// If no order data exists, it initializes the storage with the new [data].
+  ///
+  /// The [data] parameter is a map containing the order details that need to be
+  /// stored or updated.
+  ///
+  /// Returns a [Future] that completes when the data is successfully stored.
+  static Future<void> setOrderData({required Map<String, dynamic> data}) async {
+    final listOrder = getList(AppConstance.setOrderData);
+    if (listOrder.isEmpty) {
+      listOrder.add(data);
+    } else {
+      listOrder[0] = data;
+    }
+    await setData(AppConstance.setOrderData, listOrder);
   }
 
   ///showSnackBar

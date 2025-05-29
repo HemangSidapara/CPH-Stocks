@@ -23,4 +23,5 @@ class ApiUrls {
   static const String getOrdersMetaApi = '${_apiPath}getOrdersMeta';
   static const String multipleLastBilledCycleApi = '${_apiPath}multipleLastBilledCycle';
   static const String generateChallanApi = '${_apiPath}generateChallan';
+  static const String getCategoriesApi = '${_apiPath}getCategories';
 }

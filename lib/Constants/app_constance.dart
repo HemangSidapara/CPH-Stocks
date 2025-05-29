@@ -28,4 +28,5 @@ class AppConstance {
   static const String employee = 'Employee';
   static const String customer = 'Customer';
   static const String userName = 'userName';
+  static const String setOrderData = 'setOrderData';
 }

@@ -483,4 +483,28 @@ class OrderServices {
     );
     return response;
   }
+
+  /// Get Categories
+  static Future<ResponseModel> getCategoriesService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.getCategoriesApi,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getCategoriesApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getCategoriesApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

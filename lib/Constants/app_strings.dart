@@ -119,9 +119,16 @@ class AppStrings {
   static const String generateChallan = "Generate Challan";
   static const String pleaseEnterValidSize = "Please enter valid size";
   static const String imageNotFound = "Image not found";
-  static const String pleaseEnterCategoryName = "Please enter category name";
+  static const String pleaseSelectCategoryName = "Please select category name";
   static const String categoryName = "Category Name";
   static const String enterCategoryName = "Enter Category Name";
+  static const String searchCategoryName = "Search Category Name";
+  static const String selectCategoryName = "Select Category Name";
   static const String ledger = "Ledger";
+  static const String ledgerInch = "Ledger (Inch)";
   static const String generate = "Generate";
+  static const String repairingDetails = "Repairing Details";
+  static const String category = "Category";
+  static const String yesSure = "Yes, sure";
+  static const String areYouSureYouWantToExitCreateOrder = "Are you sure you want to exit create order?";
 }

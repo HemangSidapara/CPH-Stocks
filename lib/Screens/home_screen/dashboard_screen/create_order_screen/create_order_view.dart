@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:cph_stocks/Network/models/order_models/get_categories_model.dart' as get_categories;
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_controller.dart';
@@ -41,8 +44,15 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 CustomHeaderWidget(
                   title: AppStrings.createOrder.tr,
                   titleIcon: AppAssets.createOrderImage,
-                  onBackPressed: () {
-                    Get.back(closeOverlays: true);
+                  onBackPressed: () async {
+                    await controller.showExitDialog(
+                      onPressed: () async {
+                        Get.back(closeOverlays: true);
+                        Get.back(closeOverlays: true);
+                        await removeData(AppConstance.setOrderData);
+                      },
+                      title: AppStrings.areYouSureYouWantToExitCreateOrder.tr,
+                    );
                   },
                 ),
                 SizedBox(height: 2.h),
@@ -73,6 +83,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     controller.partyNameController.clear();
                                     controller.contactNumberController.clear();
                                     controller.selectedParty("");
+                                    controller.storeOrderDetails();
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
@@ -111,8 +122,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                 },
                                 onSelect: (id) {
                                   controller.selectedParty.value = id.toString();
-                                  controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? "";
-                                  controller.contactNumberController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.contactNumber ?? "";
+                                  controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? controller.partyNameController.text;
+                                  controller.contactNumberController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.contactNumber ?? controller.contactNumberController.text;
+                                  controller.storeOrderDetails();
                                 },
                               );
                             },
@@ -136,6 +148,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                 }
                               })
                             ],
+                            onChanged: (value) {
+                              controller.storeOrderDetails();
+                            },
                             maxLength: 10,
                           ),
                           SizedBox(height: 2.h),
@@ -148,6 +163,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             textInputAction: TextInputAction.next,
                             maxLength: 120,
                             maxLines: 3,
+                            onChanged: (value) {
+                              controller.storeOrderDetails();
+                            },
                           ),
                           SizedBox(height: 2.h),
 
@@ -270,6 +288,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             if (result != null) {
                               controller.base64ImageList[index] = base64Encode(await result.readAsBytes());
                               controller.isImageSelectedList[index] = true;
+                              controller.storeOrderDetails();
                             }
                             Get.back();
                           } else if (controller.base64ImageList[index].isEmpty) {
@@ -319,6 +338,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             if (result != null) {
                               controller.base64ImageList[index] = base64Encode(await result.readAsBytes());
                               controller.isImageSelectedList[index] = true;
+                              controller.storeOrderDetails();
                             }
                             Get.back();
                           } else if (controller.base64ImageList[index].isEmpty) {
@@ -389,9 +409,11 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     controller.quantityControllerList.add(TextEditingController());
                     controller.sizeControllerList.add(TextEditingController());
                     controller.categoryNameControllerList.add(TextEditingController());
+                    controller.selectedCategoryNameList.add('');
                     controller.base64ImageList.add('');
                     controller.isImageSelectedList.add(false);
                     controller.selectedPvdColorList.add(-1);
+                    controller.storeOrderDetails();
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -416,9 +438,11 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       controller.quantityControllerList.removeAt(index);
                       controller.sizeControllerList.removeAt(index);
                       controller.categoryNameControllerList.removeAt(index);
+                      controller.selectedCategoryNameList.removeAt(index);
                       controller.base64ImageList.removeAt(index);
                       controller.isImageSelectedList.removeAt(index);
                       controller.selectedPvdColorList.removeAt(index);
+                      controller.storeOrderDetails();
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
@@ -450,6 +474,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
           validator: controller.validateItemName,
           textInputAction: TextInputAction.next,
           maxLength: 30,
+          onChanged: (value) {
+            controller.storeOrderDetails();
+          },
         ),
         SizedBox(height: 2.h),
 
@@ -457,10 +484,30 @@ class CreateOrderView extends GetView<CreateOrderController> {
         TextFieldWidget(
           controller: controller.categoryNameControllerList[index],
           title: AppStrings.categoryName.tr,
-          hintText: AppStrings.enterCategoryName.tr,
+          hintText: AppStrings.selectCategoryName.tr,
           validator: controller.validateCategoryName,
           textInputAction: TextInputAction.next,
           maxLength: 10,
+          readOnly: true,
+          onTap: () async {
+            await showBottomSheetSelectAndAdd(
+              ctx: context,
+              items: controller.categoryList,
+              title: AppStrings.category.tr,
+              fieldHint: AppStrings.enterCategoryName.tr,
+              searchHint: AppStrings.searchCategoryName.tr,
+              selectedId: controller.selectedCategoryNameList[index].isNotEmpty ? controller.selectedCategoryNameList[index].toInt() : -1,
+              controller: controller.categoryNameControllerList[index],
+              onSelect: (id) {
+                controller.selectedCategoryNameList[index] = id.toString();
+                controller.categoryNameControllerList[index].text = controller.categoryList.firstWhereOrNull((element) => element.categoryId == controller.selectedCategoryNameList[index])?.categoryName ?? controller.categoryNameControllerList[index].text;
+                controller.storeOrderDetails();
+              },
+              onInit: () async {
+                return await controller.getCategoriesApi();
+              },
+            );
+          },
         ),
         SizedBox(height: 2.h),
 
@@ -482,6 +529,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 onPressed: () {
                   controller.pvdColorControllerList[index].clear();
                   controller.selectedPvdColorList[index] = -1;
+                  controller.storeOrderDetails();
                 },
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
@@ -519,6 +567,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
               controller: controller.pvdColorControllerList[index],
               onSelect: (id) {
                 controller.selectedPvdColorList[index] = id;
+                controller.storeOrderDetails();
               },
             );
           },
@@ -537,6 +586,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
             FilteringTextInputFormatter.digitsOnly,
           ],
           maxLength: 5,
+          onChanged: (value) {
+            controller.storeOrderDetails();
+          },
         ),
         SizedBox(height: 2.h),
 
@@ -549,6 +601,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
           maxLength: 10,
+          onChanged: (value) {
+            controller.storeOrderDetails();
+          },
         ),
         SizedBox(height: 2.h),
 
@@ -601,6 +656,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                       onPressed: () {
                         controller.base64ImageList[index] = '';
                         controller.isImageSelectedList[index] = false;
+                        controller.storeOrderDetails();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.SECONDARY_COLOR.withValues(alpha: 0.9),
@@ -683,7 +739,11 @@ class CreateOrderView extends GetView<CreateOrderController> {
     void searchItems(value) {
       searchItemsList.clear();
       if (value.isNotEmpty) {
-        searchItemsList.addAll(itemsList.where((element) => element is get_parties.Data ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true : element.toString().toLowerCase().contains(value.toLowerCase())));
+        searchItemsList.addAll(itemsList.where((element) => element is get_parties.Data
+            ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true
+            : element is get_categories.CategoryData
+                ? element.categoryName?.toLowerCase().contains(value.toLowerCase()) == true
+                : element.toString().toLowerCase().contains(value.toLowerCase())));
       } else {
         searchItemsList.addAll([...itemsList]);
       }
@@ -716,7 +776,11 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             controller.text = newController.text;
                             onSelect.call(-1);
                           } else if (selectedIndex.value != -1) {
-                            controller.text = itemsList.firstOrNull is get_parties.Data ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "") : searchItemsList[selectedIndex.value].toString();
+                            controller.text = itemsList.firstOrNull is get_parties.Data
+                                ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "")
+                                : itemsList.firstOrNull is get_categories.CategoryData
+                                    ? (searchItemsList.firstWhereOrNull((element) => element.categoryId == selectedIndex.value.toString())?.categoryName ?? "")
+                                    : searchItemsList[selectedIndex.value].toString();
                             onSelect.call(selectedIndex.value);
                           } else {
                             controller.clear();
@@ -812,6 +876,12 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                 } else {
                                   selectedIndex(-1);
                                 }
+                              } else if (searchItemsList[index] is get_categories.CategoryData) {
+                                if (selectedIndex.value.toString() != searchItemsList[index].categoryId) {
+                                  selectedIndex(searchItemsList[index].categoryId.toString().toInt());
+                                } else {
+                                  selectedIndex(-1);
+                                }
                               } else {
                                 if (selectedIndex.value != index) {
                                   selectedIndex(index);
@@ -829,7 +899,13 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      (searchItemsList[index] is get_parties.Data ? searchItemsList[index].partyName : searchItemsList[index]).toString().tr,
+                                      (searchItemsList[index] is get_parties.Data
+                                              ? searchItemsList[index].partyName
+                                              : searchItemsList[index] is get_categories.CategoryData
+                                                  ? searchItemsList[index].categoryName
+                                                  : searchItemsList[index])
+                                          .toString()
+                                          .tr,
                                       style: AppStyles.size16w600.copyWith(fontSize: 16.sp),
                                     ),
                                   ),
@@ -838,7 +914,13 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     return AnimatedContainer(
                                       duration: 375.milliseconds,
                                       decoration: BoxDecoration(
-                                        color: (searchItemsList[index] is get_parties.Data ? searchItemsList[index].orderId == selectedIndex.value.toString() : selectedIndex.value == index) ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
+                                        color: (searchItemsList[index] is get_parties.Data
+                                                ? searchItemsList[index].orderId == selectedIndex.value.toString()
+                                                : searchItemsList[index] is get_categories.CategoryData
+                                                    ? searchItemsList[index].categoryId == selectedIndex.value.toString()
+                                                    : selectedIndex.value == index)
+                                            ? AppColors.PRIMARY_COLOR
+                                            : AppColors.SECONDARY_COLOR,
                                         shape: BoxShape.circle,
                                         border: Border.all(
                                           color: AppColors.PRIMARY_COLOR,

@@ -27,4 +27,5 @@ class AppAssets {
   static const String recycleBinIcon = "assets/icons/recycle_bin_icon.png";
   static const String notesIcon = "assets/icons/notes_icon.png";
   static const String ledgerIcon = "assets/icons/ledger_icon.png";
+  static const String repairingIcon = "assets/icons/repairing_icon.png";
 }

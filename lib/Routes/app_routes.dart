@@ -13,4 +13,5 @@ class Routes {
   static const viewCyclesScreen = '/viewCyclesScreen';
   static const settingsScreen = '/settingsScreen';
   static const ledgerScreen = '/ledgerScreen';
+  static const repairingScreen = '/repairingScreen';
 }
