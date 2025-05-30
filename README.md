@@ -9,7 +9,7 @@ Stocks handle of CPH.
 ## Notes:
 
 1) Run command to generate Native Splash
-    - `dart run flutter_native_splash:create`
+   - `dart run flutter_native_splash:create`
 
 2) Run for generate json model class
    - `dart run build_runner build`

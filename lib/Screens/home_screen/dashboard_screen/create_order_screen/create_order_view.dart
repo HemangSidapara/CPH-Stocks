@@ -852,7 +852,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                   child: Obx(() {
                     if (isLoading.isTrue) {
                       return SizedBox(
-                        height: 20.h,
+                        height: 30.h,
                         child: Center(
                           child: LoadingWidget(),
                         ),

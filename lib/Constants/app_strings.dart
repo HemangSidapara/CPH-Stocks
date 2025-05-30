@@ -131,4 +131,19 @@ class AppStrings {
   static const String category = "Category";
   static const String yesSure = "Yes, sure";
   static const String areYouSureYouWantToExitCreateOrder = "Are you sure you want to exit create order?";
+  static const String areYouSureYouWantToGenerateChallan = "Are you sure you want to generate challan for this orders?";
+  static const String createdAt = "Created At";
+  static const String date = "Date";
+  static const String sr = "SR";
+  static const String cat = "Cat.";
+  static const String item = "item";
+  static const String inDate = "In Date";
+  static const String qty = "QTY";
+  static const String previous = "Previous";
+  static const String ok = "OK";
+  static const String wo = "W/O";
+  static const String inch = "Inch";
+  static const String totalInch = "Total Inch";
+  static const String balanceQTY = "Balance QTY";
+  static const String open = "Open";
 }

@@ -1,30 +1,31 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
-import 'package:cph_stocks/Network/services/utils_services/download_service.dart';
+import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/invoice_view.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
+import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
+import 'package:cph_stocks/Widgets/show_bottom_sheet_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
-import 'package:flutter/foundation.dart';
+import 'package:cph_stocks/Widgets/unfocus_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ChallanView extends GetView<ChallanController> {
   const ChallanView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Utils.unfocus(),
-      child: SafeArea(
-        child: Scaffold(
-          body: Padding(
+    return UnfocusWidget(
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 1.5.h),
             child: Column(
               children: [
@@ -90,7 +91,7 @@ class ChallanView extends GetView<ChallanController> {
                     onTap: () {
                       Utils.unfocus();
                       controller.searchController.clear();
-                      controller.searchPartyName(controller.searchController.text);
+                      controller.searchPartyName("");
                     },
                     child: Icon(
                       Icons.close_rounded,
@@ -115,14 +116,12 @@ class ChallanView extends GetView<ChallanController> {
                         child: LoadingWidget(),
                       );
                     } else if (controller.searchedInvoiceList.isEmpty) {
-                      return Center(
-                        child: Text(
-                          AppStrings.noDataFound.tr,
-                          style: TextStyle(
-                            color: AppColors.PRIMARY_COLOR,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      return Expanded(
+                        child: NoDataFoundWidget(
+                          subtitle: AppStrings.noDataFound.tr,
+                          onPressed: () {
+                            controller.getInvoicesApi(isLoading: false);
+                          },
                         ),
                       );
                     } else {
@@ -130,6 +129,7 @@ class ChallanView extends GetView<ChallanController> {
                         itemCount: controller.searchedInvoiceList.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          final orderInvoice = controller.searchedInvoiceList[index];
                           return Card(
                             color: AppColors.TRANSPARENT,
                             clipBehavior: Clip.antiAlias,
@@ -138,25 +138,67 @@ class ChallanView extends GetView<ChallanController> {
                             ),
                             child: ExpansionTile(
                               title: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    '${index + 1}. ',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.SECONDARY_COLOR,
+                                  Expanded(
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${orderInvoice.challanNumber ?? ''}. ",
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: AppColors.DARK_RED_COLOR,
+                                          ),
+                                        ),
+                                        SizedBox(width: 2.w),
+                                        Expanded(
+                                          child: Text(
+                                            controller.searchedInvoiceList[index].partyName ?? '',
+                                            style: TextStyle(
+                                              color: AppColors.SECONDARY_COLOR,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   SizedBox(width: 2.w),
-                                  Flexible(
-                                    child: Text(
-                                      controller.searchedInvoiceList[index].partyName ?? '',
-                                      style: TextStyle(
-                                        color: AppColors.SECONDARY_COLOR,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ///View Invoice
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          showInvoiceBottomSheet(
+                                            ctx: context,
+                                            partyName: orderInvoice.partyName ?? '',
+                                            challanNumber: orderInvoice.challanNumber ?? '',
+                                            createdDate: orderInvoice.createdDate ?? '',
+                                            invoiceData: orderInvoice.invoiceMeta ?? [],
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.ORANGE_COLOR,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          minimumSize: Size(12.w, 8.w),
+                                          maximumSize: Size(12.w, 8.w),
+                                          padding: EdgeInsets.zero,
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                        child: Icon(
+                                          Icons.visibility_rounded,
+                                          size: 5.w,
+                                          color: AppColors.PRIMARY_COLOR,
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -171,6 +213,8 @@ class ChallanView extends GetView<ChallanController> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               childrenPadding: EdgeInsets.only(bottom: 2.h),
+                              tilePadding: EdgeInsets.symmetric(horizontal: 3.w),
+                              showTrailingIcon: false,
                               children: [
                                 Divider(
                                   color: AppColors.HINT_GREY_COLOR,
@@ -178,92 +222,21 @@ class ChallanView extends GetView<ChallanController> {
                                 ),
                                 SizedBox(height: 1.h),
 
-                                ///Items
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxHeight: 60.h,
+                                ///Created At
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "${AppStrings.createdAt.tr}: ",
+                                        style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                      ),
+                                      Text(
+                                        "${orderInvoice.createdDate ?? ''}, ${DateFormat("hh:mm a").format(DateFormat("hh:mm:ss").parse(orderInvoice.createdTime!))}".trim(),
+                                        style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                      ),
+                                    ],
                                   ),
-                                  child: controller.searchedInvoiceList[index].modelMeta?.isNotEmpty == true
-                                      ? ListView.separated(
-                                          itemCount: controller.searchedInvoiceList[index].modelMeta?.length ?? 0,
-                                          shrinkWrap: true,
-                                          itemBuilder: (context, itemIndex) {
-                                            return DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: AppColors.PRIMARY_COLOR.withValues(alpha: 0.7),
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                                child: Row(
-                                                  children: [
-                                                    ///Date
-                                                    Flexible(
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            '• ',
-                                                            style: TextStyle(
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: AppColors.SECONDARY_COLOR,
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 2.w),
-                                                          Flexible(
-                                                            child: Text(
-                                                              controller.searchedInvoiceList[index].modelMeta?[itemIndex].createdDate ?? '',
-                                                              style: TextStyle(
-                                                                color: AppColors.SECONDARY_COLOR,
-                                                                fontSize: 16.sp,
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-
-                                                    ///Download
-                                                    IconButton(
-                                                      onPressed: () async {
-                                                        if (controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice != null && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.isNotEmpty == true && controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice?.contains("https://") == true) {
-                                                          await showChallanBottomSheet(
-                                                            pdfUrl: controller.searchedInvoiceList[index].modelMeta?[itemIndex].invoice ?? '',
-                                                            fileName: "${controller.searchedInvoiceList[index].partyName?.replaceAll(' ', '')}_${controller.searchedInvoiceList[index].modelMeta?[itemIndex].orderId?.replaceAll(' ', '')}.pdf",
-                                                            contactNumber: controller.searchedInvoiceList[index].contactNumber ?? '',
-                                                          );
-                                                        } else {
-                                                          Utils.handleMessage(message: AppStrings.noDataFound.tr, isWarning: true);
-                                                        }
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.download_rounded,
-                                                        color: AppColors.DARK_RED_COLOR,
-                                                        size: 6.5.w,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          separatorBuilder: (context, index) {
-                                            return SizedBox(height: 1.5.h);
-                                          },
-                                        )
-                                      : SizedBox(
-                                          height: 10.h,
-                                          child: Center(
-                                            child: Text(
-                                              AppStrings.challansAreNotGeneratedYet.tr,
-                                              style: TextStyle(
-                                                fontSize: 15.sp,
-                                                fontWeight: FontWeight.w700,
-                                                color: AppColors.SECONDARY_COLOR,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                 ),
                               ],
                             ),
@@ -284,139 +257,30 @@ class ChallanView extends GetView<ChallanController> {
     );
   }
 
-  Future<void> showChallanBottomSheet({
-    required String pdfUrl,
-    required String fileName,
-    required String contactNumber,
+  /// @function showInvoiceBottomSheet
+  /// @description show invoice bottom sheet
+  /// @param {BuildContext} ctx - BuildContext object
+  /// @param {String} partyName - Party name
+  /// @param {String} challanNumber - Challan number
+  /// @param {String} createdDate - Created date
+  /// @param {List<InvoiceMeta>} invoiceData - List of invoice data
+  /// @returns {Future<void>} - Returns a Future of a void value
+  /// @throws {Exception} - Throws an exception if an error occurs
+  Future<void> showInvoiceBottomSheet({
+    required BuildContext ctx,
+    required String partyName,
+    required String challanNumber,
+    required String createdDate,
+    required List<InvoiceMeta> invoiceData,
   }) async {
-    await showModalBottomSheet(
-      context: Get.context!,
-      constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 95.h, minHeight: 0.h),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      clipBehavior: Clip.hardEdge,
-      backgroundColor: AppColors.PRIMARY_COLOR,
+    await showBottomSheetWidget(
+      context: ctx,
       builder: (context) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ///Back & Title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ///Title
-                    Text(
-                      AppStrings.viewChallan.tr,
-                      style: TextStyle(
-                        color: AppColors.SECONDARY_COLOR,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18.sp,
-                      ),
-                    ),
-
-                    ///Back
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      style: IconButton.styleFrom(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      icon: Icon(
-                        Icons.close_rounded,
-                        color: AppColors.SECONDARY_COLOR,
-                        size: 6.w,
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: AppColors.HINT_GREY_COLOR,
-                  thickness: 1,
-                ),
-                SizedBox(height: 3.h),
-
-                ///Viewer
-                Flexible(
-                  child: SfPdfViewerTheme(
-                    data: SfPdfViewerThemeData(
-                      backgroundColor: AppColors.PRIMARY_COLOR,
-                      progressBarColor: AppColors.TERTIARY_COLOR,
-                    ),
-                    child: SfPdfViewer.network(
-                      pdfUrl,
-                      onDocumentLoadFailed: (details) {
-                        if (kDebugMode) {
-                          print("SfPdfViewer error :: ${details.description}");
-                        }
-                        Utils.handleMessage(message: details.description, isError: true);
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(height: 2.h),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ///Download
-                    ElevatedButton(
-                      onPressed: () async {
-                        await Get.put(DownloaderService()).fileDownloadService(
-                          url: pdfUrl,
-                          fileName: fileName,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.DARK_GREEN_COLOR,
-                        fixedSize: Size(35.w, 5.h),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.download_rounded,
-                        color: AppColors.PRIMARY_COLOR,
-                        size: 6.w,
-                      ),
-                    ),
-
-                    ///Share
-                    ElevatedButton(
-                      onPressed: () async {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.LIGHT_BLUE_COLOR,
-                        fixedSize: Size(35.w, 5.h),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Icon(
-                        FontAwesomeIcons.whatsapp,
-                        color: AppColors.PRIMARY_COLOR,
-                        size: 6.w,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 2.h),
-              ],
-            ),
-          ),
+        return InvoiceView(
+          partyName: partyName,
+          challanNumber: challanNumber,
+          createdDate: createdDate,
+          invoiceData: invoiceData,
         );
       },
     );

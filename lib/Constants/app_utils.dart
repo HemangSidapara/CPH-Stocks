@@ -1,5 +1,7 @@
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
+import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +57,7 @@ class Utils {
     Color? barColor,
     Color? iconColor,
     Color? textColor,
+    VoidCallback? onTap,
   }) {
     if (!Get.isSnackbarOpen) {
       Get.rawSnackbar(
@@ -79,34 +82,67 @@ class Utils {
             : EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
         messageText: Row(
           children: [
-            Icon(
-              isError
-                  ? Icons.error_rounded
-                  : isWarning
-                      ? Icons.warning_rounded
-                      : Icons.check_circle_rounded,
-              color: iconColor ?? AppColors.WHITE_COLOR,
-            ),
-            SizedBox(
-                width: Get.context != null
-                    ? Get.context!.isPortrait
-                        ? 3.w
-                        : 3.h
-                    : 3.w),
             Expanded(
-              child: Text(
-                message ?? 'Empty message',
-                style: TextStyle(
-                  fontSize: Get.context != null
-                      ? Get.context!.isPortrait
-                          ? 15.sp
-                          : 12.sp
-                      : 15.sp,
-                  color: textColor ?? AppColors.WHITE_COLOR,
-                  fontWeight: FontWeight.w600,
-                ),
+              child: Row(
+                children: [
+                  Icon(
+                    isError
+                        ? Icons.error_rounded
+                        : isWarning
+                            ? Icons.warning_rounded
+                            : Icons.check_circle_rounded,
+                    color: iconColor ?? AppColors.WHITE_COLOR,
+                  ),
+                  SizedBox(
+                      width: Get.context != null
+                          ? Get.context!.isPortrait
+                              ? 3.w
+                              : 3.h
+                          : 3.w),
+                  Expanded(
+                    child: Text(
+                      message ?? 'Empty message',
+                      style: TextStyle(
+                        fontSize: Get.context != null
+                            ? Get.context!.isPortrait
+                                ? 15.sp
+                                : 12.sp
+                            : 15.sp,
+                        color: textColor ?? AppColors.WHITE_COLOR,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+            if (onTap != null) ...[
+              SizedBox(
+                  width: Get.context != null
+                      ? Get.context!.isPortrait
+                          ? 2.w
+                          : 2.h
+                      : 2.w),
+              InkWell(
+                onTap: onTap,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.PRIMARY_COLOR,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                    child: Text(
+                      AppStrings.open.tr,
+                      style: AppStyles.size16w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       );

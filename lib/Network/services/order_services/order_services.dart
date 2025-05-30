@@ -320,15 +320,15 @@ class OrderServices {
     return response;
   }
 
-  /// Generate Challan
-  static Future<ResponseModel> generateChallanService({
-    required List<String> orderMetaId,
+  /// Generate Invoice
+  static Future<ResponseModel> generateInvoiceService({
+    required List<String> orderMetaIds,
   }) async {
     final params = {
-      ApiKeys.orderMetaId: orderMetaId,
+      ApiKeys.orderMetaIds: orderMetaIds,
     };
-    final response = await ApiBaseHelper.deleteHTTP(
-      ApiUrls.generateChallanApi,
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.generateInvoiceApi,
       params: params,
       showProgress: false,
       onError: (dioExceptions) {
@@ -337,11 +337,11 @@ class OrderServices {
       onSuccess: (res) {
         if (res.isSuccess) {
           if (kDebugMode) {
-            print("generateChallanApi success :: ${res.message}");
+            print("generateInvoiceApi success :: ${res.message}");
           }
         } else {
           if (kDebugMode) {
-            print("generateChallanApi error :: ${res.message}");
+            print("generateInvoiceApi error :: ${res.message}");
           }
           Utils.handleMessage(message: res.message, isError: true);
         }

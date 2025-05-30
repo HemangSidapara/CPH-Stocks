@@ -86,3 +86,7 @@ extension NotContainsAndAddSubString on String {
     }
   }
 }
+
+extension CleanFileName on String? {
+  String? get cleanFileName => this?.replaceAll("/", "_").replaceAll(" ", "_").replaceAll(RegExp(r'[\\:*?"<>|]'), "");
+}

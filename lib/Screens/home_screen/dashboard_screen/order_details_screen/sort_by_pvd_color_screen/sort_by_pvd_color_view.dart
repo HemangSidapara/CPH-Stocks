@@ -13,6 +13,7 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_sc
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
+import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,7 +75,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
           }),
 
         Obx(() {
-          if (controller.isGetOrdersLoading.value) {
+          if (controller.isGetOrdersLoading.isTrue) {
             return const Expanded(
               child: Center(
                 child: LoadingWidget(),
@@ -82,15 +83,11 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
             );
           } else if (controller.searchedColorDataList.isEmpty) {
             return Expanded(
-              child: Center(
-                child: Text(
-                  AppStrings.noDataFound.tr,
-                  style: TextStyle(
-                    color: AppColors.PRIMARY_COLOR,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              child: NoDataFoundWidget(
+                subtitle: AppStrings.noDataFound.tr,
+                onPressed: () {
+                  controller.getOrdersApi();
+                },
               ),
             );
           } else {
@@ -424,29 +421,31 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                           ],
                                         ),
                                       ),
-                                      IconButton(
-                                        onPressed: () {
-                                          showBillCycleBottomSheet(
-                                            orderDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
-                                                ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
-                                                : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
-                                            createdDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? "",
-                                            createdTime: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? "",
-                                            pvdColor: controller.searchedColorDataList[index].pvdColor ?? "",
-                                          );
-                                        },
-                                        style: IconButton.styleFrom(
-                                          maximumSize: Size(6.w, 6.w),
-                                          minimumSize: Size(6.w, 6.w),
-                                          padding: EdgeInsets.zero,
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      if (controller.isDeleteMultipleOrdersEnable.isFalse) ...[
+                                        IconButton(
+                                          onPressed: () {
+                                            showBillCycleBottomSheet(
+                                              orderDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
+                                                  ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
+                                                  : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
+                                              createdDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? "",
+                                              createdTime: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? "",
+                                              pvdColor: controller.searchedColorDataList[index].pvdColor ?? "",
+                                            );
+                                          },
+                                          style: IconButton.styleFrom(
+                                            maximumSize: Size(6.w, 6.w),
+                                            minimumSize: Size(6.w, 6.w),
+                                            padding: EdgeInsets.zero,
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                          icon: Icon(
+                                            Icons.receipt_long_rounded,
+                                            color: AppColors.DARK_GREEN_COLOR,
+                                            size: 5.w,
+                                          ),
                                         ),
-                                        icon: Icon(
-                                          Icons.receipt_long_rounded,
-                                          color: AppColors.DARK_GREEN_COLOR,
-                                          size: 5.w,
-                                        ),
-                                      ),
+                                      ],
                                     ],
                                   ),
                                 ),
@@ -1579,12 +1578,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                   Expanded(
                     child: Obx(() {
                       if (controller.isGetCyclesLoading.isTrue) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.SECONDARY_COLOR,
-                            strokeWidth: 3,
-                          ),
-                        );
+                        return LoadingWidget();
                       } else {
                         return SingleChildScrollView(
                           child: Column(

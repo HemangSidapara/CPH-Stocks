@@ -176,11 +176,11 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     }
   }
 
-  Future<void> generateChallanOrderApi({
-    required List<String> orderMetaId,
+  Future<void> generateInvoiceApi({
+    required List<String> orderMetaIds,
   }) async {
-    final response = await OrderServices.generateChallanService(
-      orderMetaId: orderMetaId,
+    final response = await OrderServices.generateInvoiceService(
+      orderMetaIds: orderMetaIds,
     );
 
     if (response.isSuccess) {
@@ -415,6 +415,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> showDeleteDialog({
     required void Function()? onPressed,
     required String title,
+    IconData? iconData,
+    Color? iconColor,
+    String? agreeText,
   }) async {
     await showGeneralDialog(
       context: Get.context!,
@@ -455,8 +458,8 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
               children: [
                 SizedBox(height: 2.h),
                 Icon(
-                  Icons.delete_forever_rounded,
-                  color: AppColors.DARK_RED_COLOR,
+                  iconData ?? Icons.delete_forever_rounded,
+                  color: iconColor ?? AppColors.DARK_RED_COLOR,
                   size: 8.w,
                 ),
                 SizedBox(height: 2.h),
@@ -490,7 +493,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                       ButtonWidget(
                         onPressed: onPressed,
                         fixedSize: Size(30.w, 5.h),
-                        buttonTitle: AppStrings.delete.tr,
+                        buttonTitle: agreeText ?? AppStrings.delete.tr,
                         buttonColor: AppColors.DARK_RED_COLOR,
                         buttonTitleColor: AppColors.PRIMARY_COLOR,
                       ),

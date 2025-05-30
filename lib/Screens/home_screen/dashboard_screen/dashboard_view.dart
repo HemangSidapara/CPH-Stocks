@@ -77,6 +77,16 @@ class DashboardView extends GetView<DashboardController> {
                   child: SizedBox(height: 2.h),
                 ),
 
+                ///Challan
+                CommonButton(
+                  route: Routes.challanScreen,
+                  title: AppStrings.challan.tr,
+                  icon: AppAssets.challanIcon,
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 2.h),
+                ),
+
                 ///Repairing Details
                 CommonButton(
                   route: Routes.repairingScreen,
