@@ -4,10 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Network/models/order_models/get_orders_meta_model.dart' as get_orders_meta;
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
+import 'package:cph_stocks/Network/services/challan_services/challan_service.dart';
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_view.dart';
 import 'package:cph_stocks/Utils/progress_dialog.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
@@ -179,13 +183,29 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> generateInvoiceApi({
     required List<String> orderMetaIds,
   }) async {
-    final response = await OrderServices.generateInvoiceService(
+    final response = await ChallanService.generateInvoiceService(
       orderMetaIds: orderMetaIds,
     );
 
     if (response.isSuccess) {
       Get.back();
-      await getOrdersApi(isLoading: false).then((value) => Utils.handleMessage(message: response.message));
+      Utils.handleMessage(message: response.message);
+      get_invoices.GetInvoicesModel invoicesModel = get_invoices.GetInvoicesModel.fromJson(response.response?.data);
+      final invoiceDetails = invoicesModel.data?.firstOrNull;
+      ChallanView()
+          .showInvoiceBottomSheet(
+        ctx: Get.context!,
+        partyName: invoiceDetails?.partyName ?? "",
+        challanNumber: invoiceDetails?.challanNumber ?? "",
+        createdDate: invoiceDetails?.createdDate ?? "",
+        invoiceData: invoiceDetails?.invoiceMeta ?? [],
+      )
+          .then((value) {
+        if (Get.isRegistered<ChallanController>()) {
+          Get.delete<ChallanController>();
+        }
+      });
+      await getOrdersApi(isLoading: false);
     }
   }
 

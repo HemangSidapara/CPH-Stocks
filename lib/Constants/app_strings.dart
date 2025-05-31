@@ -134,7 +134,7 @@ class AppStrings {
   static const String areYouSureYouWantToGenerateChallan = "Are you sure you want to generate challan for this orders?";
   static const String createdAt = "Created At";
   static const String date = "Date";
-  static const String sr = "SR";
+  static const String sr = "SR.";
   static const String cat = "Cat.";
   static const String item = "item";
   static const String inDate = "In Date";
@@ -146,4 +146,16 @@ class AppStrings {
   static const String totalInch = "Total Inch";
   static const String balanceQTY = "Balance QTY";
   static const String open = "Open";
+  static const String amount = "Amount";
+  static const String totalAmount = "Total Amount";
+  static const String selectPrinter = "Select Printer";
+  static const String pleaseSelectPrinter = "Please select printer";
+  static const String noPrinterFound = "No printer found";
+  static const String print = "Print";
+  static const String viewLedger = "View Ledger";
+  static const String startDate = "Start Date";
+  static const String pleaseSelectStartDate = "Please select start date";
+  static const String endDate = "End Date";
+  static const String pleaseSelectEndDate = "Please select end date";
+  static const String noChallanAvailableYet = "No challan available yet";
 }

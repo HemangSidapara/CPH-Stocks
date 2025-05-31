@@ -26,4 +26,7 @@ class ApiKeys {
   static const repair = "repair";
   static const categoryName = "categoryName";
   static const orderMetaIds = "orderMetaIds";
+  static const startDate = "startDate";
+  static const endDate = "endDate";
+  static const partyId = "partyId";
 }

@@ -3,15 +3,24 @@ import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class Utils {
+  static const double kMobileHeight = 997.3333333333335;
+
+  static DashboardController get getDashboardController => Get.isRegistered<DashboardController>() ? Get.find<DashboardController>() : Get.put(DashboardController());
+
   ///Unfocus
   static void unfocus() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  static double getHeightByDevDevice({required double height}) {
+    return 100.h * height / kMobileHeight;
   }
 
   /// Current app is latest or not

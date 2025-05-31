@@ -39,20 +39,6 @@ class AddOrderCycleController extends GetxController {
     return null;
   }
 
-  String? validateOkPcs(String? value) {
-    if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterOkPcs.tr;
-    }
-    return null;
-  }
-
-  String? validateWOProcess(String? value) {
-    if (value == null || value.isEmpty == true) {
-      return AppStrings.pleaseEnterWOProcess.tr;
-    }
-    return null;
-  }
-
   String? validateRepair(String? value) {
     if (value != null && value.isNotEmpty == true && value.toInt() > (int.tryParse(pendingController.text) ?? 0)) {
       return AppStrings.pleaseEnterValidRepair.tr;
@@ -67,9 +53,9 @@ class AddOrderCycleController extends GetxController {
       if (isValidate == true) {
         final response = await OrderServices.createOrderCycleService(
           orderMetaId: arguments.itemId ?? '',
-          okPcs: okPcsController.text.trim(),
-          woProcess: woProcessController.text.trim(),
-          repair: repairController.text.trim(),
+          okPcs: okPcsController.text.trim().isEmpty ? "0" : okPcsController.text.trim(),
+          woProcess: woProcessController.text.trim().isEmpty ? "0" : woProcessController.text.trim(),
+          repair: repairController.text.trim().isEmpty ? "0" : repairController.text.trim(),
         );
         if (response.isSuccess) {
           Get.back();

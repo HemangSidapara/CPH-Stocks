@@ -84,6 +84,7 @@ class InvoiceMeta {
   String? inch;
   String? totalInch;
   String? balanceQuantity;
+  String? totalAmount;
 
   InvoiceMeta({
     this.invoiceMetaId,
@@ -100,6 +101,7 @@ class InvoiceMeta {
     this.inch,
     this.totalInch,
     this.balanceQuantity,
+    this.totalAmount,
   });
 
   factory InvoiceMeta.fromJson(Map<String, dynamic> json) => _$InvoiceMetaFromJson(json);
@@ -121,6 +123,7 @@ class InvoiceMeta {
     String? inch,
     String? totalInch,
     String? balanceQuantity,
+    String? totalAmount,
   }) {
     return InvoiceMeta(
       invoiceMetaId: invoiceMetaId ?? this.invoiceMetaId,
@@ -137,6 +140,7 @@ class InvoiceMeta {
       inch: inch ?? this.inch,
       totalInch: totalInch ?? this.totalInch,
       balanceQuantity: balanceQuantity ?? this.balanceQuantity,
+      totalAmount: totalAmount ?? this.totalAmount,
     );
   }
 }

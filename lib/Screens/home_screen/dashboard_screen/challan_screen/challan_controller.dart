@@ -1,21 +1,20 @@
 import 'dart:io';
 
+import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Network/services/challan_services/challan_service.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart' as pdf;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:printing/printing.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ChallanController extends GetxController {
   TextEditingController searchController = TextEditingController();
@@ -59,79 +58,39 @@ class ChallanController extends GetxController {
     }
   }
 
-  /// @function downloadPdf
-  /// @description download pdf from file
-  /// @param {File} pdfFile - File object
-  /// @returns {Future<File?>} - Returns a Future of a File object
-  /// @throws {Exception} - Throws an exception if an error occurs
-  Future<File?> downloadPdf({required File pdfFile}) async {
-    if (pdfFile.existsSync()) {
-      final directory = Directory('/storage/emulated/0/Download');
-      if (directory.existsSync()) {
-        final filePath = '${directory.path}/${pdfFile.path.split('/').last}';
-        return await pdfFile.copy(filePath);
-      }
-    }
-    return null;
-  }
-
-  /// @function printPdf
-  /// @description print pdf from file
-  /// @param {File} pdfFile - File object
-  /// @returns {Future<bool>} - Returns a Future of a boolean value
-  /// @throws {Exception} - Throws an exception if an error occurs
-  Future<bool> printPdf({required File pdfFile}) async {
-    if (pdfFile.existsSync()) {
-      return await Printing.layoutPdf(
-        format: pdf.PdfPageFormat.a3,
-        usePrinterSettings: true,
-        forceCustomPrintPaper: true,
-        onLayout: (_) => pdfFile.readAsBytesSync(),
-      );
-    }
-    return false;
-  }
-
-  /// @function sharePdf
-  /// @description share pdf from file
-  /// @param {File} pdfFile - File object
-  /// @returns {Future<bool>} - Returns a Future of a boolean value
-  /// @throws {Exception} - Throws an exception if an error occurs
-  Future<bool> sharePdf({required File pdfFile}) async {
-    if (pdfFile.existsSync()) {
-      return await Printing.sharePdf(
-        bytes: pdfFile.readAsBytesSync(),
-        filename: pdfFile.path.split('/').last,
-      );
-    }
-    return false;
-  }
-
   /// @function generatePdf
   /// @description generate pdf from data
-  /// @param {List<get_invoices.InvoiceMeta>} data - List of invoice data
+  /// @param {List\<get_invoices.InvoiceMeta>} data - List of invoice data
   /// @param {String} partyName - Party name
   /// @param {String} challanNumber - Challan number
   /// @param {String} createdDate - Created date
-  /// @returns {Future<File?>} - Returns a Future of a File object
+  /// @returns {Future\<File?>} - Returns a Future of a File object
   /// @throws {Exception} - Throws an exception if an error occurs
   Future<File?> generatePdf({
     required String partyName,
     required String challanNumber,
     required String createdDate,
+    bool isLandscape = true,
     required List<get_invoices.InvoiceMeta> data,
+    bool showAmount = false,
   }) async {
     final pdfDoc = pw.Document();
 
-    pw.TextStyle size20Font = pw.TextStyle(
+    pw.TextStyle size22Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
-      fontSize: 22,
+      fontSize: isLandscape ? 14 : 22,
       fontWeight: pw.FontWeight.bold,
     );
 
     pw.TextStyle size16Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
-      fontSize: 16,
+      fontSize: isLandscape ? 10 : 16,
+      fontWeight: pw.FontWeight.bold,
+    );
+
+    pw.TextStyle size12Font = pw.TextStyle(
+      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
+      fontSize: isLandscape ? 9.5 : 12,
       fontWeight: pw.FontWeight.bold,
     );
 
@@ -139,7 +98,7 @@ class ChallanController extends GetxController {
       required String title,
     }) {
       return pw.Padding(
-        padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+        padding: pw.EdgeInsets.symmetric(horizontal: isLandscape ? 3 : 5, vertical: isLandscape ? 2.5 : 5),
         child: pw.Text(
           title,
           style: size16Font,
@@ -147,16 +106,45 @@ class ChallanController extends GetxController {
       );
     }
 
+    pw.Widget TableHeadingCell({
+      required String title,
+    }) {
+      return pw.Padding(
+        padding: pw.EdgeInsets.symmetric(horizontal: isLandscape ? 3 : 5, vertical: 1.5),
+        child: pw.Text(
+          title,
+          style: size12Font,
+        ),
+      );
+    }
+
+    double totalAmountCount() {
+      final listOfAmounts = data.where((element) => element.totalAmount != null && element.totalAmount?.isNotEmpty == true).toList().map((e) => e.totalAmount!.toDouble()).toList();
+      return listOfAmounts.isNotEmpty ? listOfAmounts.reduce((value, element) => value + element) : 0.0;
+    }
+
+    double totalInchCount() {
+      final listOfInch = data.where((element) => element.totalInch != null && element.totalInch?.isNotEmpty == true).toList().map((e) => e.totalInch!.toDouble()).toList();
+      return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
+    }
+
+    final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
+    final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
+    final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
+    final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
+
     pdfDoc.addPage(
       pw.MultiPage(
         pageTheme: pw.PageTheme(
-          pageFormat: pdf.PdfPageFormat.a3,
-          margin: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          pageFormat: pdf.PdfPageFormat.a5,
+          orientation: isLandscape ? pw.PageOrientation.landscape : pw.PageOrientation.portrait,
+          margin: pw.EdgeInsets.symmetric(horizontal: isLandscape ? 8 : 15, vertical: isLandscape ? 5 : 10),
           theme: pw.ThemeData.withFont(
-            base: pw.Font.helvetica(),
-            bold: pw.Font.helveticaBold(),
-            italic: pw.Font.helveticaOblique(),
-            boldItalic: pw.Font.helveticaBoldOblique(),
+            base: ttfRegular,
+            bold: ttfBold,
+            italic: ttfItalic,
+            boldItalic: ttfBoldItalic,
+            icons: ttfBold,
           ),
         ),
         build: (context) {
@@ -168,36 +156,36 @@ class ChallanController extends GetxController {
               children: [
                 /// Party Name
                 pw.ConstrainedBox(
-                  constraints: pw.BoxConstraints(maxWidth: 350),
+                  constraints: pw.BoxConstraints(maxWidth: isLandscape ? 250 : 350),
                   child: pw.Text(
                     partyName,
-                    style: size20Font,
+                    style: size22Font,
                   ),
                 ),
 
                 /// Challan Number
                 pw.Padding(
-                  padding: pw.EdgeInsets.symmetric(horizontal: 10),
+                  padding: pw.EdgeInsets.symmetric(horizontal: isLandscape ? 5.33 : 10),
                   child: pw.Text(
                     challanNumber,
-                    style: size20Font,
+                    style: size22Font,
                   ),
                 ),
 
                 /// Created Date
                 pw.Text(
                   "${AppStrings.date.tr}: ${DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(createdDate))}",
-                  style: size20Font,
+                  style: size22Font,
                 ),
               ],
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: isLandscape ? 5 : 10),
 
             /// Invoice Table
             pw.Table(
               border: pw.TableBorder.all(
                 color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
-                width: 0.5.w,
+                width: 1.2,
               ),
               children: [
                 /// Header
@@ -205,45 +193,54 @@ class ChallanController extends GetxController {
                   children: [
                     /// SR.
                     pw.SizedBox(
-                      width: 38,
-                      child: TableCell(title: AppStrings.sr.tr),
+                      width: isLandscape ? 20 : 38,
+                      child: TableHeadingCell(title: AppStrings.sr.tr),
                     ),
 
                     /// Category
-                    TableCell(title: AppStrings.category.tr),
+                    pw.SizedBox(
+                      width: isLandscape ? 50 : 85,
+                      child: TableHeadingCell(title: AppStrings.category.tr),
+                    ),
 
                     /// PVD Color
-                    TableCell(title: AppStrings.pvdColor.tr),
+                    TableHeadingCell(title: AppStrings.pvdColor.tr),
 
                     /// Item
-                    TableCell(title: AppStrings.item.tr),
+                    pw.SizedBox(
+                      width: isLandscape ? 65 : 110,
+                      child: TableHeadingCell(title: AppStrings.item.tr),
+                    ),
 
                     /// In Date
                     pw.SizedBox(
-                      width: 79,
-                      child: TableCell(title: AppStrings.inDate.tr),
+                      width: isLandscape ? 55 : 88,
+                      child: TableHeadingCell(title: AppStrings.inDate.tr),
                     ),
 
                     /// QTY
-                    TableCell(title: AppStrings.qty.tr),
+                    TableHeadingCell(title: AppStrings.qty.tr),
 
                     /// Previous
-                    TableCell(title: AppStrings.previous.tr),
+                    TableHeadingCell(title: AppStrings.previous.tr),
 
                     /// OK
-                    TableCell(title: AppStrings.ok.tr),
+                    TableHeadingCell(title: AppStrings.ok.tr),
 
                     /// W/O
-                    TableCell(title: AppStrings.wo.tr),
+                    TableHeadingCell(title: AppStrings.wo.tr),
 
                     /// Inch
-                    TableCell(title: AppStrings.inch.tr),
+                    TableHeadingCell(title: AppStrings.inch.tr),
 
                     /// Total Inch
-                    TableCell(title: AppStrings.totalInch.tr),
+                    TableHeadingCell(title: AppStrings.totalInch.tr),
 
                     /// Balance QTY
-                    TableCell(title: AppStrings.balanceQTY.tr),
+                    TableHeadingCell(title: AppStrings.balanceQTY.tr),
+
+                    /// Total Amount
+                    if (showAmount) TableHeadingCell(title: AppStrings.totalAmount.tr),
                   ],
                 ),
 
@@ -251,19 +248,31 @@ class ChallanController extends GetxController {
                   pw.TableRow(
                     children: [
                       /// SR.
-                      TableCell(title: NumberFormat("00").format(i + 1)),
+                      pw.SizedBox(
+                        width: isLandscape ? 20 : 38,
+                        child: TableCell(title: NumberFormat("00").format(i + 1)),
+                      ),
 
                       /// Category
-                      TableCell(title: data[i].categoryName ?? ""),
+                      pw.SizedBox(
+                        width: isLandscape ? 50 : 85,
+                        child: TableCell(title: data[i].categoryName ?? ""),
+                      ),
 
                       /// PVD Color
                       TableCell(title: data[i].pvdColor ?? ""),
 
                       /// Item
-                      TableCell(title: data[i].itemName ?? ""),
+                      pw.SizedBox(
+                        width: isLandscape ? 65 : 110,
+                        child: TableCell(title: data[i].itemName ?? ""),
+                      ),
 
                       /// In Date
-                      TableCell(title: DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data[i].inDate ?? ""))),
+                      pw.SizedBox(
+                        width: isLandscape ? 55 : 88,
+                        child: TableCell(title: DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data[i].inDate ?? ""))),
+                      ),
 
                       /// QTY
                       TableCell(title: data[i].quantity ?? ""),
@@ -285,7 +294,44 @@ class ChallanController extends GetxController {
 
                       /// Balance QTY
                       TableCell(title: data[i].balanceQuantity ?? ""),
+
+                      /// Total Amount
+                      if (showAmount) TableCell(title: data[i].totalAmount == null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹", decimalDigits: 0).format(data[i].totalAmount!.toDouble()) : ""),
                     ],
+                  ),
+                ],
+              ],
+            ),
+            pw.SizedBox(height: isLandscape ? 5 : 10),
+
+            /// Total Inch & Total Amount
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              children: [
+                ///Total Inch
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      "${AppStrings.totalInch.tr}: ",
+                      style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
+                    ),
+                    pw.Text(
+                      totalInchCount().toString(),
+                      style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
+                    ),
+                  ],
+                ),
+
+                ///Total Amount
+                if (showAmount) ...[
+                  pw.SizedBox(width: isLandscape ? 10 : 14),
+                  pw.Text(
+                    "${AppStrings.totalAmount.tr}: ",
+                    style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
+                  ),
+                  pw.Text(
+                    NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(totalAmountCount()),
+                    style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
                   ),
                 ],
               ],
@@ -295,7 +341,7 @@ class ChallanController extends GetxController {
       ),
     );
 
-    final status = await permissionStatus();
+    final status = await Utils.getDashboardController.permissionStatus();
     if (status.$1.isGranted || status.$2.isGranted) {
       final dir = await getApplicationCacheDirectory();
       final fileName = '${partyName}_${challanNumber}_$createdDate'.cleanFileName;
@@ -304,74 +350,5 @@ class ChallanController extends GetxController {
       return await file.writeAsBytes(fileBytes);
     }
     return null;
-  }
-
-  Future<(PermissionStatus storageStatus, PermissionStatus photosStatus)> permissionStatus() async {
-    // Default values
-    PermissionStatus storageStatus = PermissionStatus.granted;
-    PermissionStatus photosStatus = PermissionStatus.granted;
-
-    Future<void> recheckStatus() async {
-      if (Platform.isAndroid) {
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
-        final androidVersion = androidInfo.version.sdkInt;
-        if (androidVersion >= 33) {
-          // Android 13+ (Scoped Storage) – storage not needed, only media access
-          photosStatus = await Permission.photos.status;
-        } else {
-          // Android ≤ 12 – needs storage and possibly photos
-          storageStatus = await Permission.storage.status;
-        }
-      } else {
-        // iOS – only photos access needed
-        photosStatus = await Permission.photos.status;
-      }
-    }
-
-    await recheckStatus();
-
-    // If any permission is permanently denied
-    if (storageStatus.isPermanentlyDenied || photosStatus.isPermanentlyDenied) {
-      if (kDebugMode) {
-        print("Permission ::::: PermanentlyDenied");
-      }
-      await openAppSettings();
-    }
-
-    // Re-check
-    await recheckStatus();
-
-    // Request if denied
-    if (storageStatus.isDenied || photosStatus.isDenied) {
-      if (kDebugMode) {
-        print("Permission ::::: Denied");
-      }
-
-      final requests = <Permission>[];
-
-      if (Platform.isAndroid) {
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
-        final androidVersion = androidInfo.version.sdkInt;
-        if (androidVersion < 33 && storageStatus.isDenied) {
-          requests.add(Permission.storage);
-        }
-        if (photosStatus.isDenied) {
-          requests.add(Permission.photos);
-        }
-      } else {
-        if (photosStatus.isDenied) {
-          requests.add(Permission.photos);
-        }
-      }
-
-      if (requests.isNotEmpty) {
-        await requests.request();
-      }
-    }
-
-    // Final check before return
-    await recheckStatus();
-
-    return (storageStatus, photosStatus);
   }
 }

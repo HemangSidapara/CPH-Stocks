@@ -320,36 +320,6 @@ class OrderServices {
     return response;
   }
 
-  /// Generate Invoice
-  static Future<ResponseModel> generateInvoiceService({
-    required List<String> orderMetaIds,
-  }) async {
-    final params = {
-      ApiKeys.orderMetaIds: orderMetaIds,
-    };
-    final response = await ApiBaseHelper.postHTTP(
-      ApiUrls.generateInvoiceApi,
-      params: params,
-      showProgress: false,
-      onError: (dioExceptions) {
-        Utils.handleMessage(message: dioExceptions.message, isError: true);
-      },
-      onSuccess: (res) {
-        if (res.isSuccess) {
-          if (kDebugMode) {
-            print("generateInvoiceApi success :: ${res.message}");
-          }
-        } else {
-          if (kDebugMode) {
-            print("generateInvoiceApi error :: ${res.message}");
-          }
-          Utils.handleMessage(message: res.message, isError: true);
-        }
-      },
-    );
-    return response;
-  }
-
   /// Last Billed Cycle
   static Future<ResponseModel> lastBilledCycleService({
     required String orderCycleId,

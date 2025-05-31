@@ -46,7 +46,6 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: AppColors.SECONDARY_COLOR,
             primaryColor: AppColors.PRIMARY_COLOR,
             textTheme: GoogleFonts.nunitoSansTextTheme(),
-            datePickerTheme: DatePickerThemeData(headerBackgroundColor: AppColors.SECONDARY_COLOR),
             useMaterial3: true,
           ),
           initialRoute: Routes.splashScreen,

@@ -116,13 +116,11 @@ class ChallanView extends GetView<ChallanController> {
                         child: LoadingWidget(),
                       );
                     } else if (controller.searchedInvoiceList.isEmpty) {
-                      return Expanded(
-                        child: NoDataFoundWidget(
-                          subtitle: AppStrings.noDataFound.tr,
-                          onPressed: () {
-                            controller.getInvoicesApi(isLoading: false);
-                          },
-                        ),
+                      return NoDataFoundWidget(
+                        subtitle: AppStrings.noDataFound.tr,
+                        onPressed: () {
+                          controller.getInvoicesApi(isLoading: false);
+                        },
                       );
                     } else {
                       return ListView.separated(

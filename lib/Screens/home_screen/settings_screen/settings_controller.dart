@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
-import 'package:cph_stocks/Network/services/utils_services/get_package_info_service.dart';
 import 'package:cph_stocks/Network/services/utils_services/install_apk_service.dart';
 import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -11,13 +10,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SettingsController extends GetxController {
   RxString appVersion = ''.obs;
   HomeController homeController = Get.isRegistered<HomeController>() ? Get.find<HomeController>() : Get.put(HomeController());
 
-  ExpansionTileController expansionTileController = ExpansionTileController();
+  ExpansibleController expansionTileController = ExpansibleController();
   RxBool isGujaratiLang = false.obs;
   RxBool isHindiLang = false.obs;
   RxBool isUpdateLoading = false.obs;
@@ -42,7 +42,7 @@ class SettingsController extends GetxController {
     if (getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee) {
       await homeController.getLatestVersionApiCall();
     }
-    appVersion.value = (await GetPackageInfoService.instance.getInfo()).version;
+    appVersion.value = (await PackageInfo.fromPlatform()).version;
   }
 
   /// Download and install

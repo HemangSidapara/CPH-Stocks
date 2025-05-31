@@ -567,7 +567,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                         ),
                                                       ),
                                                       SizedBox(width: 2.w),
-                                                      Flexible(
+                                                      Expanded(
                                                         child: Column(
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
@@ -594,14 +594,16 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                             ///Ok Pcs., W/O Process, Repair & Pending
                                                             Row(
                                                               children: [
-                                                                Tooltip(
-                                                                  message: AppStrings.okPcs.tr,
-                                                                  child: Text(
-                                                                    controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w700,
-                                                                      fontSize: 16.sp,
-                                                                      color: AppColors.LIGHT_BLUE_COLOR,
+                                                                Flexible(
+                                                                  child: Tooltip(
+                                                                    message: AppStrings.okPcs.tr,
+                                                                    child: Text(
+                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w700,
+                                                                        fontSize: 15.sp,
+                                                                        color: AppColors.LIGHT_BLUE_COLOR,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -612,14 +614,16 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                     thickness: 1,
                                                                   ),
                                                                 ),
-                                                                Tooltip(
-                                                                  message: AppStrings.woProcess,
-                                                                  child: Text(
-                                                                    controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w700,
-                                                                      fontSize: 16.sp,
-                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                Flexible(
+                                                                  child: Tooltip(
+                                                                    message: AppStrings.woProcess,
+                                                                    child: Text(
+                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w700,
+                                                                        fontSize: 15.sp,
+                                                                        color: AppColors.SECONDARY_COLOR,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -630,14 +634,16 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                     thickness: 1,
                                                                   ),
                                                                 ),
-                                                                Tooltip(
-                                                                  message: AppStrings.repair.tr,
-                                                                  child: Text(
-                                                                    controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair ?? '0',
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w700,
-                                                                      fontSize: 16.sp,
-                                                                      color: AppColors.BRONZE_COLOR,
+                                                                Flexible(
+                                                                  child: Tooltip(
+                                                                    message: AppStrings.repair.tr,
+                                                                    child: Text(
+                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair ?? '0',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w700,
+                                                                        fontSize: 15.sp,
+                                                                        color: AppColors.BRONZE_COLOR,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -648,14 +654,16 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                     thickness: 1,
                                                                   ),
                                                                 ),
-                                                                Tooltip(
-                                                                  message: AppStrings.pending.tr,
-                                                                  child: Text(
-                                                                    controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                                    style: TextStyle(
-                                                                      fontWeight: FontWeight.w700,
-                                                                      fontSize: 16.sp,
-                                                                      color: AppColors.DARK_RED_COLOR,
+                                                                Flexible(
+                                                                  child: Tooltip(
+                                                                    message: AppStrings.pending.tr,
+                                                                    child: Text(
+                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w700,
+                                                                        fontSize: 15.sp,
+                                                                        color: AppColors.DARK_RED_COLOR,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -664,14 +672,11 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                           ],
                                                         ),
                                                       ),
-                                                      SizedBox(width: 2.w),
                                                     ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                            trailing: getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee
-                                                ? Obx(() {
+                                                if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) ...[
+                                                  Obx(() {
                                                     if (controller.isDeleteMultipleOrdersEnable.isFalse) {
                                                       return Row(
                                                         mainAxisSize: MainAxisSize.min,
@@ -695,8 +700,8 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                               padding: EdgeInsets.zero,
                                                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                               elevation: 4,
-                                                              maximumSize: Size(15.w, 8.w),
-                                                              minimumSize: Size(15.w, 8.w),
+                                                              maximumSize: Size(14.w, 8.w),
+                                                              minimumSize: Size(14.w, 8.w),
                                                             ),
                                                             icon: Icon(
                                                               Icons.cyclone_rounded,
@@ -756,7 +761,10 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                       );
                                                     }
                                                   })
-                                                : const SizedBox(),
+                                                ],
+                                              ],
+                                            ),
+                                            showTrailingIcon: false,
                                             dense: true,
                                             collapsedShape: InputBorder.none,
                                             shape: InputBorder.none,
@@ -1728,78 +1736,83 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Obx(() {
-                                                        return Row(
-                                                          children: [
-                                                            ///CheckMark
-                                                            Obx(() {
-                                                              if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) {
-                                                                return const SizedBox();
-                                                              } else {
-                                                                return AnimatedContainer(
-                                                                  height: 6.w,
-                                                                  width: 6.w,
-                                                                  decoration: BoxDecoration(
-                                                                    color: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? AppColors.DARK_GREEN_COLOR : AppColors.WHITE_COLOR,
-                                                                    border: Border.all(
-                                                                      color: AppColors.HINT_GREY_COLOR,
-                                                                      width: 1,
+                                                        return Flexible(
+                                                          child: Row(
+                                                            children: [
+                                                              ///CheckMark
+                                                              Obx(() {
+                                                                if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) {
+                                                                  return const SizedBox();
+                                                                } else {
+                                                                  return AnimatedContainer(
+                                                                    height: 6.w,
+                                                                    width: 6.w,
+                                                                    margin: EdgeInsets.only(right: 2.w),
+                                                                    decoration: BoxDecoration(
+                                                                      color: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? AppColors.DARK_GREEN_COLOR : AppColors.WHITE_COLOR,
+                                                                      border: Border.all(
+                                                                        color: AppColors.HINT_GREY_COLOR,
+                                                                        width: 1,
+                                                                      ),
+                                                                      shape: BoxShape.circle,
                                                                     ),
-                                                                    shape: BoxShape.circle,
-                                                                  ),
-                                                                  duration: const Duration(milliseconds: 300),
-                                                                  padding: EdgeInsets.all(1.w),
-                                                                  child: AnimatedOpacity(
-                                                                    opacity: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? 1 : 0,
                                                                     duration: const Duration(milliseconds: 300),
-                                                                    child: Icon(
-                                                                      Icons.check_rounded,
-                                                                      color: AppColors.PRIMARY_COLOR,
-                                                                      size: 3.5.w,
+                                                                    padding: EdgeInsets.all(1.w),
+                                                                    child: AnimatedOpacity(
+                                                                      opacity: selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId) ? 1 : 0,
+                                                                      duration: const Duration(milliseconds: 300),
+                                                                      child: Icon(
+                                                                        Icons.check_rounded,
+                                                                        color: AppColors.PRIMARY_COLOR,
+                                                                        size: 3.5.w,
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                );
-                                                              }
-                                                            }),
-                                                            SizedBox(width: 2.w),
+                                                                  );
+                                                                }
+                                                              }),
 
-                                                            ///Cycle Date
-                                                            Text(
-                                                              itemsList[orderIndex].orderCycles?[cycleIndex].createdDate ?? "",
-                                                              style: TextStyle(
-                                                                color: AppColors.DARK_BLACK_COLOR,
-                                                                fontSize: 16.sp,
-                                                                fontWeight: FontWeight.w500,
+                                                              ///Cycle Date
+                                                              Flexible(
+                                                                child: Text(
+                                                                  itemsList[orderIndex].orderCycles?[cycleIndex].createdDate ?? "",
+                                                                  style: TextStyle(
+                                                                    color: AppColors.DARK_BLACK_COLOR,
+                                                                    fontSize: 16.sp,
+                                                                    fontWeight: FontWeight.w500,
+                                                                  ),
+                                                                ),
                                                               ),
-                                                            ),
-                                                            SizedBox(width: 2.w),
+                                                              SizedBox(width: 2.w),
 
-                                                            ///Bill No.
-                                                            if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) ...[
-                                                              Tooltip(
-                                                                message: AppStrings.challanNumber.tr,
-                                                                child: DecoratedBox(
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                      color: AppColors.DARK_GREEN_COLOR,
-                                                                      width: 1.5,
-                                                                    ),
-                                                                    borderRadius: BorderRadius.circular(10),
-                                                                  ),
-                                                                  child: Padding(
-                                                                    padding: EdgeInsets.symmetric(horizontal: 1.1.w, vertical: 1.1.w),
-                                                                    child: Text(
-                                                                      itemsList[orderIndex].orderCycles?[cycleIndex].challanNumber ?? "",
-                                                                      style: TextStyle(
+                                                              ///Bill No.
+                                                              if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) ...[
+                                                                Tooltip(
+                                                                  message: AppStrings.challanNumber.tr,
+                                                                  child: DecoratedBox(
+                                                                    decoration: BoxDecoration(
+                                                                      border: Border.all(
                                                                         color: AppColors.DARK_GREEN_COLOR,
-                                                                        fontSize: 15.sp,
-                                                                        fontWeight: FontWeight.w600,
+                                                                        width: 1.5,
+                                                                      ),
+                                                                      borderRadius: BorderRadius.circular(10),
+                                                                    ),
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.symmetric(horizontal: 1.1.w, vertical: 1.1.w),
+                                                                      child: Text(
+                                                                        itemsList[orderIndex].orderCycles?[cycleIndex].challanNumber ?? "",
+                                                                        style: TextStyle(
+                                                                          color: AppColors.DARK_GREEN_COLOR,
+                                                                          fontSize: 15.sp,
+                                                                          fontWeight: FontWeight.w600,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
+                                                                SizedBox(width: 2.w),
+                                                              ],
                                                             ],
-                                                          ],
+                                                          ),
                                                         );
                                                       }),
 

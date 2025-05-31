@@ -29,4 +29,10 @@ class AppAssets {
   static const String notesIcon = "assets/icons/notes_icon.png";
   static const String ledgerIcon = "assets/icons/ledger_icon.png";
   static const String repairingIcon = "assets/icons/repairing_icon.png";
+
+  ///Fonts
+  static const String robotoRegular = "assets/fonts/Roboto/Roboto-Regular.ttf";
+  static const String robotoBold = "assets/fonts/Roboto/Roboto-Bold.ttf";
+  static const String robotoItalic = "assets/fonts/Roboto/Roboto-Italic.ttf";
+  static const String robotoBoldItalic = "assets/fonts/Roboto/Roboto-BoldItalic.ttf";
 }

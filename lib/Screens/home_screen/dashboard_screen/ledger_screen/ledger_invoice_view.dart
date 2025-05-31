@@ -5,7 +5,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/ledger_screen/ledger_controller.dart';
 import 'package:cph_stocks/Widgets/close_button_widget.dart';
 import 'package:cph_stocks/Widgets/divider_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
@@ -18,28 +18,20 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-class InvoiceView extends StatefulWidget {
-  final String partyName;
-  final String challanNumber;
-  final String createdDate;
-  final bool isLandscape;
-  final List<InvoiceMeta> invoiceData;
+class LedgerInvoiceView extends StatefulWidget {
+  final List<OrderInvoice> invoiceData;
 
-  const InvoiceView({
+  const LedgerInvoiceView({
     super.key,
     required this.invoiceData,
-    required this.partyName,
-    required this.challanNumber,
-    required this.createdDate,
-    this.isLandscape = true,
   });
 
   @override
-  State<InvoiceView> createState() => _InvoiceViewState();
+  State<LedgerInvoiceView> createState() => _LedgerInvoiceViewState();
 }
 
-class _InvoiceViewState extends State<InvoiceView> {
-  ChallanController controller = Get.isRegistered<ChallanController>() ? Get.find<ChallanController>() : Get.put(ChallanController());
+class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
+  LedgerController controller = Get.isRegistered<LedgerController>() ? Get.find<LedgerController>() : Get.put(LedgerController());
   RxBool generatingInvoice = false.obs;
   Rx<File> pdfFile = File("").obs;
 
@@ -54,12 +46,8 @@ class _InvoiceViewState extends State<InvoiceView> {
   Future<void> setGenerateInvoice() async {
     try {
       generatingInvoice(true);
-      final file = await controller.generatePdf(
-        partyName: widget.partyName,
-        challanNumber: widget.challanNumber,
-        createdDate: widget.createdDate,
+      final file = await controller.generateLedgerPdf(
         data: widget.invoiceData,
-        isLandscape: widget.isLandscape,
         showAmount: isAmountVisible.isTrue,
       );
       if (file != null) {
@@ -150,39 +138,36 @@ class _InvoiceViewState extends State<InvoiceView> {
             );
           } else {
             return Flexible(
-              child: RotatedBox(
-                quarterTurns: widget.isLandscape ? 3 : 0,
-                child: SfPdfViewerTheme(
-                  data: SfPdfViewerThemeData(
-                    backgroundColor: AppColors.TRANSPARENT,
-                    progressBarColor: AppColors.TERTIARY_COLOR,
-                    paginationDialogStyle: PdfPaginationDialogStyle(
-                      backgroundColor: AppColors.SECONDARY_COLOR,
-                      cancelTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
-                      okTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
-                      headerTextStyle: AppStyles.size18w600.copyWith(color: AppColors.PRIMARY_COLOR),
-                      hintTextStyle: AppStyles.size16w600.copyWith(color: AppColors.HINT_GREY_COLOR),
-                      pageInfoTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
-                      inputFieldTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
-                      validationTextStyle: AppStyles.size15w600.copyWith(color: AppColors.DARK_RED_COLOR),
-                    ),
-                    scrollHeadStyle: PdfScrollHeadStyle(
-                      backgroundColor: AppColors.SECONDARY_COLOR,
-                      pageNumberTextStyle: AppStyles.size15w600.copyWith(color: AppColors.PRIMARY_COLOR),
-                    ),
+              child: SfPdfViewerTheme(
+                data: SfPdfViewerThemeData(
+                  backgroundColor: AppColors.TRANSPARENT,
+                  progressBarColor: AppColors.TERTIARY_COLOR,
+                  paginationDialogStyle: PdfPaginationDialogStyle(
+                    backgroundColor: AppColors.SECONDARY_COLOR,
+                    cancelTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                    okTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                    headerTextStyle: AppStyles.size18w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                    hintTextStyle: AppStyles.size16w600.copyWith(color: AppColors.HINT_GREY_COLOR),
+                    pageInfoTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                    inputFieldTextStyle: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                    validationTextStyle: AppStyles.size15w600.copyWith(color: AppColors.DARK_RED_COLOR),
                   ),
-                  child: SfPdfViewer.file(
-                    pdfFile.value,
-                    maxZoomLevel: 10,
-                    pageLayoutMode: PdfPageLayoutMode.single,
-                    scrollDirection: PdfScrollDirection.vertical,
-                    onDocumentLoadFailed: (details) {
-                      if (kDebugMode) {
-                        print("SfPdfViewer error :: ${details.description}");
-                      }
-                      Utils.handleMessage(message: details.description, isError: true);
-                    },
+                  scrollHeadStyle: PdfScrollHeadStyle(
+                    backgroundColor: AppColors.SECONDARY_COLOR,
+                    pageNumberTextStyle: AppStyles.size15w600.copyWith(color: AppColors.PRIMARY_COLOR),
                   ),
+                ),
+                child: SfPdfViewer.file(
+                  pdfFile.value,
+                  maxZoomLevel: 10,
+                  pageLayoutMode: PdfPageLayoutMode.single,
+                  scrollDirection: PdfScrollDirection.vertical,
+                  onDocumentLoadFailed: (details) {
+                    if (kDebugMode) {
+                      print("SfPdfViewer error :: ${details.description}");
+                    }
+                    Utils.handleMessage(message: details.description, isError: true);
+                  },
                 ),
               ),
             );

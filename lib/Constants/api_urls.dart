@@ -29,6 +29,7 @@ class ApiUrls {
   /// Challan APIs
   static const String getInvoicesApi = '${_apiPath}getInvoices';
   static const String generateInvoiceApi = '${_apiPath}generateInvoice';
+  static const String getLedgerInvoicesApi = '${_apiPath}getLedgerInvoices';
 
   /// Notes APIs
   static const String getNotesApi = '${_apiPath}getNotes';

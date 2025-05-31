@@ -17,18 +17,18 @@ class HomeView extends GetView<HomeController> {
         await showExitDialog(context);
       },
       child: Scaffold(
-        bottomNavigationBar: SafeArea(
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.SECONDARY_COLOR,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.MAIN_BORDER_COLOR.withValues(alpha: 0.2),
-                  spreadRadius: 5,
-                  blurRadius: 80,
-                )
-              ],
-            ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: AppColors.SECONDARY_COLOR,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.MAIN_BORDER_COLOR.withValues(alpha: 0.2),
+                spreadRadius: 5,
+                blurRadius: 80,
+              )
+            ],
+          ),
+          child: SafeArea(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
