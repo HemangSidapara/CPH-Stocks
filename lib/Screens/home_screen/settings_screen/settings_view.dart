@@ -2,6 +2,7 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_controller.dart';
@@ -88,10 +89,11 @@ class SettingsView extends GetView<SettingsController> {
                         if (getData(AppConstance.role) == AppConstance.admin) ...[
                           SizedBox(width: 2.w),
                           InkWell(
-                            onTap: () {
-                              Clipboard.setData(
+                            onTap: () async {
+                              await Clipboard.setData(
                                 ClipboardData(text: controller.homeController.newAPKUrl.value),
                               );
+                              Utils.handleMessage(message: AppStrings.urlCopied.tr);
                             },
                             child: FaIcon(
                               FontAwesomeIcons.link,

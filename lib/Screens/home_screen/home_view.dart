@@ -38,7 +38,7 @@ class HomeView extends GetView<HomeController> {
                     child: AssetImages(
                       index: i,
                       iconName: controller.listOfImages[i],
-                      iconSize: i == 1 || i == 2 ? 6.w : null,
+                      iconSize: controller.listOfImageSizes[i],
                     ),
                   ),
               ],

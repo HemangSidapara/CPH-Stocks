@@ -20,7 +20,6 @@ class DashboardView extends GetView<DashboardController> {
       padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Column(
         children: [
-
           ///Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,16 +47,17 @@ class DashboardView extends GetView<DashboardController> {
           Expanded(
             child: CustomScrollView(
               slivers: [
-
                 ///Create Order
-                CommonButton(
-                  route: Routes.createOrderScreen,
-                  title: AppStrings.createOrder.tr,
-                  icon: AppAssets.createOrderImage,
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(height: 2.h),
-                ),
+                if (getData(AppConstance.role) != AppConstance.customer) ...[
+                  CommonButton(
+                    route: Routes.createOrderScreen,
+                    title: AppStrings.createOrder.tr,
+                    icon: AppAssets.createOrderImage,
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 2.h),
+                  ),
+                ],
 
                 ///Order details
                 CommonButton(
@@ -69,17 +69,18 @@ class DashboardView extends GetView<DashboardController> {
                   child: SizedBox(height: 2.h),
                 ),
 
-                if(getData(AppConstance.role) != AppConstance.employee)...[
-
+                if (getData(AppConstance.role) != AppConstance.employee) ...[
                   ///Ledger
-                  CommonButton(
-                    route: Routes.ledgerScreen,
-                    title: AppStrings.ledger.tr,
-                    icon: AppAssets.ledgerIcon,
-                  ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: 2.h),
-                  ),
+                  if (getData(AppConstance.role) != AppConstance.customer) ...[
+                    CommonButton(
+                      route: Routes.ledgerScreen,
+                      title: AppStrings.ledger.tr,
+                      icon: AppAssets.ledgerIcon,
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: 2.h),
+                    ),
+                  ],
 
                   ///Challan
                   CommonButton(
@@ -87,17 +88,22 @@ class DashboardView extends GetView<DashboardController> {
                     title: AppStrings.challan.tr,
                     icon: AppAssets.challanIcon,
                   ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: 2.h),
-                  ),
+                  if (getData(AppConstance.role) != AppConstance.customer) ...[
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: 2.h),
+                    ),
+                  ],
                 ],
 
                 ///Repairing Details
-                CommonButton(
-                  route: Routes.repairingScreen,
-                  title: AppStrings.repairingDetails.tr,
-                  icon: AppAssets.repairingIcon,
-                ),
+                if (getData(AppConstance.role) != AppConstance.customer) ...[
+                  CommonButton(
+                    route: Routes.orderDetailsScreen,
+                    isRepair: true,
+                    title: AppStrings.repairingDetails.tr,
+                    icon: AppAssets.repairingIcon,
+                  ),
+                ],
               ],
             ),
           ),
@@ -111,11 +117,12 @@ class DashboardView extends GetView<DashboardController> {
     required String title,
     required String icon,
     double? iconWidth,
+    bool isRepair = false,
   }) {
     return SliverToBoxAdapter(
       child: ElevatedButton(
         onPressed: () async {
-          Get.toNamed(route);
+          Get.toNamed(route, arguments: isRepair);
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.zero,

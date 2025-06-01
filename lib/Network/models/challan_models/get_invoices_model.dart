@@ -85,6 +85,9 @@ class InvoiceMeta {
   String? totalInch;
   String? balanceQuantity;
   String? totalAmount;
+  String? categoryId;
+  @StringFromNumConverter()
+  String? categoryPrice;
 
   InvoiceMeta({
     this.invoiceMetaId,
@@ -102,6 +105,8 @@ class InvoiceMeta {
     this.totalInch,
     this.balanceQuantity,
     this.totalAmount,
+    this.categoryId,
+    this.categoryPrice,
   });
 
   factory InvoiceMeta.fromJson(Map<String, dynamic> json) => _$InvoiceMetaFromJson(json);
@@ -124,6 +129,8 @@ class InvoiceMeta {
     String? totalInch,
     String? balanceQuantity,
     String? totalAmount,
+    String? categoryId,
+    String? categoryPrice,
   }) {
     return InvoiceMeta(
       invoiceMetaId: invoiceMetaId ?? this.invoiceMetaId,
@@ -141,6 +148,21 @@ class InvoiceMeta {
       totalInch: totalInch ?? this.totalInch,
       balanceQuantity: balanceQuantity ?? this.balanceQuantity,
       totalAmount: totalAmount ?? this.totalAmount,
+      categoryId: categoryId ?? this.categoryId,
+      categoryPrice: categoryPrice ?? this.categoryPrice,
     );
   }
+}
+
+class StringFromNumConverter implements JsonConverter<String?, dynamic> {
+  const StringFromNumConverter();
+
+  @override
+  String? fromJson(dynamic json) {
+    if (json == null) return null;
+    return json.toString();
+  }
+
+  @override
+  dynamic toJson(String? object) => object;
 }

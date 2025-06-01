@@ -261,8 +261,8 @@ class ChallanView extends GetView<ChallanController> {
   /// @param {String} partyName - Party name
   /// @param {String} challanNumber - Challan number
   /// @param {String} createdDate - Created date
-  /// @param {List<InvoiceMeta>} invoiceData - List of invoice data
-  /// @returns {Future<void>} - Returns a Future of a void value
+  /// @param {List\<InvoiceMeta>} invoiceData - List of invoice data
+  /// @returns {Future\<void>} - Returns a Future of a void value
   /// @throws {Exception} - Throws an exception if an error occurs
   Future<void> showInvoiceBottomSheet({
     required BuildContext ctx,

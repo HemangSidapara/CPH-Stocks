@@ -143,11 +143,11 @@ class AppStrings {
   static const String ok = "OK";
   static const String wo = "W/O";
   static const String inch = "Inch";
-  static const String totalInch = "Total Inch";
+  static const String totalInch = "Total C1 Inch";
   static const String balanceQTY = "Balance QTY";
   static const String open = "Open";
   static const String amount = "Amount";
-  static const String totalAmount = "Total Amount";
+  static const String totalAmount = "Total C1 Amount";
   static const String selectPrinter = "Select Printer";
   static const String pleaseSelectPrinter = "Please select printer";
   static const String noPrinterFound = "No printer found";
@@ -158,4 +158,7 @@ class AppStrings {
   static const String endDate = "End Date";
   static const String pleaseSelectEndDate = "Please select end date";
   static const String noChallanAvailableYet = "No challan available yet";
+  static const String totalInchCategories = "Total Inch Categories";
+  static const String totalAssetsCalculation = "Total Assets Calculation";
+  static const String urlCopied = "URL Copied";
 }

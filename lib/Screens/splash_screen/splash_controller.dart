@@ -82,19 +82,8 @@ class SplashController extends GetxController {
     }
     if (getData(AppConstance.authorizationToken) == null || getData(AppConstance.role) == null) {
       Get.offAllNamed(Routes.signInScreen);
-    } else if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) {
-      Get.offAllNamed(Routes.homeScreen);
     } else {
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
-          systemNavigationBarColor: AppColors.SECONDARY_COLOR,
-          systemNavigationBarIconBrightness: Brightness.dark,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarColor: AppColors.SECONDARY_COLOR,
-          statusBarBrightness: Brightness.light,
-        ),
-      );
-      Get.offAllNamed(Routes.orderDetailsScreen);
+      Get.offAllNamed(Routes.homeScreen);
     }
   }
 

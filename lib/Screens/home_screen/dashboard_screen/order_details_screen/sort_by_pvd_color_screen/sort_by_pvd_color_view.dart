@@ -233,62 +233,61 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                             left: 3.w,
                             right: 2.w,
                           ),
-                          trailing: (getData(AppConstance.role) == AppConstance.admin) && controller.isDeleteMultipleOrdersEnable.isFalse
-                              ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ///Edit
-                                    IconButton(
-                                      onPressed: () async {
-                                        await showEditPartyBottomSheet(
-                                          orderId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? '',
-                                          partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
-                                          contactNumber: controller.searchedColorDataList[index].partyMeta?[partyIndex].contactNumber ?? '',
-                                        );
-                                      },
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: AppColors.WARNING_COLOR,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        padding: EdgeInsets.zero,
-                                        elevation: 4,
-                                        maximumSize: Size(7.5.w, 7.5.w),
-                                        minimumSize: Size(7.5.w, 7.5.w),
-                                      ),
-                                      icon: Icon(
-                                        Icons.edit_rounded,
-                                        color: AppColors.PRIMARY_COLOR,
-                                        size: 4.w,
-                                      ),
-                                    ),
-                                    SizedBox(width: 2.w),
+                          showTrailingIcon: controller.isRepairScreen.isFalse && getData(AppConstance.role) == AppConstance.admin && controller.isDeleteMultipleOrdersEnable.isFalse,
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ///Edit
+                              IconButton(
+                                onPressed: () async {
+                                  await showEditPartyBottomSheet(
+                                    orderId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? '',
+                                    partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
+                                    contactNumber: controller.searchedColorDataList[index].partyMeta?[partyIndex].contactNumber ?? '',
+                                  );
+                                },
+                                style: IconButton.styleFrom(
+                                  backgroundColor: AppColors.WARNING_COLOR,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  padding: EdgeInsets.zero,
+                                  elevation: 4,
+                                  maximumSize: Size(7.5.w, 7.5.w),
+                                  minimumSize: Size(7.5.w, 7.5.w),
+                                ),
+                                icon: Icon(
+                                  Icons.edit_rounded,
+                                  color: AppColors.PRIMARY_COLOR,
+                                  size: 4.w,
+                                ),
+                              ),
+                              SizedBox(width: 2.w),
 
-                                    ///Delete
-                                    IconButton(
-                                      onPressed: () async {
-                                        await controller.showDeleteDialog(
-                                          onPressed: () async {
-                                            await controller.deletePartyApi(orderId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? '');
-                                          },
-                                          title: AppStrings.deletePartyText.tr.replaceAll("'Party'", "'${controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName}'"),
-                                        );
-                                      },
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: AppColors.DARK_RED_COLOR,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        padding: EdgeInsets.zero,
-                                        elevation: 4,
-                                        maximumSize: Size(7.5.w, 7.5.w),
-                                        minimumSize: Size(7.5.w, 7.5.w),
-                                      ),
-                                      icon: Icon(
-                                        Icons.delete_forever_rounded,
-                                        color: AppColors.PRIMARY_COLOR,
-                                        size: 4.w,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : null,
+                              ///Delete
+                              IconButton(
+                                onPressed: () async {
+                                  await controller.showDeleteDialog(
+                                    onPressed: () async {
+                                      await controller.deletePartyApi(orderId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? '');
+                                    },
+                                    title: AppStrings.deletePartyText.tr.replaceAll("'Party'", "'${controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName}'"),
+                                  );
+                                },
+                                style: IconButton.styleFrom(
+                                  backgroundColor: AppColors.DARK_RED_COLOR,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  padding: EdgeInsets.zero,
+                                  elevation: 4,
+                                  maximumSize: Size(7.5.w, 7.5.w),
+                                  minimumSize: Size(7.5.w, 7.5.w),
+                                ),
+                                icon: Icon(
+                                  Icons.delete_forever_rounded,
+                                  color: AppColors.PRIMARY_COLOR,
+                                  size: 4.w,
+                                ),
+                              ),
+                            ],
+                          ),
                           dense: true,
                           collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                           backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
@@ -421,7 +420,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                           ],
                                         ),
                                       ),
-                                      if (controller.isDeleteMultipleOrdersEnable.isFalse) ...[
+                                      if (controller.isDeleteMultipleOrdersEnable.isFalse && controller.isRepairScreen.isFalse) ...[
                                         IconButton(
                                           onPressed: () {
                                             showBillCycleBottomSheet(
@@ -496,21 +495,23 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     children: [
                                       for (int orderIndex = 0; orderIndex < (controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?.length ?? 0); orderIndex++) ...[
                                         GestureDetector(
-                                          onTap: controller.isDeleteMultipleOrdersEnable.isFalse
-                                              ? () async {
-                                                  await showItemDetailsBottomSheet(
-                                                    partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
-                                                    itemDetails: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex],
-                                                  );
-                                                }
-                                              : () {
-                                                  if (controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId)) {
-                                                    controller.selectedOrderMetaIdForDeletion.removeWhere((element) => element == controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId);
-                                                  } else {
-                                                    controller.selectedOrderMetaIdForDeletion.add(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? "");
-                                                  }
-                                                },
-                                          onLongPress: controller.isDeleteMultipleOrdersEnable.isFalse
+                                          onTap: controller.isRepairScreen.isTrue
+                                              ? null
+                                              : controller.isDeleteMultipleOrdersEnable.isFalse
+                                                  ? () async {
+                                                      await showItemDetailsBottomSheet(
+                                                        partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
+                                                        itemDetails: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex],
+                                                      );
+                                                    }
+                                                  : () {
+                                                      if (controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId)) {
+                                                        controller.selectedOrderMetaIdForDeletion.removeWhere((element) => element == controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId);
+                                                      } else {
+                                                        controller.selectedOrderMetaIdForDeletion.add(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? "");
+                                                      }
+                                                    },
+                                          onLongPress: controller.isDeleteMultipleOrdersEnable.isFalse && controller.isRepairScreen.isFalse
                                               ? () {
                                                   controller.isDeleteMultipleOrdersEnable(true);
                                                   controller.selectedPartyForDeletingMultipleOrders.value = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? "";
@@ -594,46 +595,48 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                             ///Ok Pcs., W/O Process, Repair & Pending
                                                             Row(
                                                               children: [
-                                                                Flexible(
-                                                                  child: Tooltip(
-                                                                    message: AppStrings.okPcs.tr,
-                                                                    child: Text(
-                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
-                                                                      style: TextStyle(
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontSize: 15.sp,
-                                                                        color: AppColors.LIGHT_BLUE_COLOR,
+                                                                if (controller.isRepairScreen.isFalse) ...[
+                                                                  Flexible(
+                                                                    child: Tooltip(
+                                                                      message: AppStrings.okPcs.tr,
+                                                                      child: Text(
+                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 15.sp,
+                                                                          color: AppColors.LIGHT_BLUE_COLOR,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 3.h,
-                                                                  child: VerticalDivider(
-                                                                    color: AppColors.SECONDARY_COLOR,
-                                                                    thickness: 1,
+                                                                  SizedBox(
+                                                                    height: 3.h,
+                                                                    child: VerticalDivider(
+                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                      thickness: 1,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                Flexible(
-                                                                  child: Tooltip(
-                                                                    message: AppStrings.woProcess,
-                                                                    child: Text(
-                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
-                                                                      style: TextStyle(
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontSize: 15.sp,
-                                                                        color: AppColors.SECONDARY_COLOR,
+                                                                  Flexible(
+                                                                    child: Tooltip(
+                                                                      message: AppStrings.woProcess,
+                                                                      child: Text(
+                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 15.sp,
+                                                                          color: AppColors.SECONDARY_COLOR,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 3.h,
-                                                                  child: VerticalDivider(
-                                                                    color: AppColors.SECONDARY_COLOR,
-                                                                    thickness: 1,
+                                                                  SizedBox(
+                                                                    height: 3.h,
+                                                                    child: VerticalDivider(
+                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                      thickness: 1,
+                                                                    ),
                                                                   ),
-                                                                ),
+                                                                ],
                                                                 Flexible(
                                                                   child: Tooltip(
                                                                     message: AppStrings.repair.tr,
@@ -642,31 +645,33 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                       style: TextStyle(
                                                                         fontWeight: FontWeight.w700,
                                                                         fontSize: 15.sp,
-                                                                        color: AppColors.BRONZE_COLOR,
+                                                                        color: controller.isRepairScreen.isFalse ? AppColors.BRONZE_COLOR : AppColors.DARK_RED_COLOR,
                                                                       ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                SizedBox(
-                                                                  height: 3.h,
-                                                                  child: VerticalDivider(
-                                                                    color: AppColors.SECONDARY_COLOR,
-                                                                    thickness: 1,
+                                                                if (controller.isRepairScreen.isFalse) ...[
+                                                                  SizedBox(
+                                                                    height: 3.h,
+                                                                    child: VerticalDivider(
+                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                      thickness: 1,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                Flexible(
-                                                                  child: Tooltip(
-                                                                    message: AppStrings.pending.tr,
-                                                                    child: Text(
-                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                                      style: TextStyle(
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontSize: 15.sp,
-                                                                        color: AppColors.DARK_RED_COLOR,
+                                                                  Flexible(
+                                                                    child: Tooltip(
+                                                                      message: AppStrings.pending.tr,
+                                                                      child: Text(
+                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 15.sp,
+                                                                          color: AppColors.DARK_RED_COLOR,
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
+                                                                ],
                                                               ],
                                                             ),
                                                           ],
@@ -675,7 +680,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                     ],
                                                   ),
                                                 ),
-                                                if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) ...[
+                                                if (controller.isRepairScreen.isFalse && (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee)) ...[
                                                   Obx(() {
                                                     if (controller.isDeleteMultipleOrdersEnable.isFalse) {
                                                       return Row(
@@ -689,6 +694,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                 arguments: ItemDetailsModel(
                                                                   itemId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId,
                                                                   pending: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending?.toString().toInt() ?? 0,
+                                                                  repair: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair?.toString().toInt() ?? 0,
                                                                 ),
                                                               );
                                                             },

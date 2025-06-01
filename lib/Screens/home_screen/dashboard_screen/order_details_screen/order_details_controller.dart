@@ -57,9 +57,12 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   RxBool isGetCyclesLoading = false.obs;
   RxBool isBilledOrderCycleLoading = false.obs;
 
+  RxBool isRepairScreen = false.obs;
+
   @override
   void onInit() async {
     super.onInit();
+    isRepairScreen(Get.arguments ?? false);
     await getOrdersApi();
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
     sortByColorTabController.addListener(tabListener);

@@ -135,17 +135,19 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                                 ),
                                 SizedBox(width: 3.w),
                                 Flexible(
-                                  child: TextFieldWidget(
-                                    controller: controller.repairController,
-                                    title: AppStrings.repair.tr,
-                                    hintText: AppStrings.enterRepair.tr,
-                                    validator: controller.validateRepair,
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.number,
-                                    maxLength: 30,
-                                    contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 3.w : 3.h, vertical: context.isPortrait ? 3.h : 3.w).copyWith(right: context.isPortrait ? 1.5.w : 1.5.h),
-                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                  ),
+                                  child: Obx(() {
+                                    return TextFieldWidget(
+                                      controller: controller.repairController,
+                                      title: "${AppStrings.repair.tr} (${controller.previousRepair.value})",
+                                      hintText: AppStrings.enterRepair.tr,
+                                      validator: controller.validateRepair,
+                                      textInputAction: TextInputAction.next,
+                                      keyboardType: TextInputType.number,
+                                      maxLength: 30,
+                                      contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 3.w : 3.h, vertical: context.isPortrait ? 3.h : 3.w).copyWith(right: context.isPortrait ? 1.5.w : 1.5.h),
+                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    );
+                                  }),
                                 ),
                               ],
                             ),

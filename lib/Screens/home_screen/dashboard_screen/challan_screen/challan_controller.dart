@@ -118,14 +118,44 @@ class ChallanController extends GetxController {
       );
     }
 
-    double totalAmountCount() {
-      final listOfAmounts = data.where((element) => element.totalAmount != null && element.totalAmount?.isNotEmpty == true).toList().map((e) => e.totalAmount!.toDouble()).toList();
+    double totalAmountCount({List<get_invoices.InvoiceMeta>? invoiceMeta}) {
+      final listOfAmounts = (invoiceMeta ?? data).where((element) => element.totalAmount != null && element.totalAmount?.isNotEmpty == true).toList().map((e) => e.totalAmount!.toDouble()).toList();
       return listOfAmounts.isNotEmpty ? listOfAmounts.reduce((value, element) => value + element) : 0.0;
     }
 
-    double totalInchCount() {
-      final listOfInch = data.where((element) => element.totalInch != null && element.totalInch?.isNotEmpty == true).toList().map((e) => e.totalInch!.toDouble()).toList();
+    double totalInchCount({List<get_invoices.InvoiceMeta>? invoiceMeta}) {
+      final listOfInch = (invoiceMeta ?? data).where((element) => element.totalInch != null && element.totalInch?.isNotEmpty == true).toList().map((e) => e.totalInch!.toDouble()).toList();
       return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
+    }
+
+    List<CategoryModel> getCategoryList() {
+      List<CategoryModel> catModel = [];
+      for (var element in data) {
+        if (catModel.any((e) => e.categoryId == element.categoryId)) {
+          final catIndex = catModel.indexWhere((e) => e.categoryId == element.categoryId);
+          catModel[catIndex] = catModel[catIndex].copyWith(
+            categoryId: element.categoryId,
+            categoryName: element.categoryName,
+            categoryPrice: element.categoryPrice,
+          );
+        } else {
+          catModel.add(
+            CategoryModel(
+              categoryId: element.categoryId,
+              categoryName: element.categoryName,
+              categoryPrice: element.categoryPrice,
+            ),
+          );
+        }
+      }
+      for (int catIndex = 0; catIndex < catModel.length; catIndex++) {
+        final invoiceMeta = data.where((element) => element.categoryId == catModel[catIndex].categoryId).toList();
+        catModel[catIndex] = catModel[catIndex].copyWith(
+          totalInch: totalInchCount(invoiceMeta: invoiceMeta).toString(),
+          totalAmount: totalAmountCount(invoiceMeta: invoiceMeta).toString(),
+        );
+      }
+      return catModel;
     }
 
     final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
@@ -304,38 +334,52 @@ class ChallanController extends GetxController {
             ),
             pw.SizedBox(height: isLandscape ? 5 : 10),
 
-            /// Total Inch & Total Amount
-            pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.start,
-              children: [
-                ///Total Inch
-                pw.Row(
+            /// Total Inch & Total Amount By Category
+            for (int categoryIndex = 0; categoryIndex < getCategoryList().length; categoryIndex++) ...[
+              (() {
+                final category = getCategoryList()[categoryIndex];
+                return pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    pw.Text(
-                      "${AppStrings.totalInch.tr}: ",
-                      style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
+                    ///Total Inch
+                    pw.Expanded(
+                      child: pw.Row(
+                        children: [
+                          pw.Text(
+                            "${AppStrings.totalInch.tr.replaceAll("C1", category.categoryName ?? '')}: ",
+                            style: size16Font.copyWith(fontSize: 12),
+                          ),
+                          pw.Text(
+                            category.totalInch ?? "",
+                            style: size16Font.copyWith(fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
-                    pw.Text(
-                      totalInchCount().toString(),
-                      style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
-                    ),
-                  ],
-                ),
 
-                ///Total Amount
-                if (showAmount) ...[
-                  pw.SizedBox(width: isLandscape ? 10 : 14),
-                  pw.Text(
-                    "${AppStrings.totalAmount.tr}: ",
-                    style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
-                  ),
-                  pw.Text(
-                    NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(totalAmountCount()),
-                    style: size16Font.copyWith(fontSize: isLandscape ? 12 : 18),
-                  ),
-                ],
-              ],
-            ),
+                    ///Total Amount
+                    if (showAmount) ...[
+                      pw.SizedBox(width: isLandscape ? 10 : 14),
+                      pw.Expanded(
+                        child: pw.Row(
+                          children: [
+                            pw.Text(
+                              "${AppStrings.totalAmount.tr.replaceAll("C1", category.categoryName ?? '')}: ",
+                              style: size16Font.copyWith(fontSize: 12),
+                            ),
+                            pw.Text(
+                              NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(category.totalAmount?.toDouble() ?? 0),
+                              style: size16Font.copyWith(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+              })(),
+              pw.SizedBox(height: isLandscape ? 2 : 3),
+            ],
           ];
         },
       ),
@@ -350,5 +394,37 @@ class ChallanController extends GetxController {
       return await file.writeAsBytes(fileBytes);
     }
     return null;
+  }
+}
+
+class CategoryModel {
+  String? categoryId;
+  String? categoryName;
+  String? categoryPrice;
+  String? totalInch;
+  String? totalAmount;
+
+  CategoryModel({
+    this.categoryId,
+    this.categoryName,
+    this.categoryPrice,
+    this.totalInch,
+    this.totalAmount,
+  });
+
+  CategoryModel copyWith({
+    String? categoryId,
+    String? categoryName,
+    String? categoryPrice,
+    String? totalInch,
+    String? totalAmount,
+  }) {
+    return CategoryModel(
+      categoryId: categoryId ?? this.categoryId,
+      categoryName: categoryName ?? this.categoryName,
+      categoryPrice: categoryPrice ?? this.categoryPrice,
+      totalInch: totalInch ?? this.totalInch,
+      totalAmount: totalAmount ?? this.totalAmount,
+    );
   }
 }

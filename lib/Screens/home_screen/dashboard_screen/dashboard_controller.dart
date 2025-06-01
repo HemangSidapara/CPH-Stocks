@@ -16,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:printing/printing.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -44,6 +45,10 @@ class DashboardController extends GetxController {
   /// @throws {Exception} - Throws an exception if an error occurs
   Future<bool> printPdf({required File pdfFile, bool isLandscape = true}) async {
     if (pdfFile.existsSync()) {
+      return await Printing.layoutPdf(
+        format: isLandscape ? PdfPageFormat.a5 : PdfPageFormat.a4,
+        onLayout: (format) => pdfFile.readAsBytesSync(),
+      );
       RxBool isSearching = true.obs;
       RxList<BrotherDevice> devicesList = RxList();
       RxInt selectedDeviceIndex = (-1).obs;

@@ -38,14 +38,16 @@ class SignInView extends GetView<SignInController> {
           color: AppColors.SECONDARY_COLOR,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: keyboardPadding != 0 ? 2.h : 5.h),
-            child: ButtonWidget(
-              onPressed: () async {
-                Utils.unfocus();
-                await controller.checkSignIn();
-              },
-              buttonTitle: AppStrings.login.tr,
-              isLoading: controller.isSignInLoading.value,
-            ),
+            child: Obx(() {
+              return ButtonWidget(
+                onPressed: () async {
+                  Utils.unfocus();
+                  await controller.checkSignIn();
+                },
+                buttonTitle: AppStrings.login.tr,
+                isLoading: controller.isSignInLoading.value,
+              );
+            }),
           ),
         ),
         body: Padding(

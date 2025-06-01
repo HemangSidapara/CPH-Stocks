@@ -22,12 +22,14 @@ class AddOrderCycleController extends GetxController {
   TextEditingController okPcsController = TextEditingController();
   TextEditingController woProcessController = TextEditingController();
   TextEditingController repairController = TextEditingController();
+  RxInt previousRepair = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     arguments = Get.arguments;
-    pendingController.text = arguments.pending?.toString() ?? '';
+    pendingController.text = arguments.pending?.toString() ?? '0';
+    previousRepair.value = arguments.repair ?? 0;
   }
 
   String? validatePending(String? value) {
@@ -55,7 +57,7 @@ class AddOrderCycleController extends GetxController {
           orderMetaId: arguments.itemId ?? '',
           okPcs: okPcsController.text.trim().isEmpty ? "0" : okPcsController.text.trim(),
           woProcess: woProcessController.text.trim().isEmpty ? "0" : woProcessController.text.trim(),
-          repair: repairController.text.trim().isEmpty ? "0" : repairController.text.trim(),
+          repair: finalRepairCalculation().toString(),
         );
         if (response.isSuccess) {
           Get.back();
@@ -66,5 +68,14 @@ class AddOrderCycleController extends GetxController {
     } finally {
       isAddOrderCycleLoading(false);
     }
+  }
+
+  int finalRepairCalculation() {
+    if (int.tryParse(pendingController.text) != null) {
+      final currentRepair = int.tryParse(repairController.text) ?? 0;
+      final newRepair = previousRepair.value + currentRepair;
+      return newRepair + (pendingController.text.toInt() - newRepair);
+    }
+    return 0;
   }
 }

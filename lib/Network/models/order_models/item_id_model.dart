@@ -3,6 +3,7 @@ class ItemDetailsModel {
   String? itemName;
   String? itemId;
   int? pending;
+  int? repair;
   bool isFromRecycleBin;
 
   ItemDetailsModel({
@@ -10,6 +11,7 @@ class ItemDetailsModel {
     this.itemName,
     this.itemId,
     this.pending,
+    this.repair,
     this.isFromRecycleBin = false,
   });
 }

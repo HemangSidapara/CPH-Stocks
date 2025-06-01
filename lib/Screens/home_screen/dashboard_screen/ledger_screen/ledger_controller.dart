@@ -141,12 +141,6 @@ class LedgerController extends GetxController {
       fontWeight: pw.FontWeight.bold,
     );
 
-    pw.TextStyle size12Font = pw.TextStyle(
-      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
-      fontSize: 14,
-      fontWeight: pw.FontWeight.bold,
-    );
-
     pw.Widget TableCell({
       required String title,
     }) {
@@ -154,7 +148,7 @@ class LedgerController extends GetxController {
         padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: pw.Text(
           title,
-          style: size12Font,
+          style: size14Font,
         ),
       );
     }
@@ -166,7 +160,7 @@ class LedgerController extends GetxController {
         padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: pw.Text(
           title,
-          style: size12Font,
+          style: size14Font,
         ),
       );
     }
@@ -181,36 +175,88 @@ class LedgerController extends GetxController {
       return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
     }
 
-    double megaTotalAmountCount() {
-      final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
-      final listOfAmount = totalInvoices.map((e) => totalAmountCount(e)).toList();
-      return listOfAmount.isNotEmpty ? listOfAmount.reduce((value, element) => value + element) : 0.0;
+    // double megaTotalAmountCount() {
+    //   final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
+    //   final listOfAmount = totalInvoices.map((e) => totalAmountCount(e)).toList();
+    //   return listOfAmount.isNotEmpty ? listOfAmount.reduce((value, element) => value + element) : 0.0;
+    // }
+    //
+    // double megaTotalInchCount() {
+    //   final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
+    //   final listOfInch = totalInvoices.map((e) => totalInchCount(e)).toList();
+    //   return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
+    // }
+
+    List<CategoryModel> getCategoryList(List<get_invoices.InvoiceMeta> invoiceMetaData) {
+      List<CategoryModel> catModel = [];
+      for (var element in invoiceMetaData) {
+        if (catModel.any((e) => e.categoryId == element.categoryId)) {
+          final catIndex = catModel.indexWhere((e) => e.categoryId == element.categoryId);
+          catModel[catIndex] = catModel[catIndex].copyWith(
+            categoryId: element.categoryId,
+            categoryName: element.categoryName,
+            categoryPrice: element.categoryPrice,
+          );
+        } else {
+          catModel.add(
+            CategoryModel(
+              categoryId: element.categoryId,
+              categoryName: element.categoryName,
+              categoryPrice: element.categoryPrice,
+            ),
+          );
+        }
+      }
+      for (int catIndex = 0; catIndex < catModel.length; catIndex++) {
+        final invoiceMeta = invoiceMetaData.where((element) => element.categoryId == catModel[catIndex].categoryId).toList();
+        catModel[catIndex] = catModel[catIndex].copyWith(
+          totalInch: totalInchCount(invoiceMeta).toString(),
+          totalAmount: totalAmountCount(invoiceMeta).toString(),
+        );
+      }
+      return catModel;
     }
 
-    double megaTotalInchCount() {
-      final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
-      final listOfInch = totalInvoices.map((e) => totalInchCount(e)).toList();
-      return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
+    List<CategoryModel> totalCategoriesOfLedger() {
+      List<CategoryModel> catModel = [];
+      for (int i = 0; i < data.length; i++) {
+        final listOfCat = getCategoryList(data[i].invoiceMeta ?? []);
+        for (int catIndex = 0; catIndex < listOfCat.length; catIndex++) {
+          if (catModel.any((e) => e.categoryId == listOfCat[catIndex].categoryId)) {
+            final currIndex = catModel.indexWhere((e) => e.categoryId == listOfCat[catIndex].categoryId);
+            catModel[currIndex] = catModel[currIndex].copyWith(
+              totalInch: ((catModel[currIndex].totalInch?.toDouble() ?? 0.0) + (listOfCat[catIndex].totalInch?.toDouble() ?? 0.0)).toString(),
+              totalAmount: ((catModel[currIndex].totalAmount?.toDouble() ?? 0.0) + (listOfCat[catIndex].totalAmount?.toDouble() ?? 0.0)).toString(),
+            );
+          } else {
+            catModel.add(listOfCat[catIndex]);
+          }
+        }
+      }
+      return catModel;
     }
 
     final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
     final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
     final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
     final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
+    final ttfNotoSansSymbols = pw.Font.ttf(await rootBundle.load(AppAssets.notoSansSymbols));
+
+    pw.PageTheme? pdfPageTheme = pw.PageTheme(
+      pageFormat: pdf.PdfPageFormat.a4,
+      margin: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      theme: pw.ThemeData.withFont(
+        base: ttfRegular,
+        bold: ttfBold,
+        italic: ttfItalic,
+        boldItalic: ttfBoldItalic,
+        icons: ttfBold,
+      ),
+    );
 
     pdfDoc.addPage(
       pw.MultiPage(
-        pageTheme: pw.PageTheme(
-          pageFormat: pdf.PdfPageFormat.a4,
-          margin: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          theme: pw.ThemeData.withFont(
-            base: ttfRegular,
-            bold: ttfBold,
-            italic: ttfItalic,
-            boldItalic: ttfBoldItalic,
-            icons: ttfBold,
-          ),
-        ),
+        pageTheme: pdfPageTheme,
         build: (context) {
           return <pw.Widget>[
             /// Ledger Title
@@ -264,6 +310,7 @@ class LedgerController extends GetxController {
 
               /// Invoice Table
               pw.Table(
+                defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
                 border: pw.TableBorder.all(
                   color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
                   width: 1,
@@ -418,46 +465,94 @@ class LedgerController extends GetxController {
                   ],
                 ],
               ),
-              pw.SizedBox(height: 5),
+              pw.SizedBox(height: 8),
 
-              /// Total Inch & Total Amount
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.start,
-                children: [
-                  ///Total Inch
-                  pw.Row(
+              /// Total Inch & Total Amount By Category
+              for (int categoryIndex = 0; categoryIndex < getCategoryList(data[invoiceIndex].invoiceMeta ?? []).length; categoryIndex++) ...[
+                (() {
+                  final category = getCategoryList(data[invoiceIndex].invoiceMeta ?? [])[categoryIndex];
+                  return pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
                     children: [
-                      pw.Text(
-                        "${AppStrings.totalInch.tr}: ",
-                        style: size16Font.copyWith(fontSize: 18),
+                      ///Total Inch
+                      pw.Expanded(
+                        child: pw.Row(
+                          children: [
+                            pw.Text(
+                              "${AppStrings.totalInch.tr.replaceAll("C1", category.categoryName ?? '')}: ",
+                              style: size16Font.copyWith(fontSize: 18),
+                            ),
+                            pw.Text(
+                              category.totalInch ?? "",
+                              style: size16Font.copyWith(fontSize: 18),
+                            ),
+                          ],
+                        ),
                       ),
-                      pw.Text(
-                        totalInchCount(data[invoiceIndex].invoiceMeta ?? []).toString(),
-                        style: size16Font.copyWith(fontSize: 18),
-                      ),
-                    ],
-                  ),
 
-                  ///Total Amount
-                  if (showAmount) ...[
-                    pw.SizedBox(width: 14),
-                    pw.Text(
-                      "${AppStrings.totalAmount.tr}: ",
-                      style: size16Font.copyWith(fontSize: 18),
-                    ),
-                    pw.Text(
-                      NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(totalAmountCount(data[invoiceIndex].invoiceMeta ?? [])),
-                      style: size16Font.copyWith(fontSize: 18),
-                    ),
-                  ],
-                ],
-              ),
+                      ///Total Amount
+                      if (showAmount) ...[
+                        pw.SizedBox(width: 14),
+                        pw.Expanded(
+                          child: pw.Row(
+                            children: [
+                              pw.Text(
+                                "${AppStrings.totalAmount.tr.replaceAll("C1", category.categoryName ?? '')}: ",
+                                style: size16Font.copyWith(fontSize: 18),
+                              ),
+                              pw.Text(
+                                NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(category.totalAmount?.toDouble() ?? 0),
+                                style: size16Font.copyWith(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                })(),
+                pw.SizedBox(height: 3),
+              ],
               pw.SizedBox(height: 30),
             ],
+          ];
+        },
+      ),
+    );
 
-            /// Mega Total Table of Inch & Amount
+    /// Mega Total of Inch & Amount Table
+    pdfDoc.addPage(
+      pw.MultiPage(
+        pageTheme: pdfPageTheme,
+        build: (context) {
+          return <pw.Widget>[
+            /// Mega Total Title
+            pw.Center(
+              child: pw.RichText(
+                text: pw.TextSpan(
+                  text: "❖",
+                  children: [
+                    pw.TextSpan(
+                      text: " ${AppStrings.totalAssetsCalculation.tr} ",
+                      style: size20Font.copyWith(
+                        fontSize: 22,
+                        font: ttfRegular,
+                        fontNormal: ttfRegular,
+                        fontBold: ttfBold,
+                      ),
+                    ),
+                    pw.TextSpan(
+                      text: "❖",
+                    ),
+                  ],
+                  style: size20Font.copyWith(font: ttfNotoSansSymbols),
+                ),
+              ),
+            ),
+            pw.SizedBox(height: 10),
             if (data.isNotEmpty) ...[
               pw.Table(
+                defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
                 border: pw.TableBorder.all(
                   color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
                   width: 1,
@@ -469,61 +564,92 @@ class LedgerController extends GetxController {
                       /// Challan Number
                       TableCell(title: AppStrings.challanNumber.tr),
 
+                      /// Category Name
+                      TableCell(title: AppStrings.category.tr),
+
                       /// Mega Total Inch
-                      TableCell(title: AppStrings.totalInch.tr),
+                      TableCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
 
                       /// Mega Total Amount
-                      if (showAmount) TableCell(title: AppStrings.totalAmount.tr),
+                      if (showAmount) TableCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
                     ],
                   ),
 
                   ///Data
                   for (int i = 0; i < data.length; i++) ...[
-                    pw.TableRow(
-                      children: [
-                        /// Empty Cell
-                        TableCell(
-                          title: data[i].challanNumber ?? "",
-                        ),
+                    for (int catIndex = 0; catIndex < getCategoryList(data[i].invoiceMeta ?? []).length; catIndex++) ...[
+                      (() {
+                        final category = getCategoryList(data[i].invoiceMeta ?? [])[catIndex];
+                        return pw.TableRow(
+                          children: [
+                            /// Challan Number
+                            if (catIndex == 0) ...[
+                              pw.TableCell(
+                                rowSpan: getCategoryList(data[i].invoiceMeta ?? []).length,
+                                child: TableCell(title: data[i].challanNumber ?? ""),
+                              ),
+                            ],
 
-                        /// Mega Total Inch
-                        TableCell(
-                          title: totalInchCount(data[i].invoiceMeta ?? []).toString(),
-                        ),
-
-                        /// Mega Total Amount
-                        if (showAmount)
-                          TableCell(
-                            title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
-                              totalAmountCount(data[i].invoiceMeta ?? []),
+                            /// Category Name
+                            TableCell(
+                              title: category.categoryName ?? "",
                             ),
-                          ),
-                      ],
-                    ),
+
+                            /// Mega Total Inch
+                            TableCell(
+                              title: totalInchCount(data[i].invoiceMeta ?? []).toString(),
+                            ),
+
+                            /// Mega Total Amount
+                            if (showAmount)
+                              TableCell(
+                                title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
+                                  totalAmountCount(data[i].invoiceMeta ?? []),
+                                ),
+                              ),
+                          ],
+                        );
+                      })(),
+                    ],
                   ],
 
                   ///Calculation Row
-                  pw.TableRow(
-                    children: [
-                      /// Empty Cell
-                      TableCell(
-                        title: "",
-                      ),
+                  for (int catIndex = 0; catIndex < totalCategoriesOfLedger().length; catIndex++) ...[
+                    (() {
+                      final category = totalCategoriesOfLedger()[catIndex];
+                      return pw.TableRow(
+                        children: [
+                          /// Total Inch Categories
+                          if (catIndex == 0) ...[
+                            pw.TableCell(
+                              rowSpan: totalCategoriesOfLedger().length,
+                              child: TableCell(
+                                title: AppStrings.totalInchCategories.tr,
+                              ),
+                            ),
+                          ],
 
-                      /// Mega Total Inch
-                      TableCell(
-                        title: megaTotalInchCount().toString(),
-                      ),
-
-                      /// Mega Total Amount
-                      if (showAmount)
-                        TableCell(
-                          title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
-                            megaTotalAmountCount(),
+                          /// Category Name
+                          TableCell(
+                            title: category.categoryName ?? "",
                           ),
-                        ),
-                    ],
-                  ),
+
+                          /// Mega Total Inch
+                          TableCell(
+                            title: category.totalInch ?? "",
+                          ),
+
+                          /// Mega Total Amount
+                          if (showAmount)
+                            TableCell(
+                              title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
+                                category.totalAmount?.toDouble() ?? 0.0,
+                              ),
+                            ),
+                        ],
+                      );
+                    })(),
+                  ],
                 ],
               ),
             ],
@@ -541,5 +667,37 @@ class LedgerController extends GetxController {
       return await file.writeAsBytes(fileBytes);
     }
     return null;
+  }
+}
+
+class CategoryModel {
+  String? categoryId;
+  String? categoryName;
+  String? categoryPrice;
+  String? totalInch;
+  String? totalAmount;
+
+  CategoryModel({
+    this.categoryId,
+    this.categoryName,
+    this.categoryPrice,
+    this.totalInch,
+    this.totalAmount,
+  });
+
+  CategoryModel copyWith({
+    String? categoryId,
+    String? categoryName,
+    String? categoryPrice,
+    String? totalInch,
+    String? totalAmount,
+  }) {
+    return CategoryModel(
+      categoryId: categoryId ?? this.categoryId,
+      categoryName: categoryName ?? this.categoryName,
+      categoryPrice: categoryPrice ?? this.categoryPrice,
+      totalInch: totalInch ?? this.totalInch,
+      totalAmount: totalAmount ?? this.totalAmount,
+    );
   }
 }

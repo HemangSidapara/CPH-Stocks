@@ -2,7 +2,7 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.0.0+34
+version: 2.0.1+35
 
 environment:
   sdk: '>=3.6.2 <4.0.0'
@@ -59,6 +59,11 @@ dependencies:
 
 dependency_overrides:
   intl: ^0.20.2
+  pdf:
+    git:
+      url: https://github.com/Gustl22/dart_pdf.git
+      path: pdf/
+      ref: 313-column-span
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +75,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/fonts/Roboto/
+    - assets/fonts/NotoSansSymbols2/
     - assets/images/
     - assets/icons/
     - assets/animations/

@@ -1,9 +1,7 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
-import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
-import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/sort_by_pvd_color_screen/sort_by_pvd_color_view.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
@@ -123,16 +121,16 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomHeaderWidget(
-                                title: getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee ? AppStrings.orderDetails.tr : (getData(AppConstance.userName) ?? AppStrings.orderDetails.tr),
-                                titleIcon: AppAssets.orderDetailsIcon,
-                                isCustomer: getData(AppConstance.role) != AppConstance.admin && getData(AppConstance.role) != AppConstance.employee,
-                                onBackPressed: getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee
-                                    ? () {
-                                        Get.back(closeOverlays: true);
-                                      }
-                                    : null,
-                              ),
+                              Obx(() {
+                                return CustomHeaderWidget(
+                                  title: controller.isRepairScreen.isTrue ? AppStrings.repairingDetails.tr : AppStrings.orderDetails.tr,
+                                  titleIcon: controller.isRepairScreen.isTrue ? AppAssets.repairingIcon : AppAssets.orderDetailsIcon,
+                                  titleIconSize: controller.isRepairScreen.isTrue ? 9.w : null,
+                                  onBackPressed: () {
+                                    Get.back(closeOverlays: true);
+                                  },
+                                );
+                              }),
                               Obx(() {
                                 return IconButton(
                                   onPressed: controller.isRefreshing.value

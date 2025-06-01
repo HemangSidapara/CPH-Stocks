@@ -35,4 +35,5 @@ class AppAssets {
   static const String robotoBold = "assets/fonts/Roboto/Roboto-Bold.ttf";
   static const String robotoItalic = "assets/fonts/Roboto/Roboto-Italic.ttf";
   static const String robotoBoldItalic = "assets/fonts/Roboto/Roboto-BoldItalic.ttf";
+  static const String notoSansSymbols = "assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf";
 }

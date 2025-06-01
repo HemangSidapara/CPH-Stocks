@@ -1,6 +1,8 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
@@ -14,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class HomeController extends GetxController {
   RxInt bottomIndex = 0.obs;
@@ -24,15 +27,22 @@ class HomeController extends GetxController {
 
   RxList<String> listOfImages = [
     AppAssets.homeIcon,
-    AppAssets.recycleBinIcon,
-    AppAssets.notesIcon,
+    if (getData(AppConstance.role) != AppConstance.customer) AppAssets.recycleBinIcon,
+    if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesIcon,
     AppAssets.settingsIcon,
+  ].obs;
+
+  RxList<double?> listOfImageSizes = [
+    null,
+    if (getData(AppConstance.role) != AppConstance.customer) 6.w,
+    if (getData(AppConstance.role) != AppConstance.customer) 6.w,
+    null,
   ].obs;
 
   RxList<Widget> bottomItemWidgetList = [
     const DashboardView(),
-    const RecycleBinView(),
-    const NotesView(),
+    if (getData(AppConstance.role) != AppConstance.customer) const RecycleBinView(),
+    if (getData(AppConstance.role) != AppConstance.customer) const NotesView(),
     const SettingsView(),
   ].obs;
 

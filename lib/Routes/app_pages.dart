@@ -11,8 +11,6 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_sc
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_view.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/repairing_details_screen/repairing_details_bindings.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/repairing_details_screen/repairing_details_view.dart';
 import 'package:cph_stocks/Screens/home_screen/home_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/home_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_bindings.dart';
@@ -123,15 +121,6 @@ class AppPages {
       name: Routes.ledgerScreen,
       page: () => const LedgerView(),
       binding: LedgerBinding(),
-      transition: Transition.rightToLeftWithFade,
-      transitionDuration: transitionDuration,
-    ),
-
-    ///Repairing Screen
-    GetPage(
-      name: Routes.repairingScreen,
-      page: () => const RepairingDetailsView(),
-      binding: RepairingDetailsBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

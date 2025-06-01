@@ -210,7 +210,7 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
             ///Print
             ElevatedButton(
               onPressed: () async {
-                Utils.getDashboardController.printPdf(pdfFile: pdfFile.value);
+                Utils.getDashboardController.printPdf(pdfFile: pdfFile.value, isLandscape: false);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.ORANGE_COLOR,
