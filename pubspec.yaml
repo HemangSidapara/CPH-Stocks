@@ -2,7 +2,7 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.0.3+37
+version: 2.0.4+38
 
 environment:
   sdk: '>=3.6.2 <4.0.0'
