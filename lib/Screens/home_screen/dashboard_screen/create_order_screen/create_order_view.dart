@@ -33,169 +33,184 @@ class CreateOrderView extends GetView<CreateOrderController> {
 
   @override
   Widget build(BuildContext context) {
-    return UnfocusWidget(
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
-            child: Column(
-              children: [
-                ///Header
-                CustomHeaderWidget(
-                  title: AppStrings.createOrder.tr,
-                  titleIcon: AppAssets.createOrderImage,
-                  onBackPressed: () async {
-                    await controller.showExitDialog(
-                      onPressed: () async {
-                        Get.back(closeOverlays: true);
-                        Get.back(closeOverlays: true);
-                        await removeData(AppConstance.setOrderData);
-                      },
-                      title: AppStrings.areYouSureYouWantToExitCreateOrder.tr,
-                    );
-                  },
-                ),
-                SizedBox(height: 2.h),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          await controller.showExitDialog(
+            onPressed: () async {
+              Get.back(closeOverlays: true);
+              Get.back(closeOverlays: true);
+              await removeData(AppConstance.setOrderData);
+            },
+            title: AppStrings.areYouSureYouWantToExitCreateOrder.tr,
+          );
+        }
+      },
+      child: UnfocusWidget(
+        child: Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
+              child: Column(
+                children: [
+                  ///Header
+                  CustomHeaderWidget(
+                    title: AppStrings.createOrder.tr,
+                    titleIcon: AppAssets.createOrderImage,
+                    onBackPressed: () async {
+                      await controller.showExitDialog(
+                        onPressed: () async {
+                          Get.back(closeOverlays: true);
+                          Get.back(closeOverlays: true);
+                          await removeData(AppConstance.setOrderData);
+                        },
+                        title: AppStrings.areYouSureYouWantToExitCreateOrder.tr,
+                      );
+                    },
+                  ),
+                  SizedBox(height: 2.h),
 
-                ///Fields
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: controller.createOrderFormKey,
-                      child: Column(
-                        children: [
-                          /// Party List
-                          Padding(
-                            padding: EdgeInsets.only(left: 2.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppStrings.partyName.tr,
-                                  style: TextStyle(
-                                    color: AppColors.PRIMARY_COLOR,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
+                  ///Fields
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Form(
+                        key: controller.createOrderFormKey,
+                        child: Column(
+                          children: [
+                            /// Party List
+                            Padding(
+                              padding: EdgeInsets.only(left: 2.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppStrings.partyName.tr,
+                                    style: TextStyle(
+                                      color: AppColors.PRIMARY_COLOR,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    controller.partyNameController.clear();
-                                    controller.contactNumberController.clear();
-                                    controller.selectedParty("");
+                                  IconButton(
+                                    onPressed: () {
+                                      controller.partyNameController.clear();
+                                      controller.contactNumberController.clear();
+                                      controller.selectedParty("");
+                                      controller.storeOrderDetails();
+                                    },
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      maximumSize: Size(6.w, 6.w),
+                                      minimumSize: Size(6.w, 6.w),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    icon: Icon(
+                                      Icons.refresh_rounded,
+                                      color: AppColors.LIGHT_BLUE_COLOR,
+                                      size: 5.w,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 1.h),
+                            TextFieldWidget(
+                              controller: controller.partyNameController,
+                              hintText: AppStrings.selectParty.tr,
+                              validator: controller.validatePartyName,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 50,
+                              readOnly: true,
+                              onTap: () async {
+                                await showBottomSheetSelectAndAdd(
+                                  ctx: context,
+                                  items: controller.partyList,
+                                  title: AppStrings.party.tr,
+                                  fieldHint: AppStrings.enterPartyName.tr,
+                                  searchHint: AppStrings.searchParty.tr,
+                                  selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
+                                  controller: controller.partyNameController,
+                                  onInit: () async {
+                                    return await controller.getPartiesApi();
+                                  },
+                                  onSelect: (id) {
+                                    controller.selectedParty.value = id.toString();
+                                    controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? controller.partyNameController.text;
+                                    controller.contactNumberController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.contactNumber ?? controller.contactNumberController.text;
                                     controller.storeOrderDetails();
                                   },
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    maximumSize: Size(6.w, 6.w),
-                                    minimumSize: Size(6.w, 6.w),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  icon: Icon(
-                                    Icons.refresh_rounded,
-                                    color: AppColors.LIGHT_BLUE_COLOR,
-                                    size: 5.w,
-                                  ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                          ),
-                          SizedBox(height: 1.h),
-                          TextFieldWidget(
-                            controller: controller.partyNameController,
-                            hintText: AppStrings.selectParty.tr,
-                            validator: controller.validatePartyName,
-                            textInputAction: TextInputAction.next,
-                            maxLength: 50,
-                            readOnly: true,
-                            onTap: () async {
-                              await showBottomSheetSelectAndAdd(
-                                ctx: context,
-                                items: controller.partyList,
-                                title: AppStrings.party.tr,
-                                fieldHint: AppStrings.enterPartyName.tr,
-                                searchHint: AppStrings.searchParty.tr,
-                                selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
-                                controller: controller.partyNameController,
-                                onInit: () async {
-                                  return await controller.getPartiesApi();
-                                },
-                                onSelect: (id) {
-                                  controller.selectedParty.value = id.toString();
-                                  controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? controller.partyNameController.text;
-                                  controller.contactNumberController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.contactNumber ?? controller.contactNumberController.text;
-                                  controller.storeOrderDetails();
-                                },
-                              );
-                            },
-                          ),
-                          SizedBox(height: 2.h),
+                            SizedBox(height: 2.h),
 
-                          ///Contact Number
-                          TextFieldWidget(
-                            controller: controller.contactNumberController,
-                            title: AppStrings.contactNumber.tr,
-                            hintText: AppStrings.enterContactNumber.tr,
-                            validator: controller.validateContactNumber,
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              TextInputFormatter.withFunction((oldValue, newValue) {
-                                if (!newValue.text.isNumericOnly && newValue.text.isNotEmpty) {
-                                  return oldValue;
-                                } else {
-                                  return newValue;
-                                }
-                              })
-                            ],
-                            onChanged: (value) {
-                              controller.storeOrderDetails();
-                            },
-                            maxLength: 10,
-                          ),
-                          SizedBox(height: 2.h),
-
-                          ///Description
-                          TextFieldWidget(
-                            controller: controller.descriptionController,
-                            title: AppStrings.description.tr,
-                            hintText: AppStrings.enterDescription.tr,
-                            textInputAction: TextInputAction.next,
-                            maxLength: 120,
-                            maxLines: 3,
-                            onChanged: (value) {
-                              controller.storeOrderDetails();
-                            },
-                          ),
-                          SizedBox(height: 2.h),
-
-                          ///Item Fields
-                          Obx(() {
-                            return Column(
-                              children: [
-                                for (int i = 0; i < controller.itemNameControllerList.length; i++) itemFieldsWidget(context: context, index: i),
+                            ///Contact Number
+                            TextFieldWidget(
+                              controller: controller.contactNumberController,
+                              title: AppStrings.contactNumber.tr,
+                              hintText: AppStrings.enterContactNumber.tr,
+                              validator: controller.validateContactNumber,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  if (!newValue.text.isNumericOnly && newValue.text.isNotEmpty) {
+                                    return oldValue;
+                                  } else {
+                                    return newValue;
+                                  }
+                                })
                               ],
-                            );
-                          }),
-                        ],
+                              onChanged: (value) {
+                                controller.storeOrderDetails();
+                              },
+                              maxLength: 10,
+                            ),
+                            SizedBox(height: 2.h),
+
+                            ///Description
+                            TextFieldWidget(
+                              controller: controller.descriptionController,
+                              title: AppStrings.description.tr,
+                              hintText: AppStrings.enterDescription.tr,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 120,
+                              maxLines: 3,
+                              onChanged: (value) {
+                                controller.storeOrderDetails();
+                              },
+                            ),
+                            SizedBox(height: 2.h),
+
+                            ///Item Fields
+                            Obx(() {
+                              return Column(
+                                children: [
+                                  for (int i = 0; i < controller.itemNameControllerList.length; i++) itemFieldsWidget(context: context, index: i),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 2.h),
+                  SizedBox(height: 2.h),
 
-                ///Create Order Button
-                Obx(() {
-                  return ButtonWidget(
-                    onPressed: () async {
-                      Utils.unfocus();
-                      await controller.createOrderApi();
-                    },
-                    isLoading: controller.isCreateOrderLoading.value,
-                    buttonTitle: AppStrings.createOrder.tr,
-                  );
-                }),
-              ],
+                  ///Create Order Button
+                  Obx(() {
+                    return ButtonWidget(
+                      onPressed: () async {
+                        Utils.unfocus();
+                        await controller.createOrderApi();
+                      },
+                      isLoading: controller.isCreateOrderLoading.value,
+                      buttonTitle: AppStrings.createOrder.tr,
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ),
@@ -501,10 +516,15 @@ class CreateOrderView extends GetView<CreateOrderController> {
               onSelect: (id) {
                 controller.selectedCategoryNameList[index] = id.toString();
                 controller.categoryNameControllerList[index].text = controller.categoryList.firstWhereOrNull((element) => element.categoryId == controller.selectedCategoryNameList[index])?.categoryName ?? controller.categoryNameControllerList[index].text;
+                if (id == -1) {
+                  controller.categoryList.add(
+                    get_categories.CategoryData(
+                      categoryId: DateTime.now().millisecondsSinceEpoch.toString(),
+                      categoryName: controller.categoryNameControllerList[index].text,
+                    ),
+                  );
+                }
                 controller.storeOrderDetails();
-              },
-              onInit: () async {
-                return await controller.getCategoriesApi();
               },
             );
           },

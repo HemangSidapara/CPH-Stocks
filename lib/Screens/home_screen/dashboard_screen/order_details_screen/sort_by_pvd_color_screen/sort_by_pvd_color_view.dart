@@ -1419,7 +1419,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
 
                         ///Edit Item
                         ElevatedButton(
-                          onPressed: itemDetails?.quantity == itemDetails?.pending
+                          onPressed: itemDetails?.quantity == itemDetails?.pending || (getData(AppConstance.phone) != null && getData(AppConstance.phone)?.toString().isNotEmpty == true ? AppConstance.editOrderAccess.contains(getData(AppConstance.phone)) : true)
                               ? () async {
                                   Get.back();
                                   await controller.showEditItemBottomSheet(

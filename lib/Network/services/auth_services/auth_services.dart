@@ -58,6 +58,7 @@ class AuthServices {
           await setData(AppConstance.authorizationToken, loginModel.token);
           await setData(AppConstance.role, loginModel.role);
           await setData(AppConstance.userName, loginModel.name);
+          await setData(AppConstance.phone, phone);
           if (kDebugMode) {
             print("loginApi success :: ${loginModel.msg}");
           }

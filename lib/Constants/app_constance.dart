@@ -30,4 +30,6 @@ class AppConstance {
   static const String manager = 'Manager';
   static const String userName = 'userName';
   static const String setOrderData = 'setOrderData';
+  static const String phone = 'phone';
+  static const List<String> editOrderAccess = ['7999695771'];
 }
