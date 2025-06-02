@@ -31,7 +31,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
     return Column(
       children: [
         ///Searchbar
-        if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee)
+        if ([AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role)))
           Obx(() {
             if (controller.isDeleteMultipleOrdersEnable.isFalse) {
               return Column(
@@ -636,13 +636,6 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                       thickness: 1,
                                                                     ),
                                                                   ),
-                                                                  SizedBox(
-                                                                    height: 3.h,
-                                                                    child: VerticalDivider(
-                                                                      color: AppColors.SECONDARY_COLOR,
-                                                                      thickness: 1,
-                                                                    ),
-                                                                  ),
                                                                   Flexible(
                                                                     child: Tooltip(
                                                                       message: AppStrings.pending.tr,
@@ -680,7 +673,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                     ],
                                                   ),
                                                 ),
-                                                if (controller.isRepairScreen.isFalse && (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee)) ...[
+                                                if (controller.isRepairScreen.isFalse && [AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role))) ...[
                                                   Obx(() {
                                                     if (controller.isDeleteMultipleOrdersEnable.isFalse) {
                                                       return Row(
@@ -689,12 +682,13 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                           ///Add Cycle
                                                           IconButton(
                                                             onPressed: () async {
+                                                              final repair = int.tryParse(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair?.toString() ?? "");
                                                               Get.toNamed(
                                                                 Routes.addOrderCycleScreen,
                                                                 arguments: ItemDetailsModel(
                                                                   itemId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId,
                                                                   pending: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending?.toString().toInt() ?? 0,
-                                                                  repair: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair?.toString().toInt() ?? 0,
+                                                                  repair: repair ?? 0,
                                                                 ),
                                                               );
                                                             },
@@ -1391,7 +1385,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                   ),
 
                   ///Actions
-                  if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) ...[
+                  if ([AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role))) ...[
                     SizedBox(height: 2.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1719,15 +1713,17 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                         for (int cycleIndex = 0; cycleIndex < (itemsList[orderIndex].orderCycles?.length ?? 0); cycleIndex++) ...[
                                           if (getData(AppConstance.role) != AppConstance.customer || itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) ...[
                                             InkWell(
-                                              onTap: itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true
+                                              onTap: true
                                                   ? null
-                                                  : () {
-                                                      if (selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId)) {
-                                                        selectedCycleIds.removeWhere((element) => element == itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId);
-                                                      } else if (itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId != null) {
-                                                        selectedCycleIds.add(itemsList[orderIndex].orderCycles![cycleIndex].orderCycleId!);
-                                                      }
-                                                    },
+                                                  : itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true
+                                                      ? null
+                                                      : () {
+                                                          if (selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId)) {
+                                                            selectedCycleIds.removeWhere((element) => element == itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId);
+                                                          } else if (itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId != null) {
+                                                            selectedCycleIds.add(itemsList[orderIndex].orderCycles![cycleIndex].orderCycleId!);
+                                                          }
+                                                        },
                                               child: DecoratedBox(
                                                 decoration: BoxDecoration(
                                                   border: Border.all(
@@ -1747,7 +1743,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                             children: [
                                                               ///CheckMark
                                                               Obx(() {
-                                                                if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true) {
+                                                                if (itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true || true) {
                                                                   return const SizedBox();
                                                                 } else {
                                                                   return AnimatedContainer(
@@ -1894,7 +1890,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                     }),
                   ),
 
-                  if (getData(AppConstance.role) != AppConstance.customer) ...[
+                  if (false && getData(AppConstance.role) != AppConstance.customer) ...[
                     SizedBox(height: 2.h),
 
                     ///Bill

@@ -86,7 +86,7 @@ class SettingsView extends GetView<SettingsController> {
                         }),
 
                         ///Copy URL
-                        if (getData(AppConstance.role) == AppConstance.admin) ...[
+                        if ([AppConstance.admin, AppConstance.manager].contains(getData(AppConstance.role))) ...[
                           SizedBox(width: 2.w),
                           InkWell(
                             onTap: () async {
