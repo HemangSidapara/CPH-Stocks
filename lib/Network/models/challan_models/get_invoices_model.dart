@@ -84,6 +84,7 @@ class InvoiceMeta {
   String? inch;
   String? totalInch;
   String? balanceQuantity;
+  @StringFromNumConverter()
   String? totalAmount;
   String? categoryId;
   @StringFromNumConverter()

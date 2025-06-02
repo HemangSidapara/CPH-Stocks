@@ -175,12 +175,12 @@ class LedgerController extends GetxController {
       return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
     }
 
-    // double megaTotalAmountCount() {
-    //   final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
-    //   final listOfAmount = totalInvoices.map((e) => totalAmountCount(e)).toList();
-    //   return listOfAmount.isNotEmpty ? listOfAmount.reduce((value, element) => value + element) : 0.0;
-    // }
-    //
+    double megaTotalAmountCount() {
+      final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
+      final listOfAmount = totalInvoices.map((e) => totalAmountCount(e)).toList();
+      return listOfAmount.isNotEmpty ? listOfAmount.reduce((value, element) => value + element) : 0.0;
+    }
+
     // double megaTotalInchCount() {
     //   final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
     //   final listOfInch = totalInvoices.map((e) => totalInchCount(e)).toList();
@@ -370,7 +370,7 @@ class LedgerController extends GetxController {
                       /// Total Inch
                       pw.SizedBox(
                         width: 60,
-                        child: TableHeadingCell(title: AppStrings.totalInch.tr),
+                        child: TableHeadingCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
                       ),
 
                       /// Balance QTY
@@ -383,7 +383,7 @@ class LedgerController extends GetxController {
                       if (showAmount)
                         pw.SizedBox(
                           width: 75,
-                          child: TableHeadingCell(title: AppStrings.totalAmount.tr),
+                          child: TableHeadingCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
                         ),
                     ],
                   ),
@@ -457,7 +457,7 @@ class LedgerController extends GetxController {
                           if (showAmount)
                             pw.SizedBox(
                               width: 75,
-                              child: TableCell(title: invoice?.totalAmount == null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹", decimalDigits: 0).format(invoice?.totalAmount!.toDouble()) : ""),
+                              child: TableCell(title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : ""),
                             )
                         ],
                       );
@@ -467,51 +467,41 @@ class LedgerController extends GetxController {
               ),
               pw.SizedBox(height: 8),
 
-              /// Total Inch & Total Amount By Category
-              for (int categoryIndex = 0; categoryIndex < getCategoryList(data[invoiceIndex].invoiceMeta ?? []).length; categoryIndex++) ...[
-                (() {
-                  final category = getCategoryList(data[invoiceIndex].invoiceMeta ?? [])[categoryIndex];
-                  return pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: [
-                      ///Total Inch
-                      pw.Expanded(
-                        child: pw.Row(
-                          children: [
-                            pw.Text(
-                              "${AppStrings.totalInch.tr.replaceAll("C1", category.categoryName ?? '')}: ",
-                              style: size16Font.copyWith(fontSize: 18),
-                            ),
-                            pw.Text(
-                              category.totalInch ?? "",
-                              style: size16Font.copyWith(fontSize: 18),
-                            ),
-                          ],
+              /// Total Inch By Category
+              if (!showAmount) ...[
+                for (int categoryIndex = 0; categoryIndex < getCategoryList(data[invoiceIndex].invoiceMeta ?? []).length; categoryIndex++) ...[
+                  (() {
+                    final category = getCategoryList(data[invoiceIndex].invoiceMeta ?? [])[categoryIndex];
+                    return pw.Row(
+                      children: [
+                        pw.Text(
+                          "${AppStrings.totalInch.tr.replaceAll("C1", category.categoryName ?? '')}: ",
+                          style: size16Font.copyWith(fontSize: 18),
                         ),
-                      ),
-
-                      ///Total Amount
-                      if (showAmount) ...[
-                        pw.SizedBox(width: 14),
-                        pw.Expanded(
-                          child: pw.Row(
-                            children: [
-                              pw.Text(
-                                "${AppStrings.totalAmount.tr.replaceAll("C1", category.categoryName ?? '')}: ",
-                                style: size16Font.copyWith(fontSize: 18),
-                              ),
-                              pw.Text(
-                                NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(category.totalAmount?.toDouble() ?? 0),
-                                style: size16Font.copyWith(fontSize: 18),
-                              ),
-                            ],
-                          ),
+                        pw.Text(
+                          category.totalInch ?? "",
+                          style: size16Font.copyWith(fontSize: 18),
                         ),
                       ],
-                    ],
-                  );
-                })(),
-                pw.SizedBox(height: 3),
+                    );
+                  })(),
+                  pw.SizedBox(height: 3),
+                ],
+              ],
+              if (showAmount) ...[
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.end,
+                  children: [
+                    pw.Text(
+                      "${AppStrings.totalAmount.tr.replaceAll("C1 ", "")}: ",
+                      style: size16Font.copyWith(fontSize: 18),
+                    ),
+                    pw.Text(
+                      NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(totalAmountCount(data[invoiceIndex].invoiceMeta ?? [])),
+                      style: size16Font.copyWith(fontSize: 18),
+                    ),
+                  ],
+                ),
               ],
               pw.SizedBox(height: 30),
             ],
@@ -564,11 +554,13 @@ class LedgerController extends GetxController {
                       /// Challan Number
                       TableCell(title: AppStrings.challanNumber.tr),
 
-                      /// Category Name
-                      TableCell(title: AppStrings.category.tr),
+                      if (!showAmount) ...[
+                        /// Category Name
+                        TableCell(title: AppStrings.category.tr),
 
-                      /// Mega Total Inch
-                      TableCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
+                        /// Mega Total Inch
+                        TableCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
+                      ],
 
                       /// Mega Total Amount
                       if (showAmount) TableCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
@@ -577,16 +569,64 @@ class LedgerController extends GetxController {
 
                   ///Data
                   for (int i = 0; i < data.length; i++) ...[
-                    for (int catIndex = 0; catIndex < getCategoryList(data[i].invoiceMeta ?? []).length; catIndex++) ...[
+                    if (!showAmount) ...[
+                      for (int catIndex = 0; catIndex < getCategoryList(data[i].invoiceMeta ?? []).length; catIndex++) ...[
+                        (() {
+                          final category = getCategoryList(data[i].invoiceMeta ?? [])[catIndex];
+                          return pw.TableRow(
+                            children: [
+                              /// Challan Number
+                              if (catIndex == 0) ...[
+                                pw.TableCell(
+                                  rowSpan: getCategoryList(data[i].invoiceMeta ?? []).length,
+                                  child: TableCell(title: data[i].challanNumber ?? ""),
+                                ),
+                              ],
+
+                              /// Category Name
+                              TableCell(
+                                title: category.categoryName ?? "",
+                              ),
+
+                              /// Mega Total Inch
+                              TableCell(
+                                title: category.totalInch ?? "",
+                              ),
+                            ],
+                          );
+                        })(),
+                      ],
+                    ] else ...[
+                      pw.TableRow(
+                        children: [
+                          /// Challan Number
+                          TableCell(title: data[i].challanNumber ?? ""),
+
+                          /// Mega Total Amount
+                          TableCell(
+                            title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
+                              totalAmountCount(data[i].invoiceMeta ?? []),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+
+                  ///Calculation Row
+                  if (!showAmount) ...[
+                    for (int catIndex = 0; catIndex < totalCategoriesOfLedger().length; catIndex++) ...[
                       (() {
-                        final category = getCategoryList(data[i].invoiceMeta ?? [])[catIndex];
+                        final category = totalCategoriesOfLedger()[catIndex];
                         return pw.TableRow(
                           children: [
-                            /// Challan Number
+                            /// Total Inch Categories
                             if (catIndex == 0) ...[
                               pw.TableCell(
-                                rowSpan: getCategoryList(data[i].invoiceMeta ?? []).length,
-                                child: TableCell(title: data[i].challanNumber ?? ""),
+                                rowSpan: totalCategoriesOfLedger().length,
+                                child: TableCell(
+                                  title: AppStrings.totalInchCategories.tr,
+                                ),
                               ),
                             ],
 
@@ -597,58 +637,34 @@ class LedgerController extends GetxController {
 
                             /// Mega Total Inch
                             TableCell(
-                              title: totalInchCount(data[i].invoiceMeta ?? []).toString(),
+                              title: category.totalInch ?? "",
                             ),
 
                             /// Mega Total Amount
                             if (showAmount)
                               TableCell(
                                 title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
-                                  totalAmountCount(data[i].invoiceMeta ?? []),
+                                  category.totalAmount?.toDouble() ?? 0.0,
                                 ),
                               ),
                           ],
                         );
                       })(),
                     ],
-                  ],
+                  ] else ...[
+                    pw.TableRow(
+                      children: [
+                        /// Total Amount
+                        TableCell(
+                          title: AppStrings.totalAmount.tr.replaceAll("C1 ", ""),
+                        ),
 
-                  ///Calculation Row
-                  for (int catIndex = 0; catIndex < totalCategoriesOfLedger().length; catIndex++) ...[
-                    (() {
-                      final category = totalCategoriesOfLedger()[catIndex];
-                      return pw.TableRow(
-                        children: [
-                          /// Total Inch Categories
-                          if (catIndex == 0) ...[
-                            pw.TableCell(
-                              rowSpan: totalCategoriesOfLedger().length,
-                              child: TableCell(
-                                title: AppStrings.totalInchCategories.tr,
-                              ),
-                            ),
-                          ],
-
-                          /// Category Name
-                          TableCell(
-                            title: category.categoryName ?? "",
-                          ),
-
-                          /// Mega Total Inch
-                          TableCell(
-                            title: category.totalInch ?? "",
-                          ),
-
-                          /// Mega Total Amount
-                          if (showAmount)
-                            TableCell(
-                              title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
-                                category.totalAmount?.toDouble() ?? 0.0,
-                              ),
-                            ),
-                        ],
-                      );
-                    })(),
+                        /// Mega Total Inch
+                        TableCell(
+                          title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(megaTotalAmountCount()),
+                        ),
+                      ],
+                    ),
                   ],
                 ],
               ),

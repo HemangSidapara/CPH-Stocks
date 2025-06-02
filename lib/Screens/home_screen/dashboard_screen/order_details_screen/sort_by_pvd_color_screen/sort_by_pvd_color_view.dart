@@ -592,10 +592,10 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                               ),
                                                             ),
 
-                                                            ///Ok Pcs., W/O Process, Repair & Pending
-                                                            Row(
-                                                              children: [
-                                                                if (controller.isRepairScreen.isFalse) ...[
+                                                            ///Ok Pcs., W/O Process & Pending
+                                                            if (controller.isRepairScreen.isFalse) ...[
+                                                              Row(
+                                                                children: [
                                                                   Flexible(
                                                                     child: Tooltip(
                                                                       message: AppStrings.okPcs.tr,
@@ -636,21 +636,6 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                       thickness: 1,
                                                                     ),
                                                                   ),
-                                                                ],
-                                                                Flexible(
-                                                                  child: Tooltip(
-                                                                    message: AppStrings.repair.tr,
-                                                                    child: Text(
-                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair ?? '0',
-                                                                      style: TextStyle(
-                                                                        fontWeight: FontWeight.w700,
-                                                                        fontSize: 15.sp,
-                                                                        color: controller.isRepairScreen.isFalse ? AppColors.BRONZE_COLOR : AppColors.DARK_RED_COLOR,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                if (controller.isRepairScreen.isFalse) ...[
                                                                   SizedBox(
                                                                     height: 3.h,
                                                                     child: VerticalDivider(
@@ -672,8 +657,23 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                                     ),
                                                                   ),
                                                                 ],
-                                                              ],
-                                                            ),
+                                                              ),
+                                                            ],
+
+                                                            ///Repair
+                                                            if (controller.isRepairScreen.isTrue) ...[
+                                                              Tooltip(
+                                                                message: AppStrings.repair.tr,
+                                                                child: Text(
+                                                                  controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair ?? '0',
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.w700,
+                                                                    fontSize: 15.sp,
+                                                                    color: controller.isRepairScreen.isFalse ? AppColors.BRONZE_COLOR : AppColors.DARK_RED_COLOR,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ],
                                                         ),
                                                       ),

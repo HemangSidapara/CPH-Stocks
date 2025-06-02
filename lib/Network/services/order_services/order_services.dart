@@ -67,21 +67,24 @@ class OrderServices {
   }
 
   /// Get Orders
-  static Future<ResponseModel> getOrdersService({bool isRecycleBin = false}) async {
+  static Future<ResponseModel> getOrdersService({bool isRecycleBin = false, bool isRepair = false}) async {
     final response = await ApiBaseHelper.getHTTP(
-      "${ApiUrls.getOrdersApi}${isRecycleBin ? "1" : "0"}",
+      isRepair ? ApiUrls.getRepairOrdersApi : "${ApiUrls.getOrdersApi}${isRecycleBin ? "1" : "0"}",
       showProgress: false,
       onError: (dioExceptions) {
+        if (kDebugMode) {
+          print("${isRepair ? "getRepairOrdersApi" : "getOrdersApi"} Exception :: ${dioExceptions.message}");
+        }
         Utils.handleMessage(message: dioExceptions.message, isError: true);
       },
       onSuccess: (res) {
         if (res.isSuccess) {
           if (kDebugMode) {
-            print("getOrdersApi success :: ${res.message}");
+            print("${isRepair ? "getRepairOrdersApi" : "getOrdersApi"} success :: ${res.message}");
           }
         } else {
           if (kDebugMode) {
-            print("getOrdersApi error :: ${res.message}");
+            print("${isRepair ? "getRepairOrdersApi" : "getOrdersApi"} error :: ${res.message}");
           }
           Utils.handleMessage(message: res.message, isError: true);
         }

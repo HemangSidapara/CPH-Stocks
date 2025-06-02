@@ -114,7 +114,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     try {
       isRefreshing(!isLoading);
       isGetOrdersLoading(isLoading);
-      final response = await OrderServices.getOrdersService();
+      final response = await OrderServices.getOrdersService(isRepair: isRepairScreen.value);
 
       if (response.isSuccess) {
         get_orders.GetOrdersModel ordersModel = get_orders.GetOrdersModel.fromJson(response.response?.data);

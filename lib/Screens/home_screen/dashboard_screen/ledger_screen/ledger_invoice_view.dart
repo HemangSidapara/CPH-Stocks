@@ -70,7 +70,7 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
             children: [
               ///Title
               Text(
-                AppStrings.viewChallan.tr,
+                AppStrings.viewLedger.tr,
                 style: TextStyle(
                   color: AppColors.PRIMARY_COLOR,
                   fontWeight: FontWeight.w700,

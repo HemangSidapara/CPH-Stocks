@@ -264,13 +264,13 @@ class ChallanController extends GetxController {
                     TableHeadingCell(title: AppStrings.inch.tr),
 
                     /// Total Inch
-                    TableHeadingCell(title: AppStrings.totalInch.tr),
+                    TableHeadingCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
 
                     /// Balance QTY
                     TableHeadingCell(title: AppStrings.balanceQTY.tr),
 
                     /// Total Amount
-                    if (showAmount) TableHeadingCell(title: AppStrings.totalAmount.tr),
+                    if (showAmount) TableHeadingCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
                   ],
                 ),
 
@@ -326,7 +326,7 @@ class ChallanController extends GetxController {
                       TableCell(title: data[i].balanceQuantity ?? ""),
 
                       /// Total Amount
-                      if (showAmount) TableCell(title: data[i].totalAmount == null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹", decimalDigits: 0).format(data[i].totalAmount!.toDouble()) : ""),
+                      if (showAmount) TableCell(title: data[i].totalAmount != null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(data[i].totalAmount!.toDouble()) : ""),
                     ],
                   ),
                 ],
@@ -334,51 +334,44 @@ class ChallanController extends GetxController {
             ),
             pw.SizedBox(height: isLandscape ? 5 : 10),
 
-            /// Total Inch & Total Amount By Category
-            for (int categoryIndex = 0; categoryIndex < getCategoryList().length; categoryIndex++) ...[
-              (() {
-                final category = getCategoryList()[categoryIndex];
-                return pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.start,
-                  children: [
-                    ///Total Inch
-                    pw.Expanded(
-                      child: pw.Row(
-                        children: [
-                          pw.Text(
-                            "${AppStrings.totalInch.tr.replaceAll("C1", category.categoryName ?? '')}: ",
-                            style: size16Font.copyWith(fontSize: 12),
-                          ),
-                          pw.Text(
-                            category.totalInch ?? "",
-                            style: size16Font.copyWith(fontSize: 12),
-                          ),
-                        ],
+            /// Total Inch By Category
+            if (!showAmount) ...[
+              for (int categoryIndex = 0; categoryIndex < getCategoryList().length; categoryIndex++) ...[
+                (() {
+                  final category = getCategoryList()[categoryIndex];
+                  return pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        "${AppStrings.totalInch.tr.replaceAll("C1", category.categoryName ?? '')}: ",
+                        style: size16Font.copyWith(fontSize: 12),
                       ),
-                    ),
-
-                    ///Total Amount
-                    if (showAmount) ...[
-                      pw.SizedBox(width: isLandscape ? 10 : 14),
-                      pw.Expanded(
-                        child: pw.Row(
-                          children: [
-                            pw.Text(
-                              "${AppStrings.totalAmount.tr.replaceAll("C1", category.categoryName ?? '')}: ",
-                              style: size16Font.copyWith(fontSize: 12),
-                            ),
-                            pw.Text(
-                              NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(category.totalAmount?.toDouble() ?? 0),
-                              style: size16Font.copyWith(fontSize: 12),
-                            ),
-                          ],
-                        ),
+                      pw.Text(
+                        category.totalInch ?? "",
+                        style: size16Font.copyWith(fontSize: 12),
                       ),
                     ],
-                  ],
-                );
-              })(),
-              pw.SizedBox(height: isLandscape ? 2 : 3),
+                  );
+                })(),
+                pw.SizedBox(height: isLandscape ? 2 : 3),
+              ],
+            ],
+
+            ///Total Amount
+            if (showAmount) ...[
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.end,
+                children: [
+                  pw.Text(
+                    "${AppStrings.totalAmount.tr.replaceAll("C1 ", "")}: ",
+                    style: size16Font.copyWith(fontSize: 12),
+                  ),
+                  pw.Text(
+                    NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(totalAmountCount()),
+                    style: size16Font.copyWith(fontSize: 12),
+                  ),
+                ],
+              ),
             ],
           ];
         },
