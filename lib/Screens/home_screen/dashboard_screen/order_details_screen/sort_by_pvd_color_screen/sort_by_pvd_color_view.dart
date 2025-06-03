@@ -1425,6 +1425,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                   await controller.showEditItemBottomSheet(
                                     orderMetaId: itemDetails?.orderMetaId ?? "",
                                     itemName: itemDetails?.itemName ?? "",
+                                    categoryName: itemDetails?.categoryName ?? "",
                                     pvdColor: itemDetails?.pvdColor ?? "",
                                     quantity: itemDetails?.quantity ?? "",
                                     size: itemDetails?.size ?? "",

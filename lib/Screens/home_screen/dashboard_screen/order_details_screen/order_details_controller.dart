@@ -6,6 +6,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/app_validators.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
+import 'package:cph_stocks/Network/models/order_models/get_categories_model.dart' as get_categories;
 import 'package:cph_stocks/Network/models/order_models/get_orders_meta_model.dart' as get_orders_meta;
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
 import 'package:cph_stocks/Network/services/challan_services/challan_service.dart';
@@ -14,6 +15,7 @@ import 'package:cph_stocks/Network/services/utils_services/image_picker_service.
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
+import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Utils/progress_dialog.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
@@ -82,6 +84,13 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     return null;
   }
 
+  String? validateCategoryName(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseSelectCategoryName.tr;
+    }
+    return null;
+  }
+
   String? validateContactNumber(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterContactNumber.tr;
@@ -136,6 +145,15 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
       isRefreshing(false);
       isGetOrdersLoading(false);
     }
+  }
+
+  Future<List<get_categories.CategoryData>> getCategoriesApi() async {
+    final response = await OrderServices.getCategoriesService();
+    if (response.isSuccess) {
+      get_categories.GetCategoriesModel getCategoriesModel = get_categories.GetCategoriesModel.fromJson(response.response?.data);
+      return [...(getCategoriesModel.data ?? [])];
+    }
+    return [];
   }
 
   Future<void> updatePartyApi({
@@ -537,12 +555,21 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> showEditItemBottomSheet({
     required String orderMetaId,
     required String itemName,
+    required String categoryName,
     required String pvdColor,
     required String quantity,
     required String size,
     required String itemImage,
   }) async {
+    RxList<get_categories.CategoryData> categoryList = RxList();
+    RxString selectedCategoryName = '-1'.obs;
+    getCategoriesApi().then((value) {
+      categoryList.clear();
+      categoryList.addAll(value);
+      selectedCategoryName.value = categoryList.firstWhereOrNull((element) => element.categoryName == categoryName)?.categoryId.toString() ?? "-1";
+    });
     TextEditingController itemNameController = TextEditingController(text: itemName);
+    TextEditingController categoryNameController = TextEditingController(text: categoryName);
     TextEditingController pvdColorController = TextEditingController(text: pvdColor);
     TextEditingController quantityController = TextEditingController(text: quantity);
     TextEditingController sizeController = TextEditingController(text: size);
@@ -656,11 +683,40 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                               hintText: AppStrings.enterItemName.tr,
                               validator: validateItemName,
                               textInputAction: TextInputAction.next,
-                              maxLength: 30,
+                              maxLength: 50,
                               primaryColor: AppColors.SECONDARY_COLOR,
                               secondaryColor: AppColors.PRIMARY_COLOR,
                             ),
                             SizedBox(height: 1.h),
+
+                            ///Category Name
+                            TextFieldWidget(
+                              controller: categoryNameController,
+                              title: AppStrings.categoryName.tr,
+                              hintText: AppStrings.selectCategoryName.tr,
+                              validator: validateCategoryName,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 10,
+                              primaryColor: AppColors.SECONDARY_COLOR,
+                              secondaryColor: AppColors.PRIMARY_COLOR,
+                              readOnly: true,
+                              onTap: () async {
+                                await CreateOrderView().showBottomSheetSelectAndAdd(
+                                  ctx: context,
+                                  items: categoryList,
+                                  title: AppStrings.category.tr,
+                                  fieldHint: AppStrings.enterCategoryName.tr,
+                                  searchHint: AppStrings.searchCategoryName.tr,
+                                  selectedId: selectedCategoryName.isNotEmpty ? selectedCategoryName.value.toInt() : -1,
+                                  controller: categoryNameController,
+                                  onSelect: (id) {
+                                    selectedCategoryName.value = id.toString();
+                                    categoryNameController.text = categoryList.firstWhereOrNull((element) => element.categoryId == selectedCategoryName.value)?.categoryName ?? categoryNameController.text;
+                                  },
+                                );
+                              },
+                            ),
+                            SizedBox(height: 2.h),
 
                             ///PVD Color
                             Padding(

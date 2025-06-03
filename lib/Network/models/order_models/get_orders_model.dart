@@ -288,6 +288,7 @@ class ModelMeta {
     String? orderMetaId,
     String? itemImage,
     String? itemName,
+    String? categoryName,
     String? size,
     String? quantity,
     String? pvdColor,
@@ -301,6 +302,7 @@ class ModelMeta {
     _orderMetaId = orderMetaId;
     _itemImage = itemImage;
     _itemName = itemName;
+    _categoryName = itemName;
     _size = size;
     _quantity = quantity;
     _pvdColor = pvdColor;
@@ -318,6 +320,7 @@ class ModelMeta {
     _itemName = json['itemName'];
     _size = json['size'];
     _quantity = json['quantity'];
+    _categoryName = json['categoryName'];
     _pvdColor = json['pvdColor'];
     _createdDate = json['createdDate'];
     _okPcs = json['okPcs'];
@@ -330,6 +333,7 @@ class ModelMeta {
   String? _orderMetaId;
   String? _itemImage;
   String? _itemName;
+  String? _categoryName;
   String? _size;
   String? _quantity;
   String? _pvdColor;
@@ -344,6 +348,7 @@ class ModelMeta {
     String? orderMetaId,
     String? itemImage,
     String? itemName,
+    String? categoryName,
     String? size,
     String? quantity,
     String? pvdColor,
@@ -358,6 +363,7 @@ class ModelMeta {
         orderMetaId: orderMetaId ?? _orderMetaId,
         itemImage: itemImage ?? _itemImage,
         itemName: itemName ?? _itemName,
+        categoryName: categoryName ?? _categoryName,
         size: size ?? _size,
         quantity: quantity ?? _quantity,
         pvdColor: pvdColor ?? _pvdColor,
@@ -374,6 +380,8 @@ class ModelMeta {
   String? get itemImage => _itemImage;
 
   String? get itemName => _itemName;
+
+  String? get categoryName => _categoryName;
 
   String? get size => _size;
 
@@ -398,6 +406,7 @@ class ModelMeta {
     map['orderMetaId'] = _orderMetaId;
     map['itemImage'] = _itemImage;
     map['itemName'] = _itemName;
+    map['categoryName'] = _categoryName;
     map['size'] = _size;
     map['quantity'] = _quantity;
     map['pvdColor'] = _pvdColor;
