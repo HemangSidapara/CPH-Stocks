@@ -105,4 +105,35 @@ class AuthServices {
 
     return response;
   }
+
+  static Future<ResponseModel> downloadBackupService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.downloadBackupApi,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      showProgress: false,
+      onSuccess: (res) async {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("downloadBackupApi success :: ${res.message}");
+          }
+        } else if (res.statusCode == 498) {
+          if (kDebugMode) {
+            print("downloadBackupApi error :: ${res.message}");
+          }
+          Get.offAllNamed(Routes.signInScreen);
+          Utils.handleMessage(message: AppStrings.sessionExpire.tr, isError: true);
+          clearData();
+        } else {
+          if (kDebugMode) {
+            print("checkTokenApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+
+    return response;
+  }
 }

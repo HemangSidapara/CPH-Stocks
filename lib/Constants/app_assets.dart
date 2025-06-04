@@ -7,6 +7,7 @@ class AppAssets {
   static const String notesAnim = "assets/animations/notes.gif";
   static const String noDataFoundAnim = "assets/animations/no_data_found_animation.json";
   static const String customLoaderAnim = "assets/animations/custom_loader_animation.json";
+  static const String cloudAnim = "assets/animations/cloud_animation.json";
 
   ///Images
   static const String splashImage = "assets/images/splash_image.png";

@@ -153,4 +153,10 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.endDate: "अंतिम तिथि",
   AppStrings.pleaseSelectEndDate: "कृपया अंतिम तिथि चुनें",
   AppStrings.noChallanAvailableYet: "अभी तक कोई चालान उपलब्ध नहीं है",
+  AppStrings.totalInchCategories: "कुल इंच श्रेणियाँ",
+  AppStrings.totalAssetsCalculation: "कुल संपत्ति गणना",
+  AppStrings.urlCopied: "URL कॉपी हो गया",
+  AppStrings.backup: "बैकअप",
+  AppStrings.backupDownloadSuccess: "\"Download\" फ़ोल्डर में बैकअप सफलतापूर्वक डाउनलोड हुआ!",
+  AppStrings.somethingWentWrong: "कुछ गलत हो गया",
 };

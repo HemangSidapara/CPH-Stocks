@@ -2,10 +2,12 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_controller.dart';
+import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
@@ -13,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SettingsView extends GetView<SettingsController> {
@@ -270,6 +274,67 @@ class SettingsView extends GetView<SettingsController> {
                   ],
                 ),
               ),
+
+              ///Backup
+              if (getData(AppConstance.role) == AppConstance.admin || AppConstance.backupAccess.contains(getData(AppConstance.phone))) ...[
+                SizedBox(height: 2.h),
+                GestureDetector(
+                  onTap: () {
+                    controller.downloadBackup();
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Obx(() {
+                    return SizedBox(
+                      height: controller.isBackupLoading.isTrue && controller.backupProgress.value != 0.0 ? 38.w : null,
+                      child: Stack(
+                        children: [
+                          Lottie.asset(
+                            AppAssets.cloudAnim,
+                            width: 30.w,
+                            repeat: true,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Obx(() {
+                              if (controller.isBackupLoading.isTrue) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 5.w,
+                                      height: 5.w,
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.PRIMARY_COLOR,
+                                        strokeWidth: 1.5,
+                                        value: controller.backupProgress.value != 0.0 ? controller.backupProgress.value : null,
+                                      ),
+                                    ),
+                                    if (controller.backupProgress.value != 0.0) ...[
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        '${NumberFormat("00.00").format(controller.backupProgress.value.toStringAsFixed(2).toDouble())} %',
+                                        style: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                                      ),
+                                    ],
+                                  ],
+                                );
+                              } else {
+                                return Text(
+                                  AppStrings.backup.tr,
+                                  textAlign: TextAlign.center,
+                                  style: AppStyles.size16w600,
+                                );
+                              }
+                            }),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ],
               const Spacer(),
 
               ///LogOut

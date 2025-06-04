@@ -584,7 +584,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
 
                                                             /// ItemSize
                                                             Text(
-                                                              controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? '',
+                                                              "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''}\"",
                                                               style: TextStyle(
                                                                 color: AppColors.SECONDARY_COLOR,
                                                                 fontSize: 16.sp,
@@ -1169,7 +1169,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
                               child: Text(
-                                itemDetails?.size ?? '',
+                                "${itemDetails?.size ?? ''}\"",
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,

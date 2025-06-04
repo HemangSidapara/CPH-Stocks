@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:cph_stocks/Constants/app_constance.dart';
+import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:cph_stocks/Network/models/auth_models/backup_model.dart';
+import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Network/services/utils_services/install_apk_service.dart';
 import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -10,6 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -22,6 +26,9 @@ class SettingsController extends GetxController {
   RxBool isHindiLang = false.obs;
   RxBool isUpdateLoading = false.obs;
   RxInt downloadedProgress = 0.obs;
+
+  RxBool isBackupLoading = false.obs;
+  RxDouble backupProgress = 0.0.obs;
 
   @override
   void onInit() async {
@@ -43,6 +50,34 @@ class SettingsController extends GetxController {
       await homeController.getLatestVersionApiCall();
     }
     appVersion.value = (await PackageInfo.fromPlatform()).version;
+  }
+
+  /// Download Backup
+  Future<void> downloadBackup() async {
+    try {
+      isBackupLoading(true);
+      final response = await AuthServices.downloadBackupService();
+      if (response.isSuccess) {
+        BackupModel backupModel = BackupModel.fromJson(response.response?.data ?? {});
+        final currentDate = DateTime.now();
+        final downloadPath = "/storage/emulated/0/Download/${"cph_backup_${DateFormat("yyyy_MM_dd_hh_mm_ss").format(currentDate)}.${backupModel.downloadUrl?.split('.').last}"}";
+        final downloadResponse = await Dio().download(
+          backupModel.downloadUrl ?? "",
+          downloadPath,
+          onReceiveProgress: (count, total) {
+            backupProgress.value = ((count * 100) / total);
+          },
+        );
+        if (downloadResponse.statusCode! >= 200 && downloadResponse.statusCode! <= 299) {
+          Utils.handleMessage(message: AppStrings.backupDownloadSuccess.tr);
+        } else {
+          Utils.handleMessage(message: AppStrings.somethingWentWrong.tr, isError: true);
+        }
+      }
+    } finally {
+      isBackupLoading(false);
+      backupProgress(0.0);
+    }
   }
 
   /// Download and install

@@ -161,4 +161,7 @@ class AppStrings {
   static const String totalInchCategories = "Total Inch Categories";
   static const String totalAssetsCalculation = "Total Assets Calculation";
   static const String urlCopied = "URL Copied";
+  static const String backup = "Backup";
+  static const String backupDownloadSuccess = "Backup downloaded successfully in \"Download\" folder!";
+  static const String somethingWentWrong = "Something went wrong";
 }

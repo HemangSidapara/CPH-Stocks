@@ -6,6 +6,7 @@ class ApiUrls {
   static const String loginApi = '${_apiPath}Login';
   static const String checkTokenApi = '${_apiPath}checkToken';
   static const String inAppUpdateApi = '${_apiPath}inAppUpdate';
+  static const String downloadBackupApi = '${_apiPath}downloadBackup';
 
   /// Order APIs
   static const String getOrdersApi = '${_apiPath}getOrders&status=';

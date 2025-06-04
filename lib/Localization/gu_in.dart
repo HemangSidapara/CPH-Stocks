@@ -155,4 +155,10 @@ Map<String, String> guIN = <String, String>{
   AppStrings.endDate: "અંત તારીખ",
   AppStrings.pleaseSelectEndDate: "કૃપા કરીને અંત તારીખ પસંદ કરો",
   AppStrings.noChallanAvailableYet: "હજુ સુધી કોઈ ચલણ ઉપલબ્ધ નથી",
+  AppStrings.totalInchCategories: "કુલ ઇંચ કેટેગરીઝ",
+  AppStrings.totalAssetsCalculation: "કુલ સંપત્તિ ગણતરી",
+  AppStrings.urlCopied: "URL કૉપિ થઈ ગયું",
+  AppStrings.backup: "બેકઅપ",
+  AppStrings.backupDownloadSuccess: "\"Download\" ફોલ્ડરમાં બેકઅપ સફળતાપૂર્વક ડાઉનલોડ થયું!",
+  AppStrings.somethingWentWrong: "કૈંક તો ખોટું થયું",
 };

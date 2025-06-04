@@ -155,4 +155,10 @@ Map<String, String> enIN = <String, String>{
   AppStrings.endDate: "End Date",
   AppStrings.pleaseSelectEndDate: "Please select end date",
   AppStrings.noChallanAvailableYet: "No challan available yet",
+  AppStrings.totalInchCategories: "Total Inch Categories",
+  AppStrings.totalAssetsCalculation: "Total Assets Calculation",
+  AppStrings.urlCopied: "URL Copied",
+  AppStrings.backup: "Backup",
+  AppStrings.backupDownloadSuccess: "Backup downloaded successfully in \"Download\" folder!",
+  AppStrings.somethingWentWrong: "Something went wrong",
 };
