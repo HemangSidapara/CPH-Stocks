@@ -235,6 +235,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   Future<void> updateItemApi({
     required String orderMetaId,
     required String itemName,
+    required String categoryName,
     required String pvdColor,
     required String quantity,
     required String size,
@@ -247,6 +248,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         final response = await OrderServices.updateItemService(
           orderMetaId: orderMetaId,
           itemName: itemName,
+          categoryName: categoryName,
           pvdColor: pvdColor,
           quantity: quantity,
           size: size,
@@ -949,6 +951,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                     await updateItemApi(
                                       orderMetaId: orderMetaId,
                                       itemName: itemNameController.text.trim(),
+                                      categoryName: categoryNameController.text.trim(),
                                       pvdColor: pvdColorController.text.trim(),
                                       quantity: quantityController.text.trim(),
                                       size: sizeController.text.trim(),

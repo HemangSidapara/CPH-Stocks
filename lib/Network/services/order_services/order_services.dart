@@ -257,6 +257,7 @@ class OrderServices {
   static Future<ResponseModel> updateItemService({
     required String orderMetaId,
     required String itemName,
+    required String categoryName,
     required String itemImage,
     required String pvdColor,
     required String quantity,
@@ -265,6 +266,7 @@ class OrderServices {
     final params = {
       ApiKeys.orderMetaId: orderMetaId,
       ApiKeys.itemName: itemName,
+      ApiKeys.categoryName: categoryName,
       ApiKeys.pvdColor: pvdColor,
       ApiKeys.quantity: quantity,
       ApiKeys.size: size,
