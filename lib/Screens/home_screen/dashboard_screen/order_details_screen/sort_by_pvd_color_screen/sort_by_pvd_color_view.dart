@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
@@ -524,20 +522,18 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                             enabled: false,
                                             title: Stack(
                                               children: [
+                                                ///Category Name
                                                 Positioned(
                                                   top: 0,
                                                   bottom: 0,
                                                   left: 0,
                                                   right: 0,
                                                   child: Center(
-                                                    child: Transform.rotate(
-                                                      angle: -math.pi / 6,
-                                                      child: Tooltip(
-                                                        message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
-                                                        child: Text(
-                                                          controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
-                                                          style: AppStyles.size22w900.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.3)),
-                                                        ),
+                                                    child: Tooltip(
+                                                      message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                      child: Text(
+                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                        style: AppStyles.size30w900.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.04)),
                                                       ),
                                                     ),
                                                   ),

@@ -21,5 +21,5 @@ class AppStyles {
 
   static TextStyle get size22w900 => TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w900, color: AppColors.PRIMARY_COLOR);
 
-  static TextStyle get size24w900 => TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w900, color: AppColors.PRIMARY_COLOR);
+  static TextStyle get size30w900 => TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w900, color: AppColors.PRIMARY_COLOR);
 }
