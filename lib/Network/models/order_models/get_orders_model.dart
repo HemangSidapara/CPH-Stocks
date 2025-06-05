@@ -291,6 +291,7 @@ class ModelMeta {
     String? categoryName,
     String? size,
     String? quantity,
+    bool? isInvoiceGenerated,
     String? pvdColor,
     String? createdDate,
     String? okPcs,
@@ -312,6 +313,7 @@ class ModelMeta {
     _pending = pending;
     _repair = repair;
     _createdBy = createdBy;
+    _isInvoiceGenerated = isInvoiceGenerated;
   }
 
   ModelMeta.fromJson(dynamic json) {
@@ -321,6 +323,7 @@ class ModelMeta {
     _size = json['size'];
     _quantity = json['quantity'];
     _categoryName = json['categoryName'];
+    _isInvoiceGenerated = json['isInvoiceGenerated'];
     _pvdColor = json['pvdColor'];
     _createdDate = json['createdDate'];
     _okPcs = json['okPcs'];
@@ -343,6 +346,7 @@ class ModelMeta {
   String? _pending;
   String? _repair;
   String? _createdBy;
+  bool? _isInvoiceGenerated;
 
   ModelMeta copyWith({
     String? orderMetaId,
@@ -358,6 +362,7 @@ class ModelMeta {
     String? pending,
     String? repair,
     String? createdBy,
+    bool? isInvoiceGenerated,
   }) =>
       ModelMeta(
         orderMetaId: orderMetaId ?? _orderMetaId,
@@ -373,6 +378,7 @@ class ModelMeta {
         pending: pending ?? _pending,
         repair: repair ?? _repair,
         createdBy: createdBy ?? _createdBy,
+        isInvoiceGenerated: isInvoiceGenerated ?? _isInvoiceGenerated,
       );
 
   String? get orderMetaId => _orderMetaId;
@@ -401,6 +407,8 @@ class ModelMeta {
 
   String? get createdBy => _createdBy;
 
+  bool? get isInvoiceGenerated => _isInvoiceGenerated;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['orderMetaId'] = _orderMetaId;
@@ -416,6 +424,7 @@ class ModelMeta {
     map['pending'] = _pending;
     map['repair'] = _repair;
     map['createdBy'] = _createdBy;
+    map['isInvoiceGenerated'] = _isInvoiceGenerated;
     return map;
   }
 }

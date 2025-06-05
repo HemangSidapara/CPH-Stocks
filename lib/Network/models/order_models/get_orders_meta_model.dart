@@ -77,6 +77,7 @@ class Data {
     String? orderMetaId,
     String? itemImage,
     String? itemName,
+    String? categoryName,
     String? createdBy,
     String? size,
     String? quantity,
@@ -90,6 +91,7 @@ class Data {
     _orderMetaId = orderMetaId;
     _itemImage = itemImage;
     _itemName = itemName;
+    _categoryName = categoryName;
     _createdBy = createdBy;
     _size = size;
     _quantity = quantity;
@@ -105,6 +107,7 @@ class Data {
     _orderMetaId = json['orderMetaId'];
     _itemImage = json['itemImage'];
     _itemName = json['itemName'];
+    _categoryName = json['categoryName'];
     _createdBy = json['createdBy'];
     _size = json['size'];
     _quantity = json['quantity'];
@@ -123,6 +126,7 @@ class Data {
   String? _orderMetaId;
   String? _itemImage;
   String? _itemName;
+  String? _categoryName;
   String? _createdBy;
   String? _size;
   String? _quantity;
@@ -136,6 +140,7 @@ class Data {
     String? orderMetaId,
     String? itemImage,
     String? itemName,
+    String? categoryName,
     String? createdBy,
     String? size,
     String? quantity,
@@ -150,6 +155,7 @@ class Data {
         orderMetaId: orderMetaId ?? _orderMetaId,
         itemImage: itemImage ?? _itemImage,
         itemName: itemName ?? _itemName,
+        categoryName: categoryName ?? _categoryName,
         createdBy: createdBy ?? _createdBy,
         size: size ?? _size,
         quantity: quantity ?? _quantity,
@@ -178,6 +184,7 @@ class Data {
     map['orderMetaId'] = _orderMetaId;
     map['itemImage'] = _itemImage;
     map['itemName'] = _itemName;
+    map['categoryName'] = _categoryName;
     map['createdBy'] = _createdBy;
     map['size'] = _size;
     map['quantity'] = _quantity;

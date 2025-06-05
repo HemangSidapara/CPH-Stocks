@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/order_models/get_orders_meta_model.dart' as get_order_meta;
@@ -519,249 +522,271 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                               : null,
                                           child: ExpansionTile(
                                             enabled: false,
-                                            title: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            title: Stack(
                                               children: [
-                                                /// ItemName
-                                                Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      /// ItemImage
-                                                      InkWell(
-                                                        onTap: () async {
-                                                          final itemImage = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage;
-                                                          await controller.showItemImageDialog(
-                                                            itemName: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? AppStrings.itemImage.tr,
-                                                            itemImage: itemImage != null || itemImage?.isNotEmpty == true ? (itemImage ?? '') : '',
-                                                          );
-                                                        },
-                                                        child: CircleAvatar(
-                                                          radius: 6.w,
-                                                          backgroundColor: AppColors.SECONDARY_COLOR,
-                                                          child: ClipRRect(
-                                                            borderRadius: BorderRadius.circular(360),
-                                                            child: SizedBox(
-                                                              width: 12.w,
-                                                              height: 12.w,
-                                                              child: ColoredBox(
-                                                                color: AppColors.SECONDARY_COLOR,
-                                                                child: CachedNetworkImage(
-                                                                  imageUrl: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
-                                                                  cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
-                                                                  errorWidget: (context, url, error) {
-                                                                    return Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                                      children: [
-                                                                        Image.asset(
-                                                                          AppAssets.createOrderImage,
-                                                                          width: 10.w,
-                                                                          height: 10.w,
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  },
+                                                Positioned(
+                                                  top: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: Center(
+                                                    child: Transform.rotate(
+                                                      angle: -math.pi / 6,
+                                                      child: Tooltip(
+                                                        message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                        child: Text(
+                                                          controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                          style: AppStyles.size22w900.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.3)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    /// ItemName
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: [
+                                                          /// ItemImage
+                                                          InkWell(
+                                                            onTap: () async {
+                                                              final itemImage = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage;
+                                                              await controller.showItemImageDialog(
+                                                                itemName: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? AppStrings.itemImage.tr,
+                                                                itemImage: itemImage != null || itemImage?.isNotEmpty == true ? (itemImage ?? '') : '',
+                                                              );
+                                                            },
+                                                            child: CircleAvatar(
+                                                              radius: 6.w,
+                                                              backgroundColor: AppColors.SECONDARY_COLOR,
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.circular(360),
+                                                                child: SizedBox(
+                                                                  width: 12.w,
+                                                                  height: 12.w,
+                                                                  child: ColoredBox(
+                                                                    color: AppColors.SECONDARY_COLOR,
+                                                                    child: CachedNetworkImage(
+                                                                      imageUrl: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
+                                                                      cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
+                                                                      errorWidget: (context, url, error) {
+                                                                        return Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Image.asset(
+                                                                              AppAssets.createOrderImage,
+                                                                              width: 10.w,
+                                                                              height: 10.w,
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 2.w),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            /// ItemName
-                                                            Text(
-                                                              controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? '',
-                                                              style: TextStyle(
-                                                                color: AppColors.SECONDARY_COLOR,
-                                                                fontSize: 16.sp,
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
-                                                            ),
+                                                          SizedBox(width: 2.w),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                /// ItemName
+                                                                Text(
+                                                                  controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? '',
+                                                                  style: TextStyle(
+                                                                    color: AppColors.SECONDARY_COLOR,
+                                                                    fontSize: 16.sp,
+                                                                    fontWeight: FontWeight.w600,
+                                                                  ),
+                                                                ),
 
-                                                            /// ItemSize
-                                                            Text(
-                                                              "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''}\"",
-                                                              style: TextStyle(
-                                                                color: AppColors.SECONDARY_COLOR,
-                                                                fontSize: 16.sp,
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
-                                                            ),
+                                                                /// ItemSize
+                                                                Text(
+                                                                  "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''}\"",
+                                                                  style: TextStyle(
+                                                                    color: AppColors.SECONDARY_COLOR,
+                                                                    fontSize: 16.sp,
+                                                                    fontWeight: FontWeight.w600,
+                                                                  ),
+                                                                ),
 
-                                                            ///Ok Pcs., W/O Process & Pending
-                                                            if (controller.isRepairScreen.isFalse) ...[
-                                                              Row(
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Tooltip(
-                                                                      message: AppStrings.okPcs.tr,
-                                                                      child: Text(
-                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
-                                                                        style: TextStyle(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 15.sp,
-                                                                          color: AppColors.LIGHT_BLUE_COLOR,
+                                                                ///Ok Pcs., W/O Process & Pending
+                                                                if (controller.isRepairScreen.isFalse) ...[
+                                                                  Row(
+                                                                    children: [
+                                                                      Flexible(
+                                                                        child: Tooltip(
+                                                                          message: AppStrings.okPcs.tr,
+                                                                          child: Text(
+                                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
+                                                                            style: TextStyle(
+                                                                              fontWeight: FontWeight.w700,
+                                                                              fontSize: 15.sp,
+                                                                              color: AppColors.LIGHT_BLUE_COLOR,
+                                                                            ),
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 3.h,
-                                                                    child: VerticalDivider(
-                                                                      color: AppColors.SECONDARY_COLOR,
-                                                                      thickness: 1,
-                                                                    ),
-                                                                  ),
-                                                                  Flexible(
-                                                                    child: Tooltip(
-                                                                      message: AppStrings.woProcess,
-                                                                      child: Text(
-                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
-                                                                        style: TextStyle(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 15.sp,
+                                                                      SizedBox(
+                                                                        height: 3.h,
+                                                                        child: VerticalDivider(
                                                                           color: AppColors.SECONDARY_COLOR,
+                                                                          thickness: 1,
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 3.h,
-                                                                    child: VerticalDivider(
-                                                                      color: AppColors.SECONDARY_COLOR,
-                                                                      thickness: 1,
-                                                                    ),
-                                                                  ),
-                                                                  Flexible(
-                                                                    child: Tooltip(
-                                                                      message: AppStrings.pending.tr,
-                                                                      child: Text(
-                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                                        style: TextStyle(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 15.sp,
-                                                                          color: AppColors.DARK_RED_COLOR,
+                                                                      Flexible(
+                                                                        child: Tooltip(
+                                                                          message: AppStrings.woProcess,
+                                                                          child: Text(
+                                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
+                                                                            style: TextStyle(
+                                                                              fontWeight: FontWeight.w700,
+                                                                              fontSize: 15.sp,
+                                                                              color: AppColors.SECONDARY_COLOR,
+                                                                            ),
+                                                                          ),
                                                                         ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: 3.h,
+                                                                        child: VerticalDivider(
+                                                                          color: AppColors.SECONDARY_COLOR,
+                                                                          thickness: 1,
+                                                                        ),
+                                                                      ),
+                                                                      Flexible(
+                                                                        child: Tooltip(
+                                                                          message: AppStrings.pending.tr,
+                                                                          child: Text(
+                                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                                            style: TextStyle(
+                                                                              fontWeight: FontWeight.w700,
+                                                                              fontSize: 15.sp,
+                                                                              color: AppColors.DARK_RED_COLOR,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+
+                                                                ///Repair
+                                                                if (controller.isRepairScreen.isTrue) ...[
+                                                                  Tooltip(
+                                                                    message: AppStrings.repair.tr,
+                                                                    child: Text(
+                                                                      controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair ?? '0',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.w700,
+                                                                        fontSize: 15.sp,
+                                                                        color: controller.isRepairScreen.isFalse ? AppColors.BRONZE_COLOR : AppColors.DARK_RED_COLOR,
                                                                       ),
                                                                     ),
                                                                   ),
                                                                 ],
-                                                              ),
-                                                            ],
-
-                                                            ///Repair
-                                                            if (controller.isRepairScreen.isTrue) ...[
-                                                              Tooltip(
-                                                                message: AppStrings.repair.tr,
-                                                                child: Text(
-                                                                  controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair ?? '0',
-                                                                  style: TextStyle(
-                                                                    fontWeight: FontWeight.w700,
-                                                                    fontSize: 15.sp,
-                                                                    color: controller.isRepairScreen.isFalse ? AppColors.BRONZE_COLOR : AppColors.DARK_RED_COLOR,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                if (controller.isRepairScreen.isFalse && [AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role))) ...[
-                                                  Obx(() {
-                                                    if (controller.isDeleteMultipleOrdersEnable.isFalse) {
-                                                      return Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: [
-                                                          ///Add Cycle
-                                                          IconButton(
-                                                            onPressed: () async {
-                                                              final repair = int.tryParse(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair?.toString() ?? "");
-                                                              Get.toNamed(
-                                                                Routes.addOrderCycleScreen,
-                                                                arguments: ItemDetailsModel(
-                                                                  itemId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId,
-                                                                  pending: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending?.toString().toInt() ?? 0,
-                                                                  repair: repair ?? 0,
-                                                                ),
-                                                              );
-                                                            },
-                                                            style: IconButton.styleFrom(
-                                                              backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(180),
-                                                              ),
-                                                              padding: EdgeInsets.zero,
-                                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                              elevation: 4,
-                                                              maximumSize: Size(14.w, 8.w),
-                                                              minimumSize: Size(14.w, 8.w),
-                                                            ),
-                                                            icon: Icon(
-                                                              Icons.cyclone_rounded,
-                                                              color: AppColors.PRIMARY_COLOR,
-                                                              size: 4.w,
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 2.w),
-
-                                                          ///Delete
-                                                          IconButton(
-                                                            onPressed: () async {
-                                                              await controller.showDeleteDialog(
-                                                                onPressed: () async {
-                                                                  await controller.deleteOrderApi(orderMetaId: [controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? '']);
-                                                                },
-                                                                title: AppStrings.deleteItemText.tr.replaceAll("'Item'", "'${controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName}'"),
-                                                              );
-                                                            },
-                                                            style: IconButton.styleFrom(
-                                                              backgroundColor: AppColors.DARK_RED_COLOR,
-                                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                              padding: EdgeInsets.zero,
-                                                              elevation: 4,
-                                                              maximumSize: Size(8.w, 8.w),
-                                                              minimumSize: Size(8.w, 8.w),
-                                                            ),
-                                                            icon: Icon(
-                                                              Icons.delete_forever_rounded,
-                                                              color: AppColors.PRIMARY_COLOR,
-                                                              size: 4.w,
+                                                              ],
                                                             ),
                                                           ),
                                                         ],
-                                                      );
-                                                    } else {
-                                                      return AnimatedContainer(
-                                                        duration: const Duration(milliseconds: 375),
-                                                        decoration: BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          border: Border.all(
-                                                            color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.SECONDARY_COLOR,
-                                                            width: 1,
-                                                          ),
-                                                          color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                                        ),
-                                                        padding: EdgeInsets.all(context.isPhone ? 1.w : 1.h),
-                                                        child: AnimatedOpacity(
-                                                          opacity: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? 1 : 0,
-                                                          duration: const Duration(milliseconds: 375),
-                                                          child: Icon(
-                                                            Icons.done_rounded,
-                                                            size: 3.5.w,
-                                                            color: AppColors.PRIMARY_COLOR,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                  })
-                                                ],
+                                                      ),
+                                                    ),
+                                                    if (controller.isRepairScreen.isFalse && [AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role))) ...[
+                                                      Obx(() {
+                                                        if (controller.isDeleteMultipleOrdersEnable.isFalse) {
+                                                          return Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              ///Add Cycle
+                                                              IconButton(
+                                                                onPressed: () async {
+                                                                  final repair = int.tryParse(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].repair?.toString() ?? "");
+                                                                  Get.toNamed(
+                                                                    Routes.addOrderCycleScreen,
+                                                                    arguments: ItemDetailsModel(
+                                                                      itemId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId,
+                                                                      pending: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending?.toString().toInt() ?? 0,
+                                                                      repair: repair ?? 0,
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                style: IconButton.styleFrom(
+                                                                  backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(180),
+                                                                  ),
+                                                                  padding: EdgeInsets.zero,
+                                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                  elevation: 4,
+                                                                  maximumSize: Size(14.w, 8.w),
+                                                                  minimumSize: Size(14.w, 8.w),
+                                                                ),
+                                                                icon: Icon(
+                                                                  Icons.cyclone_rounded,
+                                                                  color: AppColors.PRIMARY_COLOR,
+                                                                  size: 4.w,
+                                                                ),
+                                                              ),
+                                                              SizedBox(width: 2.w),
+
+                                                              ///Delete
+                                                              IconButton(
+                                                                onPressed: () async {
+                                                                  await controller.showDeleteDialog(
+                                                                    onPressed: () async {
+                                                                      await controller.deleteOrderApi(orderMetaId: [controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? '']);
+                                                                    },
+                                                                    title: AppStrings.deleteItemText.tr.replaceAll("'Item'", "'${controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName}'"),
+                                                                  );
+                                                                },
+                                                                style: IconButton.styleFrom(
+                                                                  backgroundColor: AppColors.DARK_RED_COLOR,
+                                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                  padding: EdgeInsets.zero,
+                                                                  elevation: 4,
+                                                                  maximumSize: Size(8.w, 8.w),
+                                                                  minimumSize: Size(8.w, 8.w),
+                                                                ),
+                                                                icon: Icon(
+                                                                  Icons.delete_forever_rounded,
+                                                                  color: AppColors.PRIMARY_COLOR,
+                                                                  size: 4.w,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        } else {
+                                                          return AnimatedContainer(
+                                                            duration: const Duration(milliseconds: 375),
+                                                            decoration: BoxDecoration(
+                                                              shape: BoxShape.circle,
+                                                              border: Border.all(
+                                                                color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.SECONDARY_COLOR,
+                                                                width: 1,
+                                                              ),
+                                                              color: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? AppColors.DARK_RED_COLOR : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                            ),
+                                                            padding: EdgeInsets.all(context.isPhone ? 1.w : 1.h),
+                                                            child: AnimatedOpacity(
+                                                              opacity: controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId) ? 1 : 0,
+                                                              duration: const Duration(milliseconds: 375),
+                                                              child: Icon(
+                                                                Icons.done_rounded,
+                                                                size: 3.5.w,
+                                                                color: AppColors.PRIMARY_COLOR,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      })
+                                                    ],
+                                                  ],
+                                                ),
                                               ],
                                             ),
                                             showTrailingIcon: false,
@@ -1419,7 +1444,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
 
                         ///Edit Item
                         ElevatedButton(
-                          onPressed: itemDetails?.quantity == itemDetails?.pending || (getData(AppConstance.phone) != null && getData(AppConstance.phone)?.toString().isNotEmpty == true ? AppConstance.editOrderAccess.contains(getData(AppConstance.phone)) : true)
+                          onPressed: itemDetails?.isInvoiceGenerated != true
                               ? () async {
                                   Get.back();
                                   await controller.showEditItemBottomSheet(
@@ -1428,6 +1453,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     categoryName: itemDetails?.categoryName ?? "",
                                     pvdColor: itemDetails?.pvdColor ?? "",
                                     quantity: itemDetails?.quantity ?? "",
+                                    pending: itemDetails?.pending ?? "",
                                     size: itemDetails?.size ?? "",
                                     itemImage: itemDetails?.itemImage ?? '',
                                   );

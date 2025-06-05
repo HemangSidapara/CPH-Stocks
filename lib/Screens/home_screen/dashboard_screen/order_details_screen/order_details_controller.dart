@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/app_validators.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Network/models/order_models/get_categories_model.dart' as get_categories;
 import 'package:cph_stocks/Network/models/order_models/get_orders_meta_model.dart' as get_orders_meta;
@@ -560,6 +562,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     required String categoryName,
     required String pvdColor,
     required String quantity,
+    required String pending,
     required String size,
     required String itemImage,
   }) async {
@@ -718,82 +721,84 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                 );
                               },
                             ),
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 1.h),
 
-                            ///PVD Color
-                            Padding(
-                              padding: EdgeInsets.only(left: 2.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    AppStrings.pvdColor.tr,
-                                    style: TextStyle(
-                                      color: AppColors.SECONDARY_COLOR,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
+                            if (quantity == pending || (getData(AppConstance.phone) != null && getData(AppConstance.phone)?.toString().isNotEmpty == true ? AppConstance.editOrderAccess.contains(getData(AppConstance.phone)) : true)) ...[
+                              ///PVD Color
+                              Padding(
+                                padding: EdgeInsets.only(left: 2.w),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      AppStrings.pvdColor.tr,
+                                      style: TextStyle(
+                                        color: AppColors.SECONDARY_COLOR,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      pvdColorController.clear();
-                                      selectedPvdColor = -1;
-                                    },
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      maximumSize: Size(6.w, 6.w),
-                                      minimumSize: Size(6.w, 6.w),
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    IconButton(
+                                      onPressed: () {
+                                        pvdColorController.clear();
+                                        selectedPvdColor = -1;
+                                      },
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        maximumSize: Size(6.w, 6.w),
+                                        minimumSize: Size(6.w, 6.w),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      icon: Icon(
+                                        Icons.refresh_rounded,
+                                        color: AppColors.LIGHT_BLUE_COLOR,
+                                        size: 5.w,
+                                      ),
                                     ),
-                                    icon: Icon(
-                                      Icons.refresh_rounded,
-                                      color: AppColors.LIGHT_BLUE_COLOR,
-                                      size: 5.w,
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 1.h),
-                            TextFieldWidget(
-                              controller: pvdColorController,
-                              hintText: AppStrings.selectPvdColor.tr,
-                              validator: validatePvdColorList,
-                              textInputAction: TextInputAction.next,
-                              primaryColor: AppColors.SECONDARY_COLOR,
-                              secondaryColor: AppColors.PRIMARY_COLOR,
-                              maxLength: 50,
-                              readOnly: true,
-                              onTap: () async {
-                                await CreateOrderView().showBottomSheetSelectAndAdd(
-                                  ctx: context,
-                                  items: pvdColorList,
-                                  title: AppStrings.pvdColor.tr,
-                                  fieldHint: AppStrings.enterPVDColor.tr,
-                                  searchHint: AppStrings.searchPvdColor.tr,
-                                  selectedId: selectedPvdColor,
-                                  controller: pvdColorController,
-                                  onSelect: (id) {
-                                    selectedPvdColor = id;
-                                  },
-                                );
-                              },
-                            ),
-                            SizedBox(height: 1.h),
+                              SizedBox(height: 1.h),
+                              TextFieldWidget(
+                                controller: pvdColorController,
+                                hintText: AppStrings.selectPvdColor.tr,
+                                validator: validatePvdColorList,
+                                textInputAction: TextInputAction.next,
+                                primaryColor: AppColors.SECONDARY_COLOR,
+                                secondaryColor: AppColors.PRIMARY_COLOR,
+                                maxLength: 50,
+                                readOnly: true,
+                                onTap: () async {
+                                  await CreateOrderView().showBottomSheetSelectAndAdd(
+                                    ctx: context,
+                                    items: pvdColorList,
+                                    title: AppStrings.pvdColor.tr,
+                                    fieldHint: AppStrings.enterPVDColor.tr,
+                                    searchHint: AppStrings.searchPvdColor.tr,
+                                    selectedId: selectedPvdColor,
+                                    controller: pvdColorController,
+                                    onSelect: (id) {
+                                      selectedPvdColor = id;
+                                    },
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 1.h),
 
-                            ///Quantity
-                            TextFieldWidget(
-                              controller: quantityController,
-                              title: AppStrings.quantity.tr,
-                              hintText: AppStrings.enterQuantity.tr,
-                              validator: validateQuantity,
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.number,
-                              maxLength: 10,
-                              primaryColor: AppColors.SECONDARY_COLOR,
-                              secondaryColor: AppColors.PRIMARY_COLOR,
-                            ),
-                            SizedBox(height: 1.h),
+                              ///Quantity
+                              TextFieldWidget(
+                                controller: quantityController,
+                                title: AppStrings.quantity.tr,
+                                hintText: AppStrings.enterQuantity.tr,
+                                validator: validateQuantity,
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.number,
+                                maxLength: 10,
+                                primaryColor: AppColors.SECONDARY_COLOR,
+                                secondaryColor: AppColors.PRIMARY_COLOR,
+                              ),
+                              SizedBox(height: 1.h),
+                            ],
 
                             ///Size
                             TextFieldWidget(
