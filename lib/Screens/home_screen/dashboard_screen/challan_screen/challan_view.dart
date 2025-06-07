@@ -1,8 +1,10 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/invoice_view.dart';
@@ -229,7 +231,7 @@ class ChallanView extends GetView<ChallanController> {
                                       }
                                     }
                                   : null,
-                              onLongPress: controller.deletingInvoicesEnable.isFalse
+                              onLongPress: getData(AppConstance.role) != AppConstance.customer && controller.deletingInvoicesEnable.isFalse
                                   ? () {
                                       controller.deletingInvoicesEnable(true);
                                       controller.selectedInvoices.add(orderInvoice.orderInvoiceId ?? "");
