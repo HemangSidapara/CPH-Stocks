@@ -6,6 +6,7 @@ import 'package:cph_stocks/Network/response_model.dart';
 import 'package:flutter/foundation.dart';
 
 class ChallanService {
+  /// Get Invoices
   static Future<ResponseModel> getInvoicesService() async {
     final response = await ApiBaseHelper.getHTTP(
       ApiUrls.getInvoicesApi,
@@ -85,6 +86,36 @@ class ChallanService {
         } else {
           if (kDebugMode) {
             print("getLedgerInvoicesApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
+  /// Generate Ledger Invoice
+  static Future<ResponseModel> deleteInvoicesService({
+    required List<String> orderInvoiceIds,
+  }) async {
+    final params = {
+      ApiKeys.orderInvoiceIds: orderInvoiceIds,
+    };
+    final response = await ApiBaseHelper.deleteHTTP(
+      ApiUrls.deleteInvoicesApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("deleteInvoicesApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("deleteInvoicesApi error :: ${res.message}");
           }
           Utils.handleMessage(message: res.message, isError: true);
         }

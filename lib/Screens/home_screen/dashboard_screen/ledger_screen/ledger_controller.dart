@@ -117,28 +117,46 @@ class LedgerController extends GetxController {
   }) async {
     final pdfDoc = pw.Document();
 
+    final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
+    final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
+    final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
+    final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
+    final ttfNotoSansSymbols = pw.Font.ttf(await rootBundle.load(AppAssets.notoSansSymbols));
+
     pw.TextStyle size20Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: 20,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.TextStyle size18Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: 18,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.TextStyle size16Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: 16,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.TextStyle size14Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: 14,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.Widget TableCell({
@@ -236,12 +254,6 @@ class LedgerController extends GetxController {
       return catModel;
     }
 
-    final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
-    final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
-    final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
-    final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
-    final ttfNotoSansSymbols = pw.Font.ttf(await rootBundle.load(AppAssets.notoSansSymbols));
-
     pw.PageTheme? pdfPageTheme = pw.PageTheme(
       pageFormat: pdf.PdfPageFormat.a4,
       margin: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -251,6 +263,9 @@ class LedgerController extends GetxController {
         italic: ttfItalic,
         boldItalic: ttfBoldItalic,
         icons: ttfBold,
+        fontFallback: [
+          ttfNotoSansSymbols,
+        ],
       ),
     );
 
@@ -321,26 +336,14 @@ class LedgerController extends GetxController {
                     children: [
                       /// SR.
                       pw.SizedBox(
-                        width: 35,
+                        width: 30,
                         child: TableHeadingCell(title: AppStrings.sr.tr.replaceAll(".", "")),
                       ),
 
                       /// Category
                       pw.SizedBox(
-                        width: 70,
-                        child: TableHeadingCell(title: AppStrings.category.tr),
-                      ),
-
-                      /// PVD Color
-                      pw.SizedBox(
-                        width: 50,
-                        child: TableHeadingCell(title: AppStrings.pvdColor.tr),
-                      ),
-
-                      /// Item
-                      pw.SizedBox(
-                        width: 60,
-                        child: TableHeadingCell(title: AppStrings.item.tr),
+                        width: 52,
+                        child: TableHeadingCell(title: AppStrings.cat.tr),
                       ),
 
                       /// In Date
@@ -349,42 +352,67 @@ class LedgerController extends GetxController {
                         child: TableHeadingCell(title: AppStrings.inDate.tr),
                       ),
 
+                      /// PVD Color
+                      pw.SizedBox(
+                        width: 60,
+                        child: TableHeadingCell(title: AppStrings.pvdColor.tr),
+                      ),
+
+                      /// Item
+                      TableHeadingCell(title: AppStrings.item.tr),
+
+                      /// Inch
+                      pw.SizedBox(
+                        width: 32,
+                        child: TableHeadingCell(title: AppStrings.inch.tr),
+                      ),
+
                       /// QTY
-                      TableHeadingCell(title: AppStrings.qty.tr),
+                      pw.SizedBox(
+                        width: 42,
+                        child: TableHeadingCell(title: AppStrings.qty.tr),
+                      ),
 
                       /// Previous
                       pw.SizedBox(
-                        width: 43,
+                        width: 42,
                         child: TableHeadingCell(title: AppStrings.previous.tr),
                       ),
 
                       /// OK
-                      TableHeadingCell(title: AppStrings.ok.tr),
+                      pw.SizedBox(
+                        width: 42,
+                        child: TableHeadingCell(title: AppStrings.ok.tr),
+                      ),
 
                       /// W/O
-                      TableHeadingCell(title: AppStrings.wo.tr),
-
-                      /// Inch
-                      TableHeadingCell(title: AppStrings.inch.tr),
+                      pw.SizedBox(
+                        width: 32,
+                        child: TableHeadingCell(title: AppStrings.wo.tr),
+                      ),
 
                       /// Total Inch
                       pw.SizedBox(
-                        width: 60,
+                        width: 52,
                         child: TableHeadingCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
                       ),
 
                       /// Balance QTY
                       pw.SizedBox(
-                        width: 65,
+                        width: 42,
                         child: TableHeadingCell(title: AppStrings.balanceQTY.tr),
                       ),
 
-                      /// Total Amount
-                      if (showAmount)
+                      if (showAmount) ...[
+                        /// Price
                         pw.SizedBox(
-                          width: 75,
-                          child: TableHeadingCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
+                          width: 32,
+                          child: TableCell(title: AppStrings.pr.tr),
                         ),
+
+                        /// Total Amount
+                        TableHeadingCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
+                      ],
                     ],
                   ),
 
@@ -395,26 +423,14 @@ class LedgerController extends GetxController {
                         children: [
                           /// SR.
                           pw.SizedBox(
-                            width: 35,
-                            child: TableCell(title: "${i + 1}"),
+                            width: 30,
+                            child: TableCell(title: NumberFormat("00").format("${i + 1}".toInt())),
                           ),
 
                           /// Category
                           pw.SizedBox(
-                            width: 70,
+                            width: 52,
                             child: TableCell(title: invoice?.categoryName ?? ""),
-                          ),
-
-                          /// PVD Color
-                          pw.SizedBox(
-                            width: 50,
-                            child: TableCell(title: invoice?.pvdColor ?? ""),
-                          ),
-
-                          /// Item
-                          pw.SizedBox(
-                            width: 60,
-                            child: TableCell(title: invoice?.itemName ?? ""),
                           ),
 
                           /// In Date
@@ -423,42 +439,67 @@ class LedgerController extends GetxController {
                             child: TableCell(title: DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(invoice?.inDate ?? ""))),
                           ),
 
+                          /// PVD Color
+                          pw.SizedBox(
+                            width: 60,
+                            child: TableCell(title: invoice?.pvdColor ?? ""),
+                          ),
+
+                          /// Item
+                          TableCell(title: invoice?.itemName ?? ""),
+
+                          /// Inch
+                          pw.SizedBox(
+                            width: 32,
+                            child: TableCell(title: invoice?.inch ?? ""),
+                          ),
+
                           /// QTY
-                          TableCell(title: invoice?.quantity ?? ""),
+                          pw.SizedBox(
+                            width: 42,
+                            child: TableCell(title: invoice?.quantity ?? ""),
+                          ),
 
                           /// Previous
                           pw.SizedBox(
-                            width: 43,
+                            width: 42,
                             child: TableCell(title: invoice?.previous ?? ""),
                           ),
 
                           /// OK
-                          TableCell(title: invoice?.okPcs ?? ""),
+                          pw.SizedBox(
+                            width: 42,
+                            child: TableCell(title: invoice?.okPcs ?? ""),
+                          ),
 
                           /// W/O
-                          TableCell(title: invoice?.woProcess ?? ""),
-
-                          /// Inch
-                          TableCell(title: invoice?.inch ?? ""),
+                          pw.SizedBox(
+                            width: 32,
+                            child: TableCell(title: invoice?.woProcess ?? ""),
+                          ),
 
                           /// Total Inch
                           pw.SizedBox(
-                            width: 60,
+                            width: 52,
                             child: TableCell(title: invoice?.totalInch ?? ""),
                           ),
 
                           /// Balance QTY
                           pw.SizedBox(
-                            width: 65,
+                            width: 42,
                             child: TableCell(title: invoice?.balanceQuantity ?? ""),
                           ),
 
-                          /// Total Amount
-                          if (showAmount)
+                          if (showAmount) ...[
+                            /// Price
                             pw.SizedBox(
-                              width: 75,
-                              child: TableCell(title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : ""),
-                            )
+                              width: 32,
+                              child: TableCell(title: "₹${invoice?.categoryPrice ?? ""}"),
+                            ),
+
+                            /// Total Amount
+                            TableCell(title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : ""),
+                          ],
                         ],
                       );
                     })(),

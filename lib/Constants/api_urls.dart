@@ -32,6 +32,7 @@ class ApiUrls {
   static const String getInvoicesApi = '${_apiPath}getInvoices';
   static const String generateInvoiceApi = '${_apiPath}generateInvoice';
   static const String getLedgerInvoicesApi = '${_apiPath}getLedgerInvoices';
+  static const String deleteInvoicesApi = '${_apiPath}deleteInvoices';
 
   /// Notes APIs
   static const String getNotesApi = '${_apiPath}getNotes';

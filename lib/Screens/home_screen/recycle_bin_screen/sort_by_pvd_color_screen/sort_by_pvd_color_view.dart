@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart';
 import 'package:cph_stocks/Network/models/order_models/item_id_model.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
@@ -313,7 +316,9 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}")) : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
+                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
+                                              ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
+                                              : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
                                           style: TextStyle(
                                             color: AppColors.DARK_RED_COLOR,
                                             fontSize: 16.sp,
@@ -386,86 +391,108 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                           },
                                           child: ExpansionTile(
                                             enabled: false,
-                                            title: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            title: Stack(
                                               children: [
-                                                /// ItemName
-                                                Flexible(
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        '• ',
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: AppColors.SECONDARY_COLOR,
-                                                        ),
+                                                ///Category Name
+                                                Positioned(
+                                                  top: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: Center(
+                                                    child: Tooltip(
+                                                      message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                      child: Text(
+                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                        style: AppStyles.size18w600.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.08), fontWeight: FontWeight.w900),
                                                       ),
-                                                      SizedBox(width: 2.w),
-                                                      Flexible(
-                                                        child: Text(
-                                                          [controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? '', controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''].join(' | '),
-                                                          style: TextStyle(
-                                                            color: AppColors.SECONDARY_COLOR,
-                                                            fontSize: 16.sp,
-                                                            fontWeight: FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 2.w),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
 
-                                                ///Ok pcs., W/O Process & Pending
+                                                ///Item details
                                                 Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Tooltip(
-                                                      message: AppStrings.okPcs.tr,
-                                                      child: Text(
-                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w700,
-                                                          fontSize: 16.sp,
-                                                          color: AppColors.LIGHT_BLUE_COLOR,
+                                                    /// ItemName
+                                                    Flexible(
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            '• ',
+                                                            style: TextStyle(
+                                                              fontSize: 16.sp,
+                                                              fontWeight: FontWeight.w700,
+                                                              color: AppColors.SECONDARY_COLOR,
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                          Flexible(
+                                                            child: Text(
+                                                              [controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? '', controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''].join(' | '),
+                                                              style: TextStyle(
+                                                                color: AppColors.SECONDARY_COLOR,
+                                                                fontSize: 16.sp,
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 2.w),
+                                                        ],
+                                                      ),
+                                                    ),
+
+                                                    ///Ok pcs., W/O Process & Pending
+                                                    Row(
+                                                      children: [
+                                                        Tooltip(
+                                                          message: AppStrings.okPcs.tr,
+                                                          child: Text(
+                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                              fontSize: 16.sp,
+                                                              color: AppColors.LIGHT_BLUE_COLOR,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 3.h,
-                                                      child: VerticalDivider(
-                                                        color: AppColors.SECONDARY_COLOR,
-                                                        thickness: 1,
-                                                      ),
-                                                    ),
-                                                    Tooltip(
-                                                      message: AppStrings.woProcess.tr,
-                                                      child: Text(
-                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w700,
-                                                          fontSize: 16.sp,
-                                                          color: AppColors.SECONDARY_COLOR,
+                                                        SizedBox(
+                                                          height: 3.h,
+                                                          child: VerticalDivider(
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                            thickness: 1,
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 3.h,
-                                                      child: VerticalDivider(
-                                                        color: AppColors.SECONDARY_COLOR,
-                                                        thickness: 1,
-                                                      ),
-                                                    ),
-                                                    Tooltip(
-                                                      message: AppStrings.pending.tr,
-                                                      child: Text(
-                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w700,
-                                                          fontSize: 16.sp,
-                                                          color: AppColors.DARK_RED_COLOR,
+                                                        Tooltip(
+                                                          message: AppStrings.woProcess.tr,
+                                                          child: Text(
+                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                              fontSize: 16.sp,
+                                                              color: AppColors.SECONDARY_COLOR,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
+                                                        SizedBox(
+                                                          height: 3.h,
+                                                          child: VerticalDivider(
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                            thickness: 1,
+                                                          ),
+                                                        ),
+                                                        Tooltip(
+                                                          message: AppStrings.pending.tr,
+                                                          child: Text(
+                                                            controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                              fontSize: 16.sp,
+                                                              color: AppColors.DARK_RED_COLOR,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -883,35 +910,37 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 2.h),
 
                   ///Actions
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.back();
-                      Get.toNamed(
-                        Routes.viewCyclesScreen,
-                        arguments: ItemDetailsModel(
-                          partyName: partyName,
-                          itemName: itemDetails?.itemName,
-                          itemId: itemDetails?.orderMetaId,
-                          isFromRecycleBin: true,
+                  if (getData(AppConstance.role) != AppConstance.customer) ...[
+                    SizedBox(height: 2.h),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        Get.toNamed(
+                          Routes.viewCyclesScreen,
+                          arguments: ItemDetailsModel(
+                            partyName: partyName,
+                            itemName: itemDetails?.itemName,
+                            itemId: itemDetails?.orderMetaId,
+                            isFromRecycleBin: true,
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.SECONDARY_COLOR,
+                        elevation: 4,
+                        fixedSize: Size(double.maxFinite, 5.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.SECONDARY_COLOR,
-                      elevation: 4,
-                      fixedSize: Size(double.maxFinite, 5.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.remove_red_eye_rounded,
+                        color: AppColors.PRIMARY_COLOR,
                       ),
                     ),
-                    child: Icon(
-                      Icons.remove_red_eye_rounded,
-                      color: AppColors.PRIMARY_COLOR,
-                    ),
-                  ),
+                  ],
                   SizedBox(height: 3.h),
                 ],
               ),

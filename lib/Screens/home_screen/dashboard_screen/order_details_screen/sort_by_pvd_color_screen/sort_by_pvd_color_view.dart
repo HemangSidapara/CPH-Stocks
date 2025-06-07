@@ -516,6 +516,11 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                               ? () {
                                                   controller.isDeleteMultipleOrdersEnable(true);
                                                   controller.selectedPartyForDeletingMultipleOrders.value = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? "";
+                                                  if (controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId)) {
+                                                    controller.selectedOrderMetaIdForDeletion.removeWhere((element) => element == controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId);
+                                                  } else {
+                                                    controller.selectedOrderMetaIdForDeletion.add(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? "");
+                                                  }
                                                 }
                                               : null,
                                           child: ExpansionTile(
@@ -538,6 +543,8 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                     ),
                                                   ),
                                                 ),
+
+                                                ///Item details
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
@@ -1440,7 +1447,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
 
                         ///Edit Item
                         ElevatedButton(
-                          onPressed: itemDetails?.isInvoiceGenerated != true
+                          onPressed: itemDetails?.isInvoiceGenerated != true || (getData(AppConstance.phone) != null && getData(AppConstance.phone)?.toString().isNotEmpty == true ? AppConstance.editOrderAccess.contains(getData(AppConstance.phone)) : false)
                               ? () async {
                                   Get.back();
                                   await controller.showEditItemBottomSheet(

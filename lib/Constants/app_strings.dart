@@ -164,4 +164,9 @@ class AppStrings {
   static const String backup = "Backup";
   static const String backupDownloadSuccess = "Backup downloaded successfully in \"Download\" folder!";
   static const String somethingWentWrong = "Something went wrong";
+  static const String price = "Price";
+  static const String pr = "Pr.";
+  static const String deleteChallanText = "Are you sure? You want to delete 'Challan'? After deleting selected challan will be lost under this order.";
+  static const String selectChallan = "Select challan";
+  static const String pleaseSelectAtLeastOneChallan = "Please select at-least one challan.";
 }

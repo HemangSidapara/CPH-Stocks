@@ -29,4 +29,5 @@ class ApiKeys {
   static const startDate = "startDate";
   static const endDate = "endDate";
   static const partyId = "partyId";
+  static const orderInvoiceIds = "orderInvoiceIds";
 }

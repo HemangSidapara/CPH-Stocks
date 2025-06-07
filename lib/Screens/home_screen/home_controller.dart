@@ -27,21 +27,21 @@ class HomeController extends GetxController {
 
   RxList<String> listOfImages = [
     AppAssets.homeIcon,
-    if (getData(AppConstance.role) != AppConstance.customer) AppAssets.recycleBinIcon,
+    AppAssets.recycleBinIcon,
     if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesIcon,
     AppAssets.settingsIcon,
   ].obs;
 
   RxList<double?> listOfImageSizes = [
     null,
-    if (getData(AppConstance.role) != AppConstance.customer) 6.w,
+    6.w,
     if (getData(AppConstance.role) != AppConstance.customer) 6.w,
     null,
   ].obs;
 
   RxList<Widget> bottomItemWidgetList = [
     const DashboardView(),
-    if (getData(AppConstance.role) != AppConstance.customer) const RecycleBinView(),
+    const RecycleBinView(),
     if (getData(AppConstance.role) != AppConstance.customer) const NotesView(),
     const SettingsView(),
   ].obs;

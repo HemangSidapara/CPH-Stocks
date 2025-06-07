@@ -718,6 +718,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                                     selectedCategoryName.value = id.toString();
                                     categoryNameController.text = categoryList.firstWhereOrNull((element) => element.categoryId == selectedCategoryName.value)?.categoryName ?? categoryNameController.text;
                                   },
+                                  selectOnly: true,
                                 );
                               },
                             ),

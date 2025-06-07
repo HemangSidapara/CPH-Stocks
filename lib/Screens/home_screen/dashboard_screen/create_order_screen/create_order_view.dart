@@ -526,6 +526,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                 }
                 controller.storeOrderDetails();
               },
+              selectOnly: true,
             );
           },
         ),

@@ -60,7 +60,7 @@ class SettingsController extends GetxController {
       if (response.isSuccess) {
         BackupModel backupModel = BackupModel.fromJson(response.response?.data ?? {});
         final currentDate = DateTime.now();
-        final downloadPath = "/storage/emulated/0/Download/${"cph_backup_${DateFormat("yyyy_MM_dd_hh_mm_ss").format(currentDate)}.${backupModel.downloadUrl?.split('.').last}"}";
+        final downloadPath = "/storage/emulated/0/Download/${"cph_backup_${DateFormat("yyyy_MM_dd_HH_mm_ss").format(currentDate)}.${backupModel.downloadUrl?.split('.').last}"}";
         final downloadResponse = await Dio().download(
           backupModel.downloadUrl ?? "",
           downloadPath,

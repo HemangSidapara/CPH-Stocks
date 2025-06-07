@@ -7,6 +7,7 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Network/services/challan_services/challan_service.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
+import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart' as pdf;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ChallanController extends GetxController {
   TextEditingController searchController = TextEditingController();
@@ -23,6 +25,10 @@ class ChallanController extends GetxController {
   RxBool isGetInvoicesLoading = false.obs;
   RxBool isRefreshing = false.obs;
   RxDouble ceilValueForRefresh = 0.0.obs;
+
+  RxBool deletingInvoicesEnable = false.obs;
+  RxList<String> selectedInvoices = RxList();
+  RxBool isDeleteInvoicesLoading = false.obs;
 
   @override
   void onInit() async {
@@ -46,6 +52,20 @@ class ChallanController extends GetxController {
     } finally {
       isRefreshing(false);
       isGetInvoicesLoading(false);
+    }
+  }
+
+  Future<void> deleteInvoicesApiCall() async {
+    try {
+      isDeleteInvoicesLoading(true);
+      final response = await ChallanService.deleteInvoicesService(orderInvoiceIds: selectedInvoices);
+      if (response.isSuccess) {
+        await getInvoicesApi(isLoading: false);
+        Get.back();
+        Utils.handleMessage(message: response.message);
+      }
+    } finally {
+      isDeleteInvoicesLoading(false);
     }
   }
 
@@ -76,22 +96,37 @@ class ChallanController extends GetxController {
   }) async {
     final pdfDoc = pw.Document();
 
+    final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
+    final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
+    final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
+    final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
+    final ttfNotoSansSymbols = pw.Font.ttf(await rootBundle.load(AppAssets.notoSansSymbols));
+
     pw.TextStyle size22Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: isLandscape ? 14 : 22,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.TextStyle size16Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: isLandscape ? 10 : 16,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.TextStyle size12Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: isLandscape ? 9.5 : 12,
       fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
     );
 
     pw.Widget TableCell({
@@ -158,11 +193,6 @@ class ChallanController extends GetxController {
       return catModel;
     }
 
-    final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
-    final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
-    final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
-    final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
-
     pdfDoc.addPage(
       pw.MultiPage(
         pageTheme: pw.PageTheme(
@@ -175,6 +205,9 @@ class ChallanController extends GetxController {
             italic: ttfItalic,
             boldItalic: ttfBoldItalic,
             icons: ttfBold,
+            fontFallback: [
+              ttfNotoSansSymbols,
+            ],
           ),
         ),
         build: (context) {
@@ -223,54 +256,83 @@ class ChallanController extends GetxController {
                   children: [
                     /// SR.
                     pw.SizedBox(
-                      width: isLandscape ? 20 : 38,
+                      width: isLandscape ? 16 : 30,
                       child: TableHeadingCell(title: AppStrings.sr.tr),
                     ),
 
                     /// Category
                     pw.SizedBox(
-                      width: isLandscape ? 50 : 85,
-                      child: TableHeadingCell(title: AppStrings.category.tr),
-                    ),
-
-                    /// PVD Color
-                    TableHeadingCell(title: AppStrings.pvdColor.tr),
-
-                    /// Item
-                    pw.SizedBox(
-                      width: isLandscape ? 65 : 110,
-                      child: TableHeadingCell(title: AppStrings.item.tr),
+                      width: isLandscape ? 28 : 48,
+                      child: TableHeadingCell(title: AppStrings.cat.tr),
                     ),
 
                     /// In Date
                     pw.SizedBox(
-                      width: isLandscape ? 55 : 88,
+                      width: isLandscape ? 47 : 75,
                       child: TableHeadingCell(title: AppStrings.inDate.tr),
                     ),
 
-                    /// QTY
-                    TableHeadingCell(title: AppStrings.qty.tr),
+                    /// PVD Color
+                    pw.SizedBox(
+                      width: isLandscape ? 38 : 60,
+                      child: TableHeadingCell(title: AppStrings.pvdColor.tr),
+                    ),
 
-                    /// Previous
-                    TableHeadingCell(title: AppStrings.previous.tr),
-
-                    /// OK
-                    TableHeadingCell(title: AppStrings.ok.tr),
-
-                    /// W/O
-                    TableHeadingCell(title: AppStrings.wo.tr),
+                    /// Item
+                    TableHeadingCell(title: AppStrings.item.tr),
 
                     /// Inch
-                    TableHeadingCell(title: AppStrings.inch.tr),
+                    pw.SizedBox(
+                      width: isLandscape ? 18 : 37,
+                      child: TableHeadingCell(title: AppStrings.inch.tr),
+                    ),
+
+                    /// QTY
+                    pw.SizedBox(
+                      width: isLandscape ? 22 : 38,
+                      child: TableHeadingCell(title: AppStrings.qty.tr),
+                    ),
+
+                    /// Previous
+                    pw.SizedBox(
+                      width: isLandscape ? 22 : 38,
+                      child: TableHeadingCell(title: AppStrings.previous.tr),
+                    ),
+
+                    /// OK
+                    pw.SizedBox(
+                      width: isLandscape ? 22 : 38,
+                      child: TableHeadingCell(title: AppStrings.ok.tr),
+                    ),
+
+                    /// W/O
+                    pw.SizedBox(
+                      width: isLandscape ? 18 : 37,
+                      child: TableHeadingCell(title: AppStrings.wo.tr),
+                    ),
 
                     /// Total Inch
-                    TableHeadingCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
+                    pw.SizedBox(
+                      width: isLandscape ? 28 : 48,
+                      child: TableHeadingCell(title: AppStrings.totalInch.tr.replaceAll("C1 ", "")),
+                    ),
 
                     /// Balance QTY
-                    TableHeadingCell(title: AppStrings.balanceQTY.tr),
+                    pw.SizedBox(
+                      width: isLandscape ? 22 : 38,
+                      child: TableHeadingCell(title: AppStrings.balanceQTY.tr),
+                    ),
 
-                    /// Total Amount
-                    if (showAmount) TableHeadingCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
+                    if (showAmount) ...[
+                      ///Price
+                      pw.SizedBox(
+                        width: isLandscape ? 16 : 30,
+                        child: TableHeadingCell(title: AppStrings.pr.tr),
+                      ),
+
+                      /// Total Amount
+                      TableHeadingCell(title: AppStrings.totalAmount.tr.replaceAll("C1 ", "")),
+                    ],
                   ],
                 ),
 
@@ -279,54 +341,83 @@ class ChallanController extends GetxController {
                     children: [
                       /// SR.
                       pw.SizedBox(
-                        width: isLandscape ? 20 : 38,
+                        width: isLandscape ? 16 : 30,
                         child: TableCell(title: NumberFormat("00").format(i + 1)),
                       ),
 
                       /// Category
                       pw.SizedBox(
-                        width: isLandscape ? 50 : 85,
+                        width: isLandscape ? 28 : 48,
                         child: TableCell(title: data[i].categoryName ?? ""),
-                      ),
-
-                      /// PVD Color
-                      TableCell(title: data[i].pvdColor ?? ""),
-
-                      /// Item
-                      pw.SizedBox(
-                        width: isLandscape ? 65 : 110,
-                        child: TableCell(title: data[i].itemName ?? ""),
                       ),
 
                       /// In Date
                       pw.SizedBox(
-                        width: isLandscape ? 55 : 88,
+                        width: isLandscape ? 47 : 75,
                         child: TableCell(title: DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data[i].inDate ?? ""))),
                       ),
 
-                      /// QTY
-                      TableCell(title: data[i].quantity ?? ""),
+                      /// PVD Color
+                      pw.SizedBox(
+                        width: isLandscape ? 38 : 60,
+                        child: TableCell(title: data[i].pvdColor ?? ""),
+                      ),
 
-                      /// Previous
-                      TableCell(title: data[i].previous ?? ""),
-
-                      /// OK
-                      TableCell(title: data[i].okPcs ?? ""),
-
-                      /// W/O
-                      TableCell(title: data[i].woProcess ?? ""),
+                      /// Item
+                      TableCell(title: data[i].itemName ?? ""),
 
                       /// Inch
-                      TableCell(title: data[i].inch ?? ""),
+                      pw.SizedBox(
+                        width: isLandscape ? 18 : 37,
+                        child: TableCell(title: data[i].inch ?? ""),
+                      ),
+
+                      /// QTY
+                      pw.SizedBox(
+                        width: isLandscape ? 22 : 38,
+                        child: TableCell(title: data[i].quantity ?? ""),
+                      ),
+
+                      /// Previous
+                      pw.SizedBox(
+                        width: isLandscape ? 22 : 38,
+                        child: TableCell(title: data[i].previous ?? ""),
+                      ),
+
+                      /// OK
+                      pw.SizedBox(
+                        width: isLandscape ? 22 : 38,
+                        child: TableCell(title: data[i].okPcs ?? ""),
+                      ),
+
+                      /// W/O
+                      pw.SizedBox(
+                        width: isLandscape ? 18 : 37,
+                        child: TableCell(title: data[i].woProcess ?? ""),
+                      ),
 
                       /// Total Inch
-                      TableCell(title: data[i].totalInch ?? ""),
+                      pw.SizedBox(
+                        width: isLandscape ? 28 : 48,
+                        child: TableCell(title: data[i].totalInch ?? ""),
+                      ),
 
                       /// Balance QTY
-                      TableCell(title: data[i].balanceQuantity ?? ""),
+                      pw.SizedBox(
+                        width: isLandscape ? 22 : 38,
+                        child: TableCell(title: data[i].balanceQuantity ?? ""),
+                      ),
 
-                      /// Total Amount
-                      if (showAmount) TableCell(title: data[i].totalAmount != null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(data[i].totalAmount!.toDouble()) : ""),
+                      if (showAmount) ...[
+                        /// Price
+                        pw.SizedBox(
+                          width: isLandscape ? 18 : 37,
+                          child: TableCell(title: "₹${data[i].categoryPrice ?? ""}"),
+                        ),
+
+                        /// Total Amount
+                        TableCell(title: data[i].totalAmount != null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(data[i].totalAmount!.toDouble()) : ""),
+                      ],
                     ],
                   ),
                 ],
@@ -387,6 +478,103 @@ class ChallanController extends GetxController {
       return await file.writeAsBytes(fileBytes);
     }
     return null;
+  }
+
+  Future<void> showDeleteDialog({
+    required void Function()? onPressed,
+    required String title,
+    IconData? iconData,
+    Color? iconColor,
+    String? agreeText,
+  }) async {
+    await showGeneralDialog(
+      context: Get.context!,
+      barrierDismissible: true,
+      barrierLabel: 'string',
+      transitionDuration: const Duration(milliseconds: 400),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 1),
+            end: const Offset(0, 0),
+          ).animate(animation),
+          child: FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
+            ),
+            child: child,
+          ),
+        );
+      },
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          backgroundColor: AppColors.WHITE_COLOR,
+          surfaceTintColor: AppColors.WHITE_COLOR,
+          contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: AppColors.WHITE_COLOR,
+            ),
+            width: 80.w,
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 2.h),
+                Icon(
+                  iconData ?? Icons.delete_forever_rounded,
+                  color: iconColor ?? AppColors.DARK_RED_COLOR,
+                  size: 8.w,
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.SECONDARY_COLOR,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.sp,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ///Cancel
+                      ButtonWidget(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        fixedSize: Size(30.w, 5.h),
+                        buttonTitle: AppStrings.cancel.tr,
+                        buttonColor: AppColors.DARK_GREEN_COLOR,
+                        buttonTitleColor: AppColors.PRIMARY_COLOR,
+                      ),
+
+                      ///Delete
+                      ButtonWidget(
+                        onPressed: onPressed,
+                        fixedSize: Size(30.w, 5.h),
+                        buttonTitle: agreeText ?? AppStrings.delete.tr,
+                        buttonColor: AppColors.DARK_RED_COLOR,
+                        buttonTitleColor: AppColors.PRIMARY_COLOR,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 3.h),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
