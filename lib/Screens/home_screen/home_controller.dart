@@ -5,6 +5,7 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/account_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_view.dart';
@@ -27,6 +28,7 @@ class HomeController extends GetxController {
 
   RxList<String> listOfImages = [
     AppAssets.homeIcon,
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) AppAssets.calculatorIcon,
     AppAssets.recycleBinIcon,
     if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesIcon,
     AppAssets.settingsIcon,
@@ -34,6 +36,7 @@ class HomeController extends GetxController {
 
   RxList<double?> listOfImageSizes = [
     null,
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) 4.3.w,
     6.w,
     if (getData(AppConstance.role) != AppConstance.customer) 6.w,
     null,
@@ -41,6 +44,7 @@ class HomeController extends GetxController {
 
   RxList<Widget> bottomItemWidgetList = [
     const DashboardView(),
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) const AccountView(),
     const RecycleBinView(),
     if (getData(AppConstance.role) != AppConstance.customer) const NotesView(),
     const SettingsView(),

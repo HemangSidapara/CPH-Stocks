@@ -125,6 +125,13 @@ class CreateOrderController extends GetxController {
     return null;
   }
 
+  String? validateDescription(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseEnterDescription.tr;
+    }
+    return null;
+  }
+
   Future<List<get_parties.Data>> getPartiesApi() async {
     try {
       isGetPartiesLoading(true);

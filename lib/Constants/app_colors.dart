@@ -30,7 +30,8 @@ class AppColors {
   static Color SUCCESS_COLOR = const Color(0xff27C193);
   static Color ORANGE_COLOR = const Color(0xffE56736);
   static Color GOLD_COLOR = const Color(0xffFFD700);
-  static Color ROSEGOLD_COLOR = const Color(0xffb76e79);
+  static Color ROSEGOLD_COLOR = const Color(0xffCD7F32);
   static Color GREY_COLOR = const Color(0xff808080);
-  static Color BRONZE_COLOR = const Color(0xffCD7F32);
+  static Color BRONZE_COLOR = const Color(0xffb76e79);
+  static Color Medium_BLACK_COLOR = const Color(0xFF2C2C2C);
 }

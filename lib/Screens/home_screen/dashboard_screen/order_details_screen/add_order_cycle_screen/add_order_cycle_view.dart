@@ -42,12 +42,7 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                   ///Fields
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(
-                          bottom: keyboardPadding != 0
-                              ? keyboardPadding - 6.h > 0
-                                  ? keyboardPadding - 6.h
-                                  : keyboardPadding
-                              : 0),
+                      padding: EdgeInsets.only(bottom: keyboardPadding != 0 ? keyboardPadding : 0),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -102,73 +97,49 @@ class AddOrderCycleView extends GetView<AddOrderCycleController> {
                             SizedBox(height: Utils.getHeightByDevDevice(height: 418.88)),
 
                             ///W/O Process & Repair
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: TextFieldWidget(
-                                    controller: controller.woProcessController,
-                                    title: AppStrings.woProcess.tr,
-                                    hintText: AppStrings.enterWOProcess.tr,
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.number,
-                                    contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 3.w : 3.h, vertical: context.isPortrait ? 3.h : 3.w).copyWith(right: context.isPortrait ? 1.5.w : 1.5.h),
-                                    maxLength: 30,
-                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                    onChanged: (value) {
-                                      if (value.isNumericOnly) {
-                                        controller.pendingController.text = controller.arguments.pending?.toString() ?? '0';
-                                        controller.pendingController.text = "${controller.pendingController.text.toInt() - value.toInt() - (controller.okPcsController.text.isEmpty ? 0 : controller.okPcsController.text.toInt())}";
-                                      } else {
-                                        controller.pendingController.text = "${(controller.arguments.pending ?? 0) - (controller.okPcsController.text.isEmpty ? 0 : controller.okPcsController.text.toInt())}";
-                                      }
-                                      if (controller.pendingController.text.trim() == "0") {
-                                        if (controller.okPcsController.text.isEmpty) {
-                                          controller.okPcsController.text = "0";
-                                        }
-                                        if (controller.repairController.text.isEmpty) {
-                                          controller.repairController.text = "0";
-                                        }
-                                      }
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 3.w),
-                                Flexible(
-                                  child: Obx(() {
-                                    return TextFieldWidget(
-                                      controller: controller.repairController,
-                                      title: "${AppStrings.repair.tr} (${controller.previousRepair.value})",
-                                      hintText: AppStrings.enterRepair.tr,
-                                      validator: controller.validateRepair,
-                                      textInputAction: TextInputAction.next,
-                                      keyboardType: TextInputType.number,
-                                      maxLength: 30,
-                                      contentPadding: EdgeInsets.symmetric(horizontal: context.isPortrait ? 3.w : 3.h, vertical: context.isPortrait ? 3.h : 3.w).copyWith(right: context.isPortrait ? 1.5.w : 1.5.h),
-                                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                    );
-                                  }),
-                                ),
-                              ],
+                            TextFieldWidget(
+                              controller: controller.woProcessController,
+                              title: AppStrings.woProcess.tr,
+                              hintText: AppStrings.enterWOProcess.tr,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              maxLength: 30,
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              onChanged: (value) {
+                                if (value.isNumericOnly) {
+                                  controller.pendingController.text = controller.arguments.pending?.toString() ?? '0';
+                                  controller.pendingController.text = "${controller.pendingController.text.toInt() - value.toInt() - (controller.okPcsController.text.isEmpty ? 0 : controller.okPcsController.text.toInt())}";
+                                } else {
+                                  controller.pendingController.text = "${(controller.arguments.pending ?? 0) - (controller.okPcsController.text.isEmpty ? 0 : controller.okPcsController.text.toInt())}";
+                                }
+                                if (controller.pendingController.text.trim() == "0") {
+                                  if (controller.okPcsController.text.isEmpty) {
+                                    controller.okPcsController.text = "0";
+                                  }
+                                  if (controller.repairController.text.isEmpty) {
+                                    controller.repairController.text = "0";
+                                  }
+                                }
+                              },
                             ),
+                            SizedBox(height: 3.h),
+
+                            ///Add Order Cycle Button
+                            Obx(() {
+                              return ButtonWidget(
+                                onPressed: () async {
+                                  Utils.unfocus();
+                                  await controller.addOrderCycleApi();
+                                },
+                                isLoading: controller.isAddOrderCycleLoading.value,
+                                buttonTitle: AppStrings.add.tr,
+                              );
+                            }),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 3.h),
-
-                  ///Add Order Cycle Button
-                  Obx(() {
-                    return ButtonWidget(
-                      onPressed: () async {
-                        Utils.unfocus();
-                        await controller.addOrderCycleApi();
-                      },
-                      isLoading: controller.isAddOrderCycleLoading.value,
-                      buttonTitle: AppStrings.add.tr,
-                    );
-                  }),
                 ],
               ),
             ),

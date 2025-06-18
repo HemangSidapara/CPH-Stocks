@@ -49,6 +49,22 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     "Bronze": AppColors.BRONZE_COLOR,
   };
 
+  Map<String, Color> backgroundColorCodes = {
+    "Gold": AppColors.GOLD_COLOR.withValues(alpha: 0.3),
+    "Rosegold": AppColors.ROSEGOLD_COLOR.withValues(alpha: 0.5),
+    "Black": AppColors.Medium_BLACK_COLOR,
+    "Grey": AppColors.TRANSPARENT,
+    "Bronze": AppColors.BRONZE_COLOR.withValues(alpha: 0.5),
+  };
+
+  Map<String, Color> textColorCodes = {
+    "Gold": AppColors.SECONDARY_COLOR,
+    "Rosegold": AppColors.SECONDARY_COLOR,
+    "Black": AppColors.PRIMARY_COLOR,
+    "Grey": AppColors.SECONDARY_COLOR,
+    "Bronze": AppColors.SECONDARY_COLOR,
+  };
+
   late TabController sortByColorTabController;
   RxInt selectedSortByColorTabIndex = 0.obs;
 
@@ -121,6 +137,10 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
       return AppStrings.pleaseEnterValidSize.tr;
     }
     return null;
+  }
+
+  Color getTextColor(String pvdColor) {
+    return textColorCodes[pvdColor] ?? AppColors.SECONDARY_COLOR;
   }
 
   Future<void> getOrdersApi({bool isLoading = true}) async {

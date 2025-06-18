@@ -14,4 +14,8 @@ class Routes {
   static const settingsScreen = '/settingsScreen';
   static const ledgerScreen = '/ledgerScreen';
   static const repairingScreen = '/repairingScreen';
+  static const orderSequenceScreen = '/orderSequenceScreen';
+  static const paymentLedgerScreen = '/paymentLedgerScreen';
+  static const paymentDetailsScreen = '/paymentDetailsScreen';
+  static const pendingPaymentScreen = '/pendingPaymentScreen';
 }

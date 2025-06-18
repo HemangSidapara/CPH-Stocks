@@ -32,7 +32,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
     return Column(
       children: [
         ///Searchbar
-        if ([AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role)))
+        if (getData(AppConstance.role) != AppConstance.customer)
           Obx(() {
             if (controller.isDeleteMultipleOrdersEnable.isFalse) {
               return Column(
@@ -71,7 +71,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                 ],
               );
             } else {
-              return const SizedBox();
+              return SizedBox(height: 2.h);
             }
           }),
 
@@ -200,7 +200,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                     verticalOffset: 50.0,
                     child: FadeInAnimation(
                       child: Card(
-                        color: AppColors.TRANSPARENT,
+                        color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                         clipBehavior: Clip.antiAlias,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -214,7 +214,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.SECONDARY_COLOR,
+                                  color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                 ),
                               ),
                               SizedBox(width: 2.w),
@@ -222,7 +222,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                 child: Text(
                                   controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
                                   style: TextStyle(
-                                    color: AppColors.SECONDARY_COLOR,
+                                    color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -290,8 +290,8 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                             ],
                           ),
                           dense: true,
-                          collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                          backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          collapsedBackgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          backgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                           iconColor: AppColors.SECONDARY_COLOR,
                           collapsedShape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -336,7 +336,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.SECONDARY_COLOR,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     ),
                                   ),
                                 ],
@@ -358,6 +358,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15.sp,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     ),
                                   ),
                                   SizedBox(
@@ -367,6 +368,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15.sp,
+                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                       ),
                                     ),
                                   ),
@@ -397,7 +399,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                 child: FaIcon(
                                                   FontAwesomeIcons.clock,
                                                   size: 4.w,
-                                                  color: AppColors.SECONDARY_COLOR,
+                                                  color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                                 ),
                                               ),
                                             ),
@@ -409,13 +411,15 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                 color: AppColors.DARK_RED_COLOR,
                                                 fontSize: 16.sp,
                                                 fontWeight: FontWeight.w600,
-                                                shadows: [
-                                                  Shadow(
-                                                    color: AppColors.PRIMARY_COLOR,
-                                                    offset: const Offset(2, 2),
-                                                    blurRadius: 40,
-                                                  )
-                                                ],
+                                                shadows: controller.searchedColorDataList[index].pvdColor == "Black"
+                                                    ? null
+                                                    : [
+                                                        Shadow(
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                          offset: const Offset(2, 2),
+                                                          blurRadius: 40,
+                                                        )
+                                                      ],
                                               ),
                                             ),
                                           ],
@@ -467,7 +471,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                         TextSpan(
                                           text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].description ?? "",
                                           style: TextStyle(
-                                            color: AppColors.SECONDARY_COLOR,
+                                            color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16.sp,
                                           ),
@@ -476,7 +480,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                       style: TextStyle(
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.SECONDARY_COLOR,
+                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                       ),
                                     ),
                                   ),
@@ -699,7 +703,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                         ],
                                                       ),
                                                     ),
-                                                    if (controller.isRepairScreen.isFalse && [AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role))) ...[
+                                                    if (controller.isRepairScreen.isFalse && getData(AppConstance.role) != AppConstance.customer) ...[
                                                       Obx(() {
                                                         if (controller.isDeleteMultipleOrdersEnable.isFalse) {
                                                           return Row(
@@ -1113,7 +1117,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                   ),
 
                   ///Created By
-                  if (getData(AppConstance.role) == AppConstance.admin || getData(AppConstance.role) == AppConstance.employee) ...[
+                  if (getData(AppConstance.role) != AppConstance.customer) ...[
                     SizedBox(height: 1.h),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -1413,7 +1417,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                   ),
 
                   ///Actions
-                  if ([AppConstance.admin, AppConstance.manager, AppConstance.employee].contains(getData(AppConstance.role))) ...[
+                  if (getData(AppConstance.role) != AppConstance.customer) ...[
                     SizedBox(height: 2.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

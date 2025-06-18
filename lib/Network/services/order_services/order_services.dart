@@ -482,4 +482,31 @@ class OrderServices {
     );
     return response;
   }
+
+  /// Get Order Sequence
+  static Future<ResponseModel> getOrderSequenceService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.getOrderSequenceApi,
+      showProgress: false,
+      onError: (dioExceptions) {
+        if (kDebugMode) {
+          print("getOrderSequenceApi Exception :: ${dioExceptions.message}");
+        }
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getOrderSequenceApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getOrderSequenceApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

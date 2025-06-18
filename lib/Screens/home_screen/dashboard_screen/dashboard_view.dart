@@ -70,18 +70,6 @@ class DashboardView extends GetView<DashboardController> {
                 ),
 
                 if (getData(AppConstance.role) != AppConstance.employee) ...[
-                  ///Ledger
-                  if (getData(AppConstance.role) != AppConstance.customer) ...[
-                    CommonButton(
-                      route: Routes.ledgerScreen,
-                      title: AppStrings.ledger.tr,
-                      icon: AppAssets.ledgerIcon,
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(height: 2.h),
-                    ),
-                  ],
-
                   ///Challan
                   CommonButton(
                     route: Routes.challanScreen,
@@ -102,6 +90,19 @@ class DashboardView extends GetView<DashboardController> {
                     isRepair: true,
                     title: AppStrings.repairingDetails.tr,
                     icon: AppAssets.repairingIcon,
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 2.h),
+                  ),
+                ],
+
+                ///Order Sequence
+                if (![AppConstance.customer, AppConstance.employee].contains(getData(AppConstance.role))) ...[
+                  CommonButton(
+                    route: Routes.orderSequenceScreen,
+                    isRepair: true,
+                    title: AppStrings.orderSequence.tr,
+                    icon: AppAssets.orderSequenceIcon,
                   ),
                 ],
               ],

@@ -1,0 +1,1069 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cph_stocks/Constants/app_assets.dart';
+import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_styles.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_sequence_screen/order_sequence_controller.dart';
+import 'package:cph_stocks/Widgets/custom_header_widget.dart';
+import 'package:cph_stocks/Widgets/loading_widget.dart';
+import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
+import 'package:cph_stocks/Widgets/textfield_widget.dart';
+import 'package:cph_stocks/Widgets/unfocus_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+
+class OrderSequenceView extends GetView<OrderSequenceController> {
+  const OrderSequenceView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return UnfocusWidget(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.TRANSPARENT,
+          leadingWidth: 0,
+          leading: SizedBox.shrink(),
+          actionsPadding: EdgeInsets.zero,
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomHeaderWidget(
+                    title: AppStrings.orderSequence.tr,
+                    titleIcon: AppAssets.orderSequenceIcon,
+                    titleIconSize: 8.5.w,
+                    onBackPressed: () {
+                      Get.back(closeOverlays: true);
+                    },
+                  ),
+                  Obx(() {
+                    return IconButton(
+                      onPressed: controller.isRefreshing.value
+                          ? () {}
+                          : () async {
+                              await controller.getOrdersApi(isLoading: false);
+                            },
+                      style: IconButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: EdgeInsets.zero,
+                      ),
+                      icon: Obx(() {
+                        return TweenAnimationBuilder(
+                          duration: Duration(seconds: controller.isRefreshing.value ? 45 : 1),
+                          tween: Tween(begin: 0.0, end: controller.isRefreshing.value ? 45.0 : controller.ceilValueForRefresh.value),
+                          onEnd: () {
+                            controller.isRefreshing.value = false;
+                          },
+                          builder: (context, value, child) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              controller.ceilValueForRefresh(value.toDouble().ceilToDouble());
+                            });
+                            return Transform.rotate(
+                              angle: value * 2 * 3.141592653589793,
+                              child: Icon(
+                                Icons.refresh_rounded,
+                                color: AppColors.PRIMARY_COLOR,
+                                size: context.isPortrait ? 6.w : 6.h,
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 2.h),
+            child: Column(
+              children: [
+                ///Search Items
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 7.w),
+                  child: TextFieldWidget(
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: AppColors.SECONDARY_COLOR,
+                      size: 5.w,
+                    ),
+                    prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        Utils.unfocus();
+                        controller.searchItemNameController.clear();
+                        controller.searchItemName(controller.searchItemNameController.text);
+                      },
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: AppColors.SECONDARY_COLOR,
+                        size: 5.w,
+                      ),
+                    ),
+                    suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
+                    hintText: AppStrings.searchItem.tr,
+                    controller: controller.searchItemNameController,
+                    onChanged: (value) {
+                      controller.searchItemName(value);
+                      controller.searchedColorDataList.refresh();
+                    },
+                  ),
+                ),
+                SizedBox(height: 2.h),
+
+                ///Order Data
+                Obx(() {
+                  if (controller.isGetOrdersLoading.isTrue) {
+                    return const Expanded(
+                      child: Center(
+                        child: LoadingWidget(),
+                      ),
+                    );
+                  } else if (controller.searchedColorDataList.isEmpty) {
+                    return Expanded(
+                      child: NoDataFoundWidget(
+                        subtitle: AppStrings.noDataFound.tr,
+                        onPressed: () {
+                          controller.getOrdersApi();
+                        },
+                      ),
+                    );
+                  } else {
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          TabBar(
+                            controller: controller.sortByColorTabController,
+                            isScrollable: true,
+                            padding: EdgeInsets.symmetric(horizontal: 5.w),
+                            tabAlignment: TabAlignment.center,
+                            labelPadding: EdgeInsets.symmetric(
+                              horizontal: 5.w,
+                              vertical: 1.h,
+                            ).copyWith(top: 0),
+                            indicatorPadding: EdgeInsets.zero,
+                            indicatorColor: AppColors.TERTIARY_COLOR,
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicatorWeight: 2.5,
+                            indicator: UnderlineTabIndicator(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: AppColors.TERTIARY_COLOR,
+                                width: 2.5,
+                              ),
+                            ),
+                            dividerColor: AppColors.TRANSPARENT,
+                            onTap: (value) {
+                              Utils.unfocus();
+                              controller.selectedSortByColorTabIndex(value);
+                            },
+                            tabs: [
+                              for (int i = 0; i < controller.searchedColorDataList.length; i++)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ///Color Name
+                                    Flexible(
+                                      child: Text(
+                                        controller.searchedColorDataList[i].pvdColor ?? '',
+                                        style: TextStyle(
+                                          color: AppColors.WHITE_COLOR,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+
+                                    ///Color
+                                    SizedBox(
+                                      height: 4.w,
+                                      width: 4.w,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: controller.colorCodes.containsKey(controller.searchedColorDataList[i].pvdColor) == true ? controller.colorCodes[controller.searchedColorDataList[i].pvdColor] : AppColors.SECONDARY_COLOR,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.PRIMARY_COLOR,
+                                            width: 0.7,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          SizedBox(height: 2.h),
+
+                          ///Party Data
+                          Expanded(
+                            child: TabBarView(
+                              controller: controller.sortByColorTabController,
+                              children: [
+                                for (int j = 0; j < controller.searchedColorDataList.length; j++) ColorDataWidget(index: j),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  ///Items Data
+  Widget ColorDataWidget({required int index}) {
+    return Column(
+      children: [
+        Flexible(
+          child: AnimationLimiter(
+            child: ListView.separated(
+              itemCount: controller.searchedColorDataList[index].partyMeta?.length ?? 0,
+              shrinkWrap: true,
+              padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
+              itemBuilder: (context, partyIndex) {
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 375),
+                  child: SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: Card(
+                        color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ExpansionTile(
+                          title: Row(
+                            children: [
+                              Text(
+                                '${partyIndex + 1}. ',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                ),
+                              ),
+                              SizedBox(width: 2.w),
+                              Flexible(
+                                child: Text(
+                                  controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
+                                  style: TextStyle(
+                                    color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          tilePadding: EdgeInsets.only(
+                            left: 3.w,
+                            right: 2.w,
+                          ),
+                          showTrailingIcon: false,
+                          dense: true,
+                          collapsedBackgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          backgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          iconColor: AppColors.SECONDARY_COLOR,
+                          collapsedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide.none,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide.none,
+                          ),
+                          childrenPadding: EdgeInsets.only(bottom: 2.h),
+                          children: [
+                            Divider(
+                              color: AppColors.HINT_GREY_COLOR,
+                              thickness: 1,
+                            ),
+
+                            ///Contact Number
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "${AppStrings.contact.tr}: ",
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.DARK_RED_COLOR,
+                                    ),
+                                  ),
+                                  Text(
+                                    "+91 ${controller.searchedColorDataList[index].partyMeta?[partyIndex].contactNumber ?? ''}",
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            ///Headings
+                            Divider(
+                              color: AppColors.HINT_GREY_COLOR,
+                              thickness: 1,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppStrings.itemName.tr,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.sp,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 32.5.w,
+                                    child: Text(
+                                      AppStrings.quantity.tr,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15.sp,
+                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Divider(
+                              color: AppColors.HINT_GREY_COLOR,
+                              thickness: 1,
+                            ),
+
+                            ///Items
+                            for (int dateIndex = 0; dateIndex < (controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?.length ?? 0); dateIndex++) ...[
+                              ///DateTime & Bill Cycle
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        WidgetSpan(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right: 2.w),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.clock,
+                                              size: 4.w,
+                                              color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                            ),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
+                                              ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
+                                              : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
+                                          style: TextStyle(
+                                            color: AppColors.DARK_RED_COLOR,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            shadows: controller.searchedColorDataList[index].pvdColor == "Black"
+                                                ? null
+                                                : [
+                                                    Shadow(
+                                                      color: AppColors.PRIMARY_COLOR,
+                                                      offset: const Offset(2, 2),
+                                                      blurRadius: 40,
+                                                    )
+                                                  ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: AppColors.HINT_GREY_COLOR,
+                                thickness: 1,
+                              ),
+
+                              ///Description
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 5.w),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: "${AppStrings.description.tr}: ",
+                                      children: [
+                                        TextSpan(
+                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].description ?? "",
+                                          style: TextStyle(
+                                            color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                      ],
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+
+                              AnimationLimiter(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: AnimationConfiguration.toStaggeredList(
+                                    duration: const Duration(milliseconds: 375),
+                                    childAnimationBuilder: (child) => SlideAnimation(
+                                      verticalOffset: 50.0,
+                                      child: FadeInAnimation(child: child),
+                                    ),
+                                    children: [
+                                      for (int orderIndex = 0; orderIndex < (controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?.length ?? 0); orderIndex++) ...[
+                                        GestureDetector(
+                                          onTap: () async {
+                                            await showItemDetailsBottomSheet(
+                                              partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
+                                              itemDetails: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex],
+                                            );
+                                          },
+                                          child: ExpansionTile(
+                                            enabled: false,
+                                            title: Stack(
+                                              children: [
+                                                ///Category Name
+                                                Positioned(
+                                                  top: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: Center(
+                                                    child: Tooltip(
+                                                      message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                      child: Text(
+                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
+                                                        style: AppStyles.size30w900.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.04)),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                ///Item details
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        /// ItemImage
+                                                        InkWell(
+                                                          onTap: () async {
+                                                            final itemImage = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage;
+                                                            await controller.showItemImageDialog(
+                                                              itemName: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? AppStrings.itemImage.tr,
+                                                              itemImage: itemImage != null || itemImage?.isNotEmpty == true ? (itemImage ?? '') : '',
+                                                            );
+                                                          },
+                                                          child: CircleAvatar(
+                                                            radius: 6.w,
+                                                            backgroundColor: AppColors.SECONDARY_COLOR,
+                                                            child: ClipRRect(
+                                                              borderRadius: BorderRadius.circular(360),
+                                                              child: SizedBox(
+                                                                width: 12.w,
+                                                                height: 12.w,
+                                                                child: ColoredBox(
+                                                                  color: AppColors.SECONDARY_COLOR,
+                                                                  child: CachedNetworkImage(
+                                                                    imageUrl: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
+                                                                    cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
+                                                                    errorWidget: (context, url, error) {
+                                                                      return Column(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Image.asset(
+                                                                            AppAssets.createOrderImage,
+                                                                            width: 10.w,
+                                                                            height: 10.w,
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 2.w),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              /// ItemName
+                                                              Text(
+                                                                controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? '',
+                                                                style: TextStyle(
+                                                                  color: AppColors.SECONDARY_COLOR,
+                                                                  fontSize: 16.sp,
+                                                                  fontWeight: FontWeight.w600,
+                                                                ),
+                                                              ),
+
+                                                              /// ItemSize
+                                                              Text(
+                                                                "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''}\"",
+                                                                style: TextStyle(
+                                                                  color: AppColors.SECONDARY_COLOR,
+                                                                  fontSize: 16.sp,
+                                                                  fontWeight: FontWeight.w600,
+                                                                ),
+                                                              ),
+
+                                                              ///Ok Pcs., W/O Process & Pending
+                                                              Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    child: Tooltip(
+                                                                      message: AppStrings.okPcs.tr,
+                                                                      child: Text(
+                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 15.sp,
+                                                                          color: AppColors.LIGHT_BLUE_COLOR,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 3.h,
+                                                                    child: VerticalDivider(
+                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                      thickness: 1,
+                                                                    ),
+                                                                  ),
+                                                                  Flexible(
+                                                                    child: Tooltip(
+                                                                      message: AppStrings.woProcess,
+                                                                      child: Text(
+                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 15.sp,
+                                                                          color: AppColors.SECONDARY_COLOR,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 3.h,
+                                                                    child: VerticalDivider(
+                                                                      color: AppColors.SECONDARY_COLOR,
+                                                                      thickness: 1,
+                                                                    ),
+                                                                  ),
+                                                                  Flexible(
+                                                                    child: Tooltip(
+                                                                      message: AppStrings.pending.tr,
+                                                                      child: Text(
+                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 15.sp,
+                                                                          color: AppColors.DARK_RED_COLOR,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            showTrailingIcon: false,
+                                            dense: true,
+                                            collapsedShape: InputBorder.none,
+                                            shape: InputBorder.none,
+                                            collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                            backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                            iconColor: AppColors.SECONDARY_COLOR,
+                                            tilePadding: EdgeInsets.only(left: 2.w, right: 2.w),
+                                            childrenPadding: EdgeInsets.symmetric(horizontal: 3.w),
+                                          ),
+                                        ),
+                                        SizedBox(height: 1.5.h),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(height: 1.h);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> showItemDetailsBottomSheet({
+    required String partyName,
+    required get_orders.ModelMeta? itemDetails,
+  }) async {
+    await showModalBottomSheet(
+      context: Get.context!,
+      constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 90.h, minHeight: 0.h),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      isScrollControlled: true,
+      useRootNavigator: true,
+      clipBehavior: Clip.hardEdge,
+      backgroundColor: AppColors.WHITE_COLOR,
+      builder: (context) {
+        final keyboardPadding = MediaQuery.viewInsetsOf(context).bottom;
+        return GestureDetector(
+          onTap: () => Utils.unfocus(),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.PRIMARY_COLOR,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h).copyWith(bottom: keyboardPadding),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ///Back & Title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ///Title
+                      Text(
+                        AppStrings.itemDetails.tr,
+                        style: TextStyle(
+                          color: AppColors.SECONDARY_COLOR,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+
+                      ///Back
+                      IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        style: IconButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: AppColors.SECONDARY_COLOR,
+                          size: 6.w,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    color: AppColors.HINT_GREY_COLOR,
+                    thickness: 1,
+                  ),
+                  SizedBox(height: 2.h),
+
+                  ///Item Name & Order Date
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          itemDetails?.itemName ?? '',
+                          style: TextStyle(
+                            color: AppColors.SECONDARY_COLOR,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 2.w),
+                      Row(
+                        children: [
+                          Text(
+                            "${AppStrings.orderDate.tr}: ",
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.SECONDARY_COLOR,
+                            ),
+                          ),
+                          SizedBox(width: 2.w),
+                          Text(
+                            itemDetails?.createdDate ?? '',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.LIGHT_BLUE_COLOR,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  ///Created By
+                  SizedBox(height: 1.h),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text.rich(
+                      TextSpan(
+                        text: "${AppStrings.creator.tr}: ",
+                        children: [
+                          TextSpan(
+                            text: itemDetails?.createdBy ?? '',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.DARK_GREEN_COLOR,
+                            ),
+                          ),
+                        ],
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.SECONDARY_COLOR,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+
+                  ///Size, Quantity & PVD Color
+                  Table(
+                    border: TableBorder.all(
+                      color: AppColors.SECONDARY_COLOR,
+                      width: 0.8,
+                    ),
+                    children: [
+                      TableRow(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Text(
+                                AppStrings.size.tr,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.SECONDARY_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Text(
+                                AppStrings.quantity.tr,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.SECONDARY_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Text(
+                                AppStrings.pvdColor.tr,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.SECONDARY_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+                              child: Text(
+                                "${itemDetails?.size ?? ''}\"",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.LIGHT_BLUE_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+                              child: Text(
+                                itemDetails?.quantity ?? '',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.LIGHT_BLUE_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+                              child: Text(
+                                itemDetails?.pvdColor ?? '',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.LIGHT_BLUE_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+
+                  ///Total Stats Log:
+                  Text(
+                    "✤ ${AppStrings.totalStatsLog.tr.replaceAll(':', '')} ✤",
+                    style: TextStyle(
+                      color: AppColors.DARK_RED_COLOR,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+
+                  ///Ok pcs., Pending & W/O Process
+                  Table(
+                    border: TableBorder.all(
+                      color: AppColors.SECONDARY_COLOR,
+                      width: 0.8,
+                    ),
+                    children: [
+                      TableRow(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Text(
+                                AppStrings.okPcs.tr,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.SECONDARY_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Text(
+                                AppStrings.pending.tr,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.SECONDARY_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                              child: Text(
+                                AppStrings.woProcess.tr,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.SECONDARY_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+                              child: Text(
+                                itemDetails?.okPcs ?? '',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.LIGHT_BLUE_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+                              child: Text(
+                                itemDetails?.pending ?? '',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.ORANGE_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
+                              child: Text(
+                                itemDetails?.woProcess ?? '',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.LIGHT_BLUE_COLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+
+                  ///Item Image
+                  Text(
+                    "✤ ${AppStrings.itemImage.tr} ✤",
+                    style: TextStyle(
+                      color: AppColors.DARK_RED_COLOR,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: () async {
+                        await controller.showItemImageDialog(
+                          itemName: itemDetails?.itemName ?? AppStrings.itemImage.tr,
+                          itemImage: itemDetails?.itemImage != null || itemDetails?.itemImage?.isNotEmpty == true ? (itemDetails?.itemImage ?? '') : '',
+                        );
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: itemDetails?.itemImage ?? '',
+                        cacheKey: itemDetails?.itemImage,
+                        progressIndicatorBuilder: (context, url, progress) {
+                          return SizedBox(
+                            height: 15.h,
+                            width: double.maxFinite,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  color: AppColors.SECONDARY_COLOR,
+                                  value: progress.progress,
+                                  strokeWidth: 2,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        errorWidget: (context, error, stackTrace) {
+                          return SizedBox(
+                            height: 15.h,
+                            width: double.maxFinite,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_rounded,
+                                  size: 6.w,
+                                  color: AppColors.ERROR_COLOR,
+                                ),
+                                Text(
+                                  AppStrings.imageNotFound.tr,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: AppColors.SECONDARY_COLOR,
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

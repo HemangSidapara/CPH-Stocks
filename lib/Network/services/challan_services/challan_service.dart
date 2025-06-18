@@ -60,41 +60,7 @@ class ChallanService {
     return response;
   }
 
-  /// Generate Ledger Invoice
-  static Future<ResponseModel> generateLedgerInvoiceService({
-    required String startDate,
-    required String endDate,
-    required String partyId,
-  }) async {
-    final params = {
-      ApiKeys.startDate: startDate,
-      ApiKeys.endDate: endDate,
-      ApiKeys.partyId: partyId,
-    };
-    final response = await ApiBaseHelper.postHTTP(
-      ApiUrls.getLedgerInvoicesApi,
-      params: params,
-      showProgress: false,
-      onError: (dioExceptions) {
-        Utils.handleMessage(message: dioExceptions.message, isError: true);
-      },
-      onSuccess: (res) {
-        if (res.isSuccess) {
-          if (kDebugMode) {
-            print("getLedgerInvoicesApi success :: ${res.message}");
-          }
-        } else {
-          if (kDebugMode) {
-            print("getLedgerInvoicesApi error :: ${res.message}");
-          }
-          Utils.handleMessage(message: res.message, isError: true);
-        }
-      },
-    );
-    return response;
-  }
-
-  /// Generate Ledger Invoice
+  /// Delete Invoices
   static Future<ResponseModel> deleteInvoicesService({
     required List<String> orderInvoiceIds,
   }) async {

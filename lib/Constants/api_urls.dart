@@ -22,6 +22,7 @@ class ApiUrls {
   static const String multipleLastBilledCycleApi = '${_apiPath}multipleLastBilledCycle';
   static const String getCategoriesApi = '${_apiPath}getCategories';
   static const String getRepairOrdersApi = '${_apiPath}getRepairOrders';
+  static const String getOrderSequenceApi = '${_apiPath}getOrderSequence';
 
   /// Party APIs
   static const String getPartiesApi = '${_apiPath}getParties';
@@ -31,8 +32,11 @@ class ApiUrls {
   /// Challan APIs
   static const String getInvoicesApi = '${_apiPath}getInvoices';
   static const String generateInvoiceApi = '${_apiPath}generateInvoice';
-  static const String getLedgerInvoicesApi = '${_apiPath}getLedgerInvoices';
   static const String deleteInvoicesApi = '${_apiPath}deleteInvoices';
+
+  /// Account APIs
+  static const String getLedgerInvoicesApi = '${_apiPath}getLedgerInvoices';
+  static const String getPaymentLedgerInvoicesApi = '${_apiPath}getPaymentLedgerInvoices';
 
   /// Notes APIs
   static const String getNotesApi = '${_apiPath}getNotes';

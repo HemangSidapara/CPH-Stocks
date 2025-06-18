@@ -71,10 +71,8 @@ class AddOrderCycleController extends GetxController {
   }
 
   int finalRepairCalculation() {
-    final currentRepair = int.tryParse(repairController.text) ?? 0;
-    if (int.tryParse(pendingController.text) != null && (previousRepair.value != 0 || (previousRepair.value == 0 && currentRepair != 0))) {
-      final newRepair = previousRepair.value + currentRepair;
-      return newRepair + (pendingController.text.toInt() - newRepair);
+    if (int.tryParse(pendingController.text) != null) {
+      return pendingController.text.toInt();
     }
     return 0;
   }

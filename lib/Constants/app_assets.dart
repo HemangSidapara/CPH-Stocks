@@ -8,6 +8,7 @@ class AppAssets {
   static const String noDataFoundAnim = "assets/animations/no_data_found_animation.json";
   static const String customLoaderAnim = "assets/animations/custom_loader_animation.json";
   static const String cloudAnim = "assets/animations/cloud_animation.json";
+  static const String accountAnim = "assets/animations/account_animation.gif";
 
   ///Images
   static const String splashImage = "assets/images/splash_image.png";
@@ -30,6 +31,10 @@ class AppAssets {
   static const String notesIcon = "assets/icons/notes_icon.png";
   static const String ledgerIcon = "assets/icons/ledger_icon.png";
   static const String repairingIcon = "assets/icons/repairing_icon.png";
+  static const String calculatorIcon = "assets/icons/calculator_icon.png";
+  static const String orderSequenceIcon = "assets/icons/order_sequence_icon.png";
+  static const String paymentDetailsIcon = "assets/icons/payment_details_icon.png";
+  static const String pendingPaymentIcon = "assets/icons/pending_payment_icon.png";
 
   ///Fonts
   static const String robotoRegular = "assets/fonts/Roboto/Roboto-Regular.ttf";

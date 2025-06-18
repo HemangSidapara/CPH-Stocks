@@ -177,6 +177,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                               textInputAction: TextInputAction.next,
                               maxLength: 120,
                               maxLines: 3,
+                              validator: controller.validateDescription,
                               onChanged: (value) {
                                 controller.storeOrderDetails();
                               },

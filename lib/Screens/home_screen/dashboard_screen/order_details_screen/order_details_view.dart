@@ -267,8 +267,6 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                   padding: EdgeInsets.only(bottom: 2.h),
                   child: Column(
                     children: [
-                      SizedBox(height: 2.h),
-
                       ///Sort by Color
                       const Expanded(
                         child: SortByPvdColorView(),

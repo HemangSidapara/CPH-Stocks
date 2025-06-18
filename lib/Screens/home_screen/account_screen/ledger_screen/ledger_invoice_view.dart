@@ -5,7 +5,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/ledger_screen/ledger_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_controller.dart';
 import 'package:cph_stocks/Widgets/close_button_widget.dart';
 import 'package:cph_stocks/Widgets/divider_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
@@ -20,10 +20,12 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class LedgerInvoiceView extends StatefulWidget {
   final List<OrderInvoice> invoiceData;
+  final bool isPaymentLedger;
 
   const LedgerInvoiceView({
     super.key,
     required this.invoiceData,
+    required this.isPaymentLedger,
   });
 
   @override
@@ -46,10 +48,18 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
   Future<void> setGenerateInvoice() async {
     try {
       generatingInvoice(true);
-      final file = await controller.generateLedgerPdf(
-        data: widget.invoiceData,
-        showAmount: isAmountVisible.isTrue,
-      );
+      File? file;
+      if (widget.isPaymentLedger) {
+        file = await controller.generatePaymentLedgerPdf(
+          data: widget.invoiceData,
+          showAmount: isAmountVisible.isTrue,
+        );
+      } else {
+        file = await controller.generateLedgerPdf(
+          data: widget.invoiceData,
+          showAmount: isAmountVisible.isTrue,
+        );
+      }
       if (file != null) {
         pdfFile.value = file;
       }

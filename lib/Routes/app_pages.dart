@@ -1,16 +1,23 @@
+import 'package:cph_stocks/Screens/home_screen/account_screen/account_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_view.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/payment_details_screen/payment_details_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/payment_details_screen/payment_details_view.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/pending_payment_screen/pending_payment_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/pending_payment_screen/pending_payment_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_bindings.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/ledger_screen/ledger_bindings.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/ledger_screen/ledger_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/add_order_cycle_screen/add_order_cycle_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/view_cycles_screen/view_cycles_view.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_sequence_screen/order_sequence_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_sequence_screen/order_sequence_view.dart';
 import 'package:cph_stocks/Screens/home_screen/home_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/home_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_bindings.dart';
@@ -54,6 +61,7 @@ class AppPages {
       binding: HomeBindings(),
       bindings: [
         DashboardBindings(),
+        AccountBindings(),
         RecycleBinBindings(),
         NotesBindings(),
         SettingsBindings(),
@@ -121,6 +129,42 @@ class AppPages {
       name: Routes.ledgerScreen,
       page: () => const LedgerView(),
       binding: LedgerBinding(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Order Sequence Screen
+    GetPage(
+      name: Routes.orderSequenceScreen,
+      page: () => const OrderSequenceView(),
+      binding: OrderSequenceBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Payment Ledger Screen
+    GetPage(
+      name: Routes.paymentLedgerScreen,
+      page: () => const LedgerView(isPaymentLedger: true),
+      binding: LedgerBinding(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Payment Details Screen
+    GetPage(
+      name: Routes.paymentDetailsScreen,
+      page: () => const PaymentDetailsView(),
+      binding: PaymentDetailsBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Pending Payment Screen
+    GetPage(
+      name: Routes.pendingPaymentScreen,
+      page: () => const PendingPaymentView(),
+      binding: PendingPaymentBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

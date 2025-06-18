@@ -169,4 +169,14 @@ class AppStrings {
   static const String deleteChallanText = "Are you sure? You want to delete 'Challan'? After deleting selected challan will be lost under this order.";
   static const String selectChallan = "Select challan";
   static const String pleaseSelectAtLeastOneChallan = "Please select at-least one challan.";
+  static const String account = "Account";
+  static const String paymentLedger = "Payment Ledger";
+  static const String orderSequence = "Order Sequence";
+  static const String searchItem = "Search Item";
+  static const String pleaseEnterDescription = "Please enter description";
+  static const String addPayment = "Add Payment";
+  static const String custom = "Custom";
+  static const String monthly = "Monthly";
+  static const String pendingPayment = "Pending Payment";
+  static const String paymentDetails = "Payment Details";
 }
