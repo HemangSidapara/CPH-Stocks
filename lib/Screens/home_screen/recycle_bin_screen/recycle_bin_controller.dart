@@ -23,6 +23,22 @@ class RecycleBinController extends GetxController with GetTickerProviderStateMix
     "Bronze": AppColors.BRONZE_COLOR,
   };
 
+  Map<String, Color> backgroundColorCodes = {
+    "Gold": AppColors.GOLD_COLOR.withValues(alpha: 0.3),
+    "Rosegold": AppColors.ROSEGOLD_COLOR.withValues(alpha: 0.5),
+    "Black": AppColors.Medium_BLACK_COLOR,
+    "Grey": AppColors.TRANSPARENT,
+    "Bronze": AppColors.BRONZE_COLOR.withValues(alpha: 0.5),
+  };
+
+  Map<String, Color> textColorCodes = {
+    "Gold": AppColors.SECONDARY_COLOR,
+    "Rosegold": AppColors.SECONDARY_COLOR,
+    "Black": AppColors.PRIMARY_COLOR,
+    "Grey": AppColors.SECONDARY_COLOR,
+    "Bronze": AppColors.SECONDARY_COLOR,
+  };
+
   late TabController sortByColorTabController;
   RxInt selectedSortByColorTabIndex = 0.obs;
 
@@ -32,6 +48,10 @@ class RecycleBinController extends GetxController with GetTickerProviderStateMix
     await getOrdersApi();
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
     sortByColorTabController.addListener(tabListener);
+  }
+
+  Color getTextColor(String pvdColor) {
+    return textColorCodes[pvdColor] ?? AppColors.SECONDARY_COLOR;
   }
 
   Future<void> getOrdersApi({bool isLoading = true}) async {

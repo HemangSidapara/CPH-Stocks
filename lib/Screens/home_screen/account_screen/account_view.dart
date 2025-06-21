@@ -1,6 +1,8 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/account_controller.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
@@ -73,9 +75,42 @@ class AccountView extends GetView<AccountController> {
                   title: AppStrings.pendingPayment.tr,
                   icon: AppAssets.pendingPaymentIcon,
                 ),
-                SliverToBoxAdapter(
-                  child: SizedBox(height: 2.h),
-                ),
+
+                if ([AppConstance.admin].contains(getData(AppConstance.role))) ...[
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 2.h),
+                  ),
+
+                  ///Reports
+                  CommonButton(
+                    route: Routes.reportsScreen,
+                    title: AppStrings.reports.tr,
+                    icon: AppAssets.reportsIcon,
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 2.h),
+                  ),
+
+                  ///Employees in Month
+                  CommonButton(
+                    route: Routes.employeeInMonthScreen,
+                    title: AppStrings.employeesInMonth.tr,
+                    icon: AppAssets.employeeIcon,
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 2.h),
+                  ),
+
+                  ///Categories
+                  CommonButton(
+                    route: Routes.categoriesScreen,
+                    title: AppStrings.categories.tr,
+                    icon: AppAssets.categoriesIcon,
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 5.h),
+                  ),
+                ],
               ],
             ),
           ),
@@ -122,12 +157,14 @@ class AccountView extends GetView<AccountController> {
                         width: iconWidth ?? 18.w,
                       ),
                       SizedBox(width: 3.w),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: AppColors.SECONDARY_COLOR,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18.sp,
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            color: AppColors.SECONDARY_COLOR,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18.sp,
+                          ),
                         ),
                       ),
                     ],

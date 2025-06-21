@@ -15,6 +15,7 @@ import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
+import 'package:cph_stocks/Widgets/refresh_indicator_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,25 +76,21 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
             }
           }),
 
-        Obx(() {
-          if (controller.isGetOrdersLoading.isTrue) {
-            return const Expanded(
-              child: Center(
+        Expanded(
+          child: Obx(() {
+            if (controller.isGetOrdersLoading.isTrue) {
+              return Center(
                 child: LoadingWidget(),
-              ),
-            );
-          } else if (controller.searchedColorDataList.isEmpty) {
-            return Expanded(
-              child: NoDataFoundWidget(
+              );
+            } else if (controller.searchedColorDataList.isEmpty) {
+              return NoDataFoundWidget(
                 subtitle: AppStrings.noDataFound.tr,
                 onPressed: () {
                   controller.getOrdersApi();
                 },
-              ),
-            );
-          } else {
-            return Expanded(
-              child: Column(
+              );
+            } else {
+              return Column(
                 children: [
                   IgnorePointer(
                     ignoring: controller.isDeleteMultipleOrdersEnable.isTrue,
@@ -169,15 +166,21 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                       controller: controller.sortByColorTabController,
                       physics: controller.isDeleteMultipleOrdersEnable.isTrue ? const NeverScrollableScrollPhysics() : null,
                       children: [
-                        for (int j = 0; j < controller.searchedColorDataList.length; j++) ColorDataWidget(index: j),
+                        for (int j = 0; j < controller.searchedColorDataList.length; j++)
+                          RefreshIndicatorWidget(
+                            onRefresh: () async {
+                              await controller.getOrdersApi(isLoading: false);
+                            },
+                            child: ColorDataWidget(index: j),
+                          ),
                       ],
                     ),
                   ),
                 ],
-              ),
-            );
-          }
-        }),
+              );
+            }
+          }),
+        ),
       ],
     );
   }
@@ -292,7 +295,8 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                           dense: true,
                           collapsedBackgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                           backgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                          iconColor: AppColors.SECONDARY_COLOR,
+                          collapsedIconColor: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                          iconColor: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                           collapsedShape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                             side: controller.isDeleteMultipleOrdersEnable.isTrue && controller.selectedPartyForDeletingMultipleOrders.value == controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId
@@ -418,7 +422,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                           color: AppColors.PRIMARY_COLOR,
                                                           offset: const Offset(2, 2),
                                                           blurRadius: 40,
-                                                        )
+                                                        ),
                                                       ],
                                               ),
                                             ),
@@ -503,19 +507,19 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                           onTap: controller.isRepairScreen.isTrue
                                               ? null
                                               : controller.isDeleteMultipleOrdersEnable.isFalse
-                                                  ? () async {
-                                                      await showItemDetailsBottomSheet(
-                                                        partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
-                                                        itemDetails: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex],
-                                                      );
-                                                    }
-                                                  : () {
-                                                      if (controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId)) {
-                                                        controller.selectedOrderMetaIdForDeletion.removeWhere((element) => element == controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId);
-                                                      } else {
-                                                        controller.selectedOrderMetaIdForDeletion.add(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? "");
-                                                      }
-                                                    },
+                                              ? () async {
+                                                  await showItemDetailsBottomSheet(
+                                                    partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
+                                                    itemDetails: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex],
+                                                  );
+                                                }
+                                              : () {
+                                                  if (controller.selectedOrderMetaIdForDeletion.contains(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId)) {
+                                                    controller.selectedOrderMetaIdForDeletion.removeWhere((element) => element == controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId);
+                                                  } else {
+                                                    controller.selectedOrderMetaIdForDeletion.add(controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].orderMetaId ?? "");
+                                                  }
+                                                },
                                           onLongPress: controller.isDeleteMultipleOrdersEnable.isFalse && controller.isRepairScreen.isFalse
                                               ? () {
                                                   controller.isDeleteMultipleOrdersEnable(true);
@@ -790,7 +794,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                             ),
                                                           );
                                                         }
-                                                      })
+                                                      }),
                                                     ],
                                                   ],
                                                 ),
@@ -934,7 +938,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                               } else {
                                 return newValue;
                               }
-                            })
+                            }),
                           ],
                           maxLength: 10,
                           primaryColor: AppColors.SECONDARY_COLOR,
@@ -1606,7 +1610,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                   color: AppColors.PRIMARY_COLOR,
                                   offset: const Offset(2, 2),
                                   blurRadius: 40,
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -1750,14 +1754,14 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                               onTap: true
                                                   ? null
                                                   : itemsList[orderIndex].orderCycles?[cycleIndex].isLastBilled == true
-                                                      ? null
-                                                      : () {
-                                                          if (selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId)) {
-                                                            selectedCycleIds.removeWhere((element) => element == itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId);
-                                                          } else if (itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId != null) {
-                                                            selectedCycleIds.add(itemsList[orderIndex].orderCycles![cycleIndex].orderCycleId!);
-                                                          }
-                                                        },
+                                                  ? null
+                                                  : () {
+                                                      if (selectedCycleIds.contains(itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId)) {
+                                                        selectedCycleIds.removeWhere((element) => element == itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId);
+                                                      } else if (itemsList[orderIndex].orderCycles?[cycleIndex].orderCycleId != null) {
+                                                        selectedCycleIds.add(itemsList[orderIndex].orderCycles![cycleIndex].orderCycleId!);
+                                                      }
+                                                    },
                                               child: DecoratedBox(
                                                 decoration: BoxDecoration(
                                                   border: Border.all(

@@ -4,6 +4,7 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_payment_model.dart' as get_automatic_ledger;
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/account_services/account_services.dart';
@@ -33,8 +34,10 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
 
+  TextEditingController searchPartyNameController = TextEditingController();
   RxBool isMonthlyLedgerLoading = false.obs;
-  RxList monthlyLedgerList = [].obs;
+  RxList<get_automatic_ledger.LedgerPartyData> automaticLedgerList = RxList();
+  RxList<get_automatic_ledger.LedgerPartyData> searchAutomaticLedgerList = RxList();
   late TabController tabController;
   RxInt tabIndex = 0.obs;
 
@@ -42,6 +45,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   void onInit() {
     super.onInit();
     getPartiesApi();
+    getAutomaticLedgerPaymentApiCall();
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
       tabIndex(tabController.index);
@@ -77,6 +81,31 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
       partyList.addAll(getPartiesModel.data ?? []);
     }
     return partyList;
+  }
+
+  Future<void> getAutomaticLedgerPaymentApiCall({bool isRefresh = false}) async {
+    try {
+      isMonthlyLedgerLoading(true);
+      final response = await AccountServices.getAutomaticLedgerPaymentService();
+      if (response.isSuccess) {
+        get_automatic_ledger.GetAutomaticLedgerPaymentModel ledgerPaymentModel = get_automatic_ledger.GetAutomaticLedgerPaymentModel.fromJson(response.response?.data);
+        automaticLedgerList.clear();
+        searchAutomaticLedgerList.clear();
+        automaticLedgerList.addAll(ledgerPaymentModel.data ?? []);
+        searchAutomaticLedgerList.addAll(ledgerPaymentModel.data ?? []);
+      }
+    } finally {
+      isMonthlyLedgerLoading(false);
+    }
+  }
+
+  void searchParty(String value) {
+    searchAutomaticLedgerList.clear();
+    if (value.isNotEmpty) {
+      searchAutomaticLedgerList.addAll(automaticLedgerList.where((element) => element.partyName!.toLowerCase().contains(value.toLowerCase())).toList());
+    } else {
+      searchAutomaticLedgerList.addAll([...automaticLedgerList]);
+    }
   }
 
   Future<void> generateLedgerApi({bool isPaymentLedger = false}) async {
@@ -510,7 +539,9 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                             ),
 
                             /// Total Amount
-                            TableCell(title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : ""),
+                            TableCell(
+                              title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : "",
+                            ),
                           ],
                         ],
                       );
@@ -1125,7 +1156,9 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                             ),
 
                             /// Total Amount
-                            TableCell(title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : ""),
+                            TableCell(
+                              title: invoice?.totalAmount != null && invoice?.totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(invoice?.totalAmount!.toDouble()) : "",
+                            ),
                           ],
                         ],
                       );

@@ -1,10 +1,16 @@
 import 'package:cph_stocks/Screens/home_screen/account_screen/account_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/categories_screen/categories_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/categories_screen/categories_view.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/employees_in_month_screen/employees_in_month_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/employees_in_month_screen/employees_in_month_view.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_view.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/payment_details_screen/payment_details_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/payment_details_screen/payment_details_view.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/pending_payment_screen/pending_payment_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/pending_payment_screen/pending_payment_view.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/reports_screen/reports_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/reports_screen/reports_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
@@ -165,6 +171,33 @@ class AppPages {
       name: Routes.pendingPaymentScreen,
       page: () => const PendingPaymentView(),
       binding: PendingPaymentBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Reports Screen
+    GetPage(
+      name: Routes.reportsScreen,
+      page: () => const ReportsView(),
+      binding: ReportsBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Employee In Month Screen
+    GetPage(
+      name: Routes.employeeInMonthScreen,
+      page: () => const EmployeesInMonthView(),
+      binding: EmployeesInMonthBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Categories Screen
+    GetPage(
+      name: Routes.categoriesScreen,
+      page: () => const CategoriesView(),
+      binding: CategoriesBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

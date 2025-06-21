@@ -1,5 +1,7 @@
 class ApiUrls {
   static const String baseUrl = 'https://mindwaveinfoway.com/';
+  static const String imageBaseUrl = 'https://mindwaveinfoway.com/ClassicPVDHouse/AdminPanel/WebApi/';
+
   static const String _apiPath = 'ClassicPVDHouse/AdminPanel/WebApi/index.php?p=';
 
   /// Auth APIs
@@ -37,8 +39,25 @@ class ApiUrls {
   /// Account APIs
   static const String getLedgerInvoicesApi = '${_apiPath}getLedgerInvoices';
   static const String getPaymentLedgerInvoicesApi = '${_apiPath}getPaymentLedgerInvoices';
+  static const String getPartyPaymentApi = '${_apiPath}getPartyPayment';
+  static const String createPartyPaymentApi = '${_apiPath}createPartyPayment';
+  static const String editPartyPaymentApi = '${_apiPath}editPartyPayment';
+  static const String deletePartyPaymentApi = '${_apiPath}deletePartyPayment';
+  static const String getAutomaticLedgerPaymentApi = '${_apiPath}getAutomaticLedgerPayment';
 
   /// Notes APIs
   static const String getNotesApi = '${_apiPath}getNotes';
   static const String editNotesApi = '${_apiPath}editNotes';
+
+  /// Category APIs
+  static const String createCategoryApi = '${_apiPath}createCategory';
+  static const String getCategoryListApi = '${_apiPath}getCategoryList';
+  static const String editCategoryApi = '${_apiPath}editCategory';
+  static const String reorderCategoryApi = '${_apiPath}reorderCategory';
+
+  /// Employee APIs
+  static const String getNoOfEmployeesApi = '${_apiPath}getNoOfEmployees';
+  static const String addNoOfEmployeesApi = '${_apiPath}addNoOfEmployees';
+  static const String editNoOfEmployeesApi = '${_apiPath}editNoOfEmployees';
+  static const String getReportApi = '${_apiPath}getReport';
 }

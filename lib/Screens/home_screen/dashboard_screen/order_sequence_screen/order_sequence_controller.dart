@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
-import 'package:cph_stocks/Network/models/order_models/get_orders_model.dart' as get_orders;
+import 'package:cph_stocks/Network/models/order_models/get_order_sequence_model.dart' as get_orders;
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,9 +8,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OrderSequenceController extends GetxController with GetTickerProviderStateMixin {
   TextEditingController searchItemNameController = TextEditingController();
-  RxList<get_orders.ColorData> searchedColorDataList = RxList();
-  RxList<get_orders.ColorData> tempColorDataList = RxList();
-  RxList<get_orders.ColorData> colorDataList = RxList();
+  RxList<get_orders.PvdColorGroup> searchedColorDataList = RxList();
+  RxList<get_orders.PvdColorGroup> tempColorDataList = RxList();
+  RxList<get_orders.PvdColorGroup> colorDataList = RxList();
   RxBool isGetOrdersLoading = false.obs;
   RxBool isRefreshing = false.obs;
   RxDouble ceilValueForRefresh = 0.0.obs;
@@ -58,19 +58,19 @@ class OrderSequenceController extends GetxController with GetTickerProviderState
     return textColorCodes[pvdColor] ?? AppColors.SECONDARY_COLOR;
   }
 
-  Future<void> getOrdersApi({bool isLoading = true}) async {
+  Future<void> getOrdersApi({bool isRefresh = false}) async {
     try {
-      isRefreshing(!isLoading);
-      isGetOrdersLoading(isLoading);
+      isRefreshing(isRefresh);
+      isGetOrdersLoading(!isRefresh);
       final response = await OrderServices.getOrderSequenceService();
 
       if (response.isSuccess) {
-        get_orders.GetOrdersModel ordersModel = get_orders.GetOrdersModel.fromJson(response.response?.data);
+        get_orders.GetOrderSequenceModel ordersModel = get_orders.GetOrderSequenceModel.fromJson(response.response?.data);
         String currentTab = searchedColorDataList.isNotEmpty ? searchedColorDataList[sortByColorTabController.index].pvdColor ?? "" : "";
         colorDataList.clear();
         searchedColorDataList.clear();
-        colorDataList.addAll(ordersModel.colorData ?? []);
-        searchedColorDataList.addAll(ordersModel.colorData ?? []);
+        colorDataList.addAll(ordersModel.data ?? []);
+        searchedColorDataList.addAll(ordersModel.data ?? []);
         sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
         sortByColorTabController.addListener(tabListener);
         sortByColorTabController.animateTo(selectedSortByColorTabIndex.value);
@@ -85,14 +85,14 @@ class OrderSequenceController extends GetxController with GetTickerProviderState
   }
 
   Future<void> searchItemName(String searchedValue, {String? selectedTab}) async {
-    String currentTab = selectedTab ?? searchedColorDataList[sortByColorTabController.index].pvdColor ?? '';
+    String currentTab = selectedTab ?? (searchedColorDataList.isNotEmpty ? searchedColorDataList[sortByColorTabController.index].pvdColor ?? '' : "");
     searchedColorDataList.clear();
     if (searchedValue.isNotEmpty) {
       for (var colorData in colorDataList) {
-        var filteredPartyMeta = colorData.partyMeta?.where((element) => element.partyName?.toLowerCase().contains(searchedValue.toLowerCase()) == true).toList();
+        var filteredOrderMeta = colorData.orders?.where((element) => element.itemName?.toLowerCase().contains(searchedValue.toLowerCase()) == true).toList();
 
-        if (filteredPartyMeta != null && filteredPartyMeta.isNotEmpty) {
-          var clonedItem = colorData.copyWith(partyMeta: filteredPartyMeta);
+        if (filteredOrderMeta != null && filteredOrderMeta.isNotEmpty) {
+          var clonedItem = colorData.copyWith(orders: filteredOrderMeta);
           searchedColorDataList.add(clonedItem);
         }
       }
@@ -101,15 +101,13 @@ class OrderSequenceController extends GetxController with GetTickerProviderState
     }
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
     sortByColorTabController.addListener(tabListener);
-    if (currentTab.isNotEmpty) {
-      sortByColorTabController.animateTo(searchedColorDataList.indexWhere((element) => element.pvdColor == currentTab));
+    final currentIndex = searchedColorDataList.indexWhere((element) => element.pvdColor == currentTab);
+    if (currentTab.isNotEmpty && currentIndex != -1 && sortByColorTabController.length - 1 > currentIndex) {
+      sortByColorTabController.animateTo(currentIndex);
     }
   }
 
-  Future<void> showItemImageDialog({
-    required String itemName,
-    required String itemImage,
-  }) async {
+  Future<void> showItemImageDialog({required String itemName, required String itemImage}) async {
     await showGeneralDialog(
       context: Get.context!,
       barrierDismissible: false,
@@ -212,15 +210,9 @@ class OrderSequenceController extends GetxController with GetTickerProviderState
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return ScaleTransition(
-          scale: CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOut,
-          ),
+          scale: CurvedAnimation(parent: animation, curve: Curves.easeOut),
           child: FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOut,
-            ),
+            opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
             child: child,
           ),
         );

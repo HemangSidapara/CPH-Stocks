@@ -239,17 +239,17 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
       final invoiceDetails = invoicesModel.data?.firstOrNull;
       ChallanView()
           .showInvoiceBottomSheet(
-        ctx: Get.context!,
-        partyName: invoiceDetails?.partyName ?? "",
-        challanNumber: invoiceDetails?.challanNumber ?? "",
-        createdDate: invoiceDetails?.createdDate ?? "",
-        invoiceData: invoiceDetails?.invoiceMeta ?? [],
-      )
+            ctx: Get.context!,
+            partyName: invoiceDetails?.partyName ?? "",
+            challanNumber: invoiceDetails?.challanNumber ?? "",
+            createdDate: invoiceDetails?.createdDate ?? "",
+            invoiceData: invoiceDetails?.invoiceMeta ?? [],
+          )
           .then((value) {
-        if (Get.isRegistered<ChallanController>()) {
-          Get.delete<ChallanController>();
-        }
-      });
+            if (Get.isRegistered<ChallanController>()) {
+              Get.delete<ChallanController>();
+            }
+          });
       await getOrdersApi(isLoading: false);
     }
   }
@@ -332,7 +332,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
   }
 
   Future<void> searchPartyName(String searchedValue, {String? selectedTab}) async {
-    String currentTab = selectedTab ?? searchedColorDataList[sortByColorTabController.index].pvdColor ?? '';
+    String currentTab = selectedTab ?? (searchedColorDataList.isNotEmpty ? searchedColorDataList[sortByColorTabController.index].pvdColor ?? '' : "");
     searchedColorDataList.clear();
     if (searchedValue.isNotEmpty) {
       for (var colorData in colorDataList) {
@@ -348,8 +348,9 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     }
     sortByColorTabController = TabController(length: searchedColorDataList.length, vsync: this);
     sortByColorTabController.addListener(tabListener);
-    if (currentTab.isNotEmpty) {
-      sortByColorTabController.animateTo(searchedColorDataList.indexWhere((element) => element.pvdColor == currentTab));
+    final currentIndex = searchedColorDataList.indexWhere((element) => element.pvdColor == currentTab);
+    if (currentTab.isNotEmpty && currentIndex != -1 && sortByColorTabController.length - 1 > currentIndex) {
+      sortByColorTabController.animateTo(currentIndex);
     }
   }
 
@@ -1098,10 +1099,10 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                               format: fileFormat == 'png'
                                   ? CompressFormat.png
                                   : fileFormat == 'jpg' || fileFormat == 'jpeg'
-                                      ? CompressFormat.jpeg
-                                      : fileFormat == 'heic'
-                                          ? CompressFormat.heic
-                                          : CompressFormat.webp,
+                                  ? CompressFormat.jpeg
+                                  : fileFormat == 'heic'
+                                  ? CompressFormat.heic
+                                  : CompressFormat.webp,
                             );
                             if (result != null) {
                               base64Image.value = base64Encode(await result.readAsBytes());
@@ -1147,10 +1148,10 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
                               format: fileFormat == 'png'
                                   ? CompressFormat.png
                                   : fileFormat == 'jpg' || fileFormat == 'jpeg'
-                                      ? CompressFormat.jpeg
-                                      : fileFormat == 'heic'
-                                          ? CompressFormat.heic
-                                          : CompressFormat.webp,
+                                  ? CompressFormat.jpeg
+                                  : fileFormat == 'heic'
+                                  ? CompressFormat.heic
+                                  : CompressFormat.webp,
                             );
                             if (result != null) {
                               base64Image.value = base64Encode(await result.readAsBytes());

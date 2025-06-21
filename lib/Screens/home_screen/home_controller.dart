@@ -69,9 +69,9 @@ class HomeController extends GetxController {
   Future<void> onBottomItemChange({required int index}) async {
     bottomIndex.value = index;
     getLatestVersionApiCall();
-    if (index == 1) {
+    if (index == listOfImages.indexOf(AppAssets.recycleBinIcon)) {
       Get.find<RecycleBinController>().getOrdersApi(isLoading: Get.find<RecycleBinController>().isGetOrdersLoading.isTrue);
-    } else if (index == 2) {
+    } else if (index == listOfImages.indexOf(AppAssets.notesIcon)) {
       Get.find<NotesController>().getNotesApi(isLoading: false);
     }
     pageController.jumpToPage(bottomIndex.value);

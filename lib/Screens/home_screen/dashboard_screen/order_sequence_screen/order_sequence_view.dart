@@ -9,13 +9,12 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_sequence_s
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
+import 'package:cph_stocks/Widgets/refresh_indicator_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:cph_stocks/Widgets/unfocus_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OrderSequenceView extends GetView<OrderSequenceController> {
@@ -49,7 +48,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                       onPressed: controller.isRefreshing.value
                           ? () {}
                           : () async {
-                              await controller.getOrdersApi(isLoading: false);
+                              await controller.getOrdersApi(isRefresh: true);
                             },
                       style: IconButton.styleFrom(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -123,25 +122,21 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                 SizedBox(height: 2.h),
 
                 ///Order Data
-                Obx(() {
-                  if (controller.isGetOrdersLoading.isTrue) {
-                    return const Expanded(
-                      child: Center(
+                Expanded(
+                  child: Obx(() {
+                    if (controller.isGetOrdersLoading.isTrue) {
+                      return Center(
                         child: LoadingWidget(),
-                      ),
-                    );
-                  } else if (controller.searchedColorDataList.isEmpty) {
-                    return Expanded(
-                      child: NoDataFoundWidget(
+                      );
+                    } else if (controller.searchedColorDataList.isEmpty) {
+                      return NoDataFoundWidget(
                         subtitle: AppStrings.noDataFound.tr,
                         onPressed: () {
                           controller.getOrdersApi();
                         },
-                      ),
-                    );
-                  } else {
-                    return Expanded(
-                      child: Column(
+                      );
+                    } else {
+                      return Column(
                         children: [
                           TabBar(
                             controller: controller.sortByColorTabController,
@@ -213,15 +208,21 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                             child: TabBarView(
                               controller: controller.sortByColorTabController,
                               children: [
-                                for (int j = 0; j < controller.searchedColorDataList.length; j++) ColorDataWidget(index: j),
+                                for (int j = 0; j < controller.searchedColorDataList.length; j++)
+                                  RefreshIndicatorWidget(
+                                    onRefresh: () async {
+                                      await controller.getOrdersApi(isRefresh: true);
+                                    },
+                                    child: ColorDataWidget(index: j),
+                                  ),
                               ],
                             ),
                           ),
                         ],
-                      ),
-                    );
-                  }
-                }),
+                      );
+                    }
+                  }),
+                ),
               ],
             ),
           ),
@@ -237,10 +238,10 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
         Flexible(
           child: AnimationLimiter(
             child: ListView.separated(
-              itemCount: controller.searchedColorDataList[index].partyMeta?.length ?? 0,
+              itemCount: controller.searchedColorDataList[index].orders?.length ?? 0,
               shrinkWrap: true,
               padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
-              itemBuilder: (context, partyIndex) {
+              itemBuilder: (context, orderIndex) {
                 return AnimationConfiguration.staggeredList(
                   position: index,
                   duration: const Duration(milliseconds: 375),
@@ -254,33 +255,112 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: ExpansionTile(
-                          title: Row(
+                          enabled: false,
+                          title: Stack(
                             children: [
-                              Text(
-                                '${partyIndex + 1}. ',
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                ),
-                              ),
-                              SizedBox(width: 2.w),
-                              Flexible(
-                                child: Text(
-                                  controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
-                                  style: TextStyle(
-                                    color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
+                              ///Category Name
+                              Positioned(
+                                right: 0,
+                                left: 0,
+                                top: -1.5.h,
+                                child: Center(
+                                  child: Tooltip(
+                                    message: controller.searchedColorDataList[index].orders?[orderIndex].categoryName ?? "",
+                                    child: Text(
+                                      controller.searchedColorDataList[index].orders?[orderIndex].categoryName ?? "",
+                                      style: AppStyles.size30w900.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? '').withValues(alpha: 0.04)),
+                                    ),
                                   ),
                                 ),
                               ),
+
+                              ///Item details
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ///Image, Item Name & Size
+                                  Flexible(
+                                    child: Row(
+                                      children: [
+                                        /// ItemImage
+                                        InkWell(
+                                          onTap: () async {
+                                            final itemImage = controller.searchedColorDataList[index].orders?[orderIndex].itemImage;
+                                            await controller.showItemImageDialog(
+                                              itemName: controller.searchedColorDataList[index].orders?[orderIndex].itemName ?? AppStrings.itemImage.tr,
+                                              itemImage: itemImage != null || itemImage?.isNotEmpty == true ? (itemImage ?? '') : '',
+                                            );
+                                          },
+                                          child: CircleAvatar(
+                                            radius: 6.w,
+                                            backgroundColor: AppColors.SECONDARY_COLOR,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(360),
+                                              child: SizedBox(
+                                                width: 12.w,
+                                                height: 12.w,
+                                                child: ColoredBox(
+                                                  color: AppColors.SECONDARY_COLOR,
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: controller.searchedColorDataList[index].orders?[orderIndex].itemImage ?? '',
+                                                    cacheKey: controller.searchedColorDataList[index].orders?[orderIndex].itemImage,
+                                                    errorWidget: (context, url, error) {
+                                                      return Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Image.asset(
+                                                            AppAssets.createOrderImage,
+                                                            width: 10.w,
+                                                            height: 10.w,
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 2.w),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              /// ItemName
+                                              Text(
+                                                controller.searchedColorDataList[index].orders?[orderIndex].itemName ?? '',
+                                                style: AppStyles.size16w600.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].orders?[orderIndex].pvdColor ?? '')),
+                                              ),
+
+                                              /// ItemSize
+                                              Text(
+                                                "${controller.searchedColorDataList[index].orders?[orderIndex].size ?? ''}\"",
+                                                style: AppStyles.size16w600.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].orders?[orderIndex].pvdColor ?? '')),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 2.w),
+
+                                  ///Quantity
+                                  Tooltip(
+                                    message: AppStrings.quantity.tr,
+                                    child: Text(
+                                      controller.searchedColorDataList[index].orders?[orderIndex].quantity ?? '',
+                                      style: AppStyles.size16w600.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].orders?[orderIndex].pvdColor ?? '')),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                          tilePadding: EdgeInsets.only(
-                            left: 3.w,
-                            right: 2.w,
-                          ),
+                          tilePadding: EdgeInsets.symmetric(horizontal: 3.w),
                           showTrailingIcon: false,
                           dense: true,
                           collapsedBackgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
@@ -295,349 +375,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                             side: BorderSide.none,
                           ),
                           childrenPadding: EdgeInsets.only(bottom: 2.h),
-                          children: [
-                            Divider(
-                              color: AppColors.HINT_GREY_COLOR,
-                              thickness: 1,
-                            ),
-
-                            ///Contact Number
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5.w),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "${AppStrings.contact.tr}: ",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.DARK_RED_COLOR,
-                                    ),
-                                  ),
-                                  Text(
-                                    "+91 ${controller.searchedColorDataList[index].partyMeta?[partyIndex].contactNumber ?? ''}",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            ///Headings
-                            Divider(
-                              color: AppColors.HINT_GREY_COLOR,
-                              thickness: 1,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    AppStrings.itemName.tr,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.sp,
-                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 32.5.w,
-                                    child: Text(
-                                      AppStrings.quantity.tr,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15.sp,
-                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              color: AppColors.HINT_GREY_COLOR,
-                              thickness: 1,
-                            ),
-
-                            ///Items
-                            for (int dateIndex = 0; dateIndex < (controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?.length ?? 0); dateIndex++) ...[
-                              ///DateTime & Bill Cycle
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5.w),
-                                  child: Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        WidgetSpan(
-                                          child: Padding(
-                                            padding: EdgeInsets.only(right: 2.w),
-                                            child: FaIcon(
-                                              FontAwesomeIcons.clock,
-                                              size: 4.w,
-                                              color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                            ),
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
-                                              ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
-                                              : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
-                                          style: TextStyle(
-                                            color: AppColors.DARK_RED_COLOR,
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            shadows: controller.searchedColorDataList[index].pvdColor == "Black"
-                                                ? null
-                                                : [
-                                                    Shadow(
-                                                      color: AppColors.PRIMARY_COLOR,
-                                                      offset: const Offset(2, 2),
-                                                      blurRadius: 40,
-                                                    )
-                                                  ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Divider(
-                                color: AppColors.HINT_GREY_COLOR,
-                                thickness: 1,
-                              ),
-
-                              ///Description
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 5.w),
-                                  child: Text.rich(
-                                    TextSpan(
-                                      text: "${AppStrings.description.tr}: ",
-                                      children: [
-                                        TextSpan(
-                                          text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].description ?? "",
-                                          style: TextStyle(
-                                            color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16.sp,
-                                          ),
-                                        ),
-                                      ],
-                                      style: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 1.h),
-
-                              AnimationLimiter(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: AnimationConfiguration.toStaggeredList(
-                                    duration: const Duration(milliseconds: 375),
-                                    childAnimationBuilder: (child) => SlideAnimation(
-                                      verticalOffset: 50.0,
-                                      child: FadeInAnimation(child: child),
-                                    ),
-                                    children: [
-                                      for (int orderIndex = 0; orderIndex < (controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?.length ?? 0); orderIndex++) ...[
-                                        GestureDetector(
-                                          onTap: () async {
-                                            await showItemDetailsBottomSheet(
-                                              partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
-                                              itemDetails: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex],
-                                            );
-                                          },
-                                          child: ExpansionTile(
-                                            enabled: false,
-                                            title: Stack(
-                                              children: [
-                                                ///Category Name
-                                                Positioned(
-                                                  top: 0,
-                                                  bottom: 0,
-                                                  left: 0,
-                                                  right: 0,
-                                                  child: Center(
-                                                    child: Tooltip(
-                                                      message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
-                                                      child: Text(
-                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
-                                                        style: AppStyles.size30w900.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.04)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-
-                                                ///Item details
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        /// ItemImage
-                                                        InkWell(
-                                                          onTap: () async {
-                                                            final itemImage = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage;
-                                                            await controller.showItemImageDialog(
-                                                              itemName: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? AppStrings.itemImage.tr,
-                                                              itemImage: itemImage != null || itemImage?.isNotEmpty == true ? (itemImage ?? '') : '',
-                                                            );
-                                                          },
-                                                          child: CircleAvatar(
-                                                            radius: 6.w,
-                                                            backgroundColor: AppColors.SECONDARY_COLOR,
-                                                            child: ClipRRect(
-                                                              borderRadius: BorderRadius.circular(360),
-                                                              child: SizedBox(
-                                                                width: 12.w,
-                                                                height: 12.w,
-                                                                child: ColoredBox(
-                                                                  color: AppColors.SECONDARY_COLOR,
-                                                                  child: CachedNetworkImage(
-                                                                    imageUrl: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
-                                                                    cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
-                                                                    errorWidget: (context, url, error) {
-                                                                      return Column(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          Image.asset(
-                                                                            AppAssets.createOrderImage,
-                                                                            width: 10.w,
-                                                                            height: 10.w,
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 2.w),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              /// ItemName
-                                                              Text(
-                                                                controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? '',
-                                                                style: TextStyle(
-                                                                  color: AppColors.SECONDARY_COLOR,
-                                                                  fontSize: 16.sp,
-                                                                  fontWeight: FontWeight.w600,
-                                                                ),
-                                                              ),
-
-                                                              /// ItemSize
-                                                              Text(
-                                                                "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].size ?? ''}\"",
-                                                                style: TextStyle(
-                                                                  color: AppColors.SECONDARY_COLOR,
-                                                                  fontSize: 16.sp,
-                                                                  fontWeight: FontWeight.w600,
-                                                                ),
-                                                              ),
-
-                                                              ///Ok Pcs., W/O Process & Pending
-                                                              Row(
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Tooltip(
-                                                                      message: AppStrings.okPcs.tr,
-                                                                      child: Text(
-                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].okPcs ?? '',
-                                                                        style: TextStyle(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 15.sp,
-                                                                          color: AppColors.LIGHT_BLUE_COLOR,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 3.h,
-                                                                    child: VerticalDivider(
-                                                                      color: AppColors.SECONDARY_COLOR,
-                                                                      thickness: 1,
-                                                                    ),
-                                                                  ),
-                                                                  Flexible(
-                                                                    child: Tooltip(
-                                                                      message: AppStrings.woProcess,
-                                                                      child: Text(
-                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].woProcess ?? '',
-                                                                        style: TextStyle(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 15.sp,
-                                                                          color: AppColors.SECONDARY_COLOR,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 3.h,
-                                                                    child: VerticalDivider(
-                                                                      color: AppColors.SECONDARY_COLOR,
-                                                                      thickness: 1,
-                                                                    ),
-                                                                  ),
-                                                                  Flexible(
-                                                                    child: Tooltip(
-                                                                      message: AppStrings.pending.tr,
-                                                                      child: Text(
-                                                                        controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].pending ?? '',
-                                                                        style: TextStyle(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 15.sp,
-                                                                          color: AppColors.DARK_RED_COLOR,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            showTrailingIcon: false,
-                                            dense: true,
-                                            collapsedShape: InputBorder.none,
-                                            shape: InputBorder.none,
-                                            collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                            backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                            iconColor: AppColors.SECONDARY_COLOR,
-                                            tilePadding: EdgeInsets.only(left: 2.w, right: 2.w),
-                                            childrenPadding: EdgeInsets.symmetric(horizontal: 3.w),
-                                          ),
-                                        ),
-                                        SizedBox(height: 1.5.h),
-                                      ],
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
+                          children: [],
                         ),
                       ),
                     ),

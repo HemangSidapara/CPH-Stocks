@@ -35,6 +35,9 @@ class AppAssets {
   static const String orderSequenceIcon = "assets/icons/order_sequence_icon.png";
   static const String paymentDetailsIcon = "assets/icons/payment_details_icon.png";
   static const String pendingPaymentIcon = "assets/icons/pending_payment_icon.png";
+  static const String reportsIcon = "assets/icons/reports_icon.png";
+  static const String employeeIcon = "assets/icons/employee_icon.png";
+  static const String categoriesIcon = "assets/icons/categories_icon.png";
 
   ///Fonts
   static const String robotoRegular = "assets/fonts/Roboto/Roboto-Regular.ttf";

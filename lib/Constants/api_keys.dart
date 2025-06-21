@@ -30,4 +30,14 @@ class ApiKeys {
   static const endDate = "endDate";
   static const partyId = "partyId";
   static const orderInvoiceIds = "orderInvoiceIds";
+  static const categoryId = "categoryId";
+  static const orderNo = "orderNo";
+  static const categoryPrice = "categoryPrice";
+  static const amount = "amount";
+  static const paymentMode = "paymentMode";
+  static const partyPaymentMetaId = "partyPaymentMetaId";
+  static const month = "month";
+  static const year = "year";
+  static const noOfEmployees = "noOfEmployees";
+  static const totalEmployeeId = "totalEmployeeId";
 }

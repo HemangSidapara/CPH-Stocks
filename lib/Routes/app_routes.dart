@@ -18,4 +18,7 @@ class Routes {
   static const paymentLedgerScreen = '/paymentLedgerScreen';
   static const paymentDetailsScreen = '/paymentDetailsScreen';
   static const pendingPaymentScreen = '/pendingPaymentScreen';
+  static const reportsScreen = '/reportsScreen';
+  static const employeeInMonthScreen = '/employeeInMonthScreen';
+  static const categoriesScreen = '/categoriesScreen';
 }

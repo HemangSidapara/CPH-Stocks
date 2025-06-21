@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
@@ -188,7 +189,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                     verticalOffset: 50.0,
                     child: FadeInAnimation(
                       child: Card(
-                        color: AppColors.TRANSPARENT,
+                        color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                         clipBehavior: Clip.antiAlias,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -201,7 +202,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.SECONDARY_COLOR,
+                                  color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                 ),
                               ),
                               SizedBox(width: 2.w),
@@ -209,7 +210,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                 child: Text(
                                   controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
                                   style: TextStyle(
-                                    color: AppColors.SECONDARY_COLOR,
+                                    color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -222,9 +223,10 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                             right: 2.w,
                           ),
                           dense: true,
-                          collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                          backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                          iconColor: AppColors.SECONDARY_COLOR,
+                          collapsedBackgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          backgroundColor: controller.backgroundColorCodes.containsKey(controller.searchedColorDataList[index].pvdColor) == true ? controller.backgroundColorCodes[controller.searchedColorDataList[index].pvdColor] : AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                          collapsedIconColor: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
+                          iconColor: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                           collapsedShape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -256,7 +258,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.SECONDARY_COLOR,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     ),
                                   ),
                                 ],
@@ -278,6 +280,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15.sp,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     ),
                                   ),
                                   Text(
@@ -285,6 +288,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15.sp,
+                                      color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                     ),
                                   ),
                                 ],
@@ -311,7 +315,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                             child: FaIcon(
                                               FontAwesomeIcons.clock,
                                               size: 4.w,
-                                              color: AppColors.SECONDARY_COLOR,
+                                              color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                             ),
                                           ),
                                         ),
@@ -328,7 +332,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                                 color: AppColors.PRIMARY_COLOR,
                                                 offset: const Offset(2, 2),
                                                 blurRadius: 40,
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -354,7 +358,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                         TextSpan(
                                           text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].description ?? "",
                                           style: TextStyle(
-                                            color: AppColors.SECONDARY_COLOR,
+                                            color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16.sp,
                                           ),
@@ -363,7 +367,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                       style: TextStyle(
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.SECONDARY_COLOR,
+                                        color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? ''),
                                       ),
                                     ),
                                   ),
@@ -395,7 +399,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                               children: [
                                                 ///Category Name
                                                 Positioned(
-                                                  top: 0,
+                                                  top: -0.5.h,
                                                   bottom: 0,
                                                   left: 0,
                                                   right: 0,
@@ -404,7 +408,7 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                                       message: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
                                                       child: Text(
                                                         controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].categoryName ?? "",
-                                                        style: AppStyles.size18w600.copyWith(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.08), fontWeight: FontWeight.w900),
+                                                        style: AppStyles.size30w900.copyWith(fontSize: 25.sp, color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.04)),
                                                       ),
                                                     ),
                                                   ),
@@ -418,12 +422,45 @@ class SortByPvdColorView extends GetView<RecycleBinController> {
                                                     Flexible(
                                                       child: Row(
                                                         children: [
-                                                          Text(
-                                                            '• ',
-                                                            style: TextStyle(
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: AppColors.SECONDARY_COLOR,
+                                                          /// ItemImage
+                                                          InkWell(
+                                                            onTap: () async {
+                                                              final itemImage = controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage;
+                                                              await controller.showItemImageDialog(
+                                                                itemName: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemName ?? AppStrings.itemImage.tr,
+                                                                itemImage: itemImage != null || itemImage?.isNotEmpty == true ? (itemImage ?? '') : '',
+                                                              );
+                                                            },
+                                                            child: CircleAvatar(
+                                                              radius: 6.w,
+                                                              backgroundColor: AppColors.SECONDARY_COLOR,
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.circular(360),
+                                                                child: SizedBox(
+                                                                  width: 12.w,
+                                                                  height: 12.w,
+                                                                  child: ColoredBox(
+                                                                    color: AppColors.SECONDARY_COLOR,
+                                                                    child: CachedNetworkImage(
+                                                                      imageUrl: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage ?? '',
+                                                                      cacheKey: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].modelMeta?[orderIndex].itemImage,
+                                                                      errorWidget: (context, url, error) {
+                                                                        return Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Image.asset(
+                                                                              AppAssets.createOrderImage,
+                                                                              width: 10.w,
+                                                                              height: 10.w,
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
                                                           SizedBox(width: 2.w),
