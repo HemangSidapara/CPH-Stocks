@@ -146,9 +146,16 @@ class LedgerView extends GetView<LedgerController> {
                                 if (controller.isMonthlyLedgerLoading.isTrue) {
                                   return LoadingWidget();
                                 } else if (controller.searchAutomaticLedgerList.isEmpty) {
-                                  return NoDataFoundWidget(
-                                    subtitle: AppStrings.noDataFound.tr,
-                                    onPressed: () {},
+                                  return SingleChildScrollView(
+                                    padding: EdgeInsets.only(top: 5.h),
+                                    child: NoDataFoundWidget(
+                                      subtitle: AppStrings.noDataFound.tr,
+                                      onPressed: () {
+                                        Utils.unfocus();
+                                        controller.searchPartyNameController.clear();
+                                        controller.getAutomaticLedgerPaymentApiCall();
+                                      },
+                                    ),
                                   );
                                 } else {
                                   return AnimationLimiter(
@@ -185,7 +192,13 @@ class LedgerView extends GetView<LedgerController> {
                                                   ),
                                                   tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
                                                   trailing: ElevatedButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      controller.showInvoiceBottomSheet(
+                                                        ctx: context,
+                                                        invoiceData: [data],
+                                                        isPaymentLedger: isPaymentLedger,
+                                                      );
+                                                    },
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor: AppColors.WARNING_COLOR,
                                                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,

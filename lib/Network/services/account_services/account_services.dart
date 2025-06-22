@@ -243,4 +243,41 @@ class AccountServices {
     );
     return response;
   }
+
+  /// Get Ledger Payment Service
+  static Future<ResponseModel> getLedgerPaymentService({
+    required String startDate,
+    required String endDate,
+    required String partyId,
+  }) async {
+    final params = {
+      ApiKeys.startDate: startDate,
+      ApiKeys.endDate: endDate,
+      ApiKeys.partyId: partyId,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.getLedgerPaymentApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        if (kDebugMode) {
+          print("getLedgerPaymentApi onError :: ${dioExceptions.message}");
+        }
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getLedgerPaymentApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getLedgerPaymentApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

@@ -44,6 +44,7 @@ class ApiUrls {
   static const String editPartyPaymentApi = '${_apiPath}editPartyPayment';
   static const String deletePartyPaymentApi = '${_apiPath}deletePartyPayment';
   static const String getAutomaticLedgerPaymentApi = '${_apiPath}getAutomaticLedgerPayment';
+  static const String getLedgerPaymentApi = '${_apiPath}getLedgerPayment';
 
   /// Notes APIs
   static const String getNotesApi = '${_apiPath}getNotes';

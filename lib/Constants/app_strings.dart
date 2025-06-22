@@ -240,4 +240,8 @@ class AppStrings {
   static const String totalInvoiceAmount = "Total Invoice Amount";
   static const String totalPaymentAmount = "Total Payment Amount";
   static const String pendingAmount = "Pending Amount";
+  static const String payments = "Payments";
+  static const String invoices = "Invoices";
+  static const String viewPaymentLedger = "View Payment Ledger";
+  static const String closingBalance = "Closing Balance";
 }

@@ -4,6 +4,7 @@ import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/account_models/get_payment_ledger_model.dart' as get_payment_ledger;
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_controller.dart';
 import 'package:cph_stocks/Widgets/close_button_widget.dart';
@@ -19,7 +20,7 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class LedgerInvoiceView extends StatefulWidget {
-  final List<OrderInvoice> invoiceData;
+  final List invoiceData;
   final bool isPaymentLedger;
 
   const LedgerInvoiceView({
@@ -51,12 +52,12 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
       File? file;
       if (widget.isPaymentLedger) {
         file = await controller.generatePaymentLedgerPdf(
-          data: widget.invoiceData,
+          data: widget.invoiceData.first as get_payment_ledger.GetPaymentLedgerModel,
           showAmount: isAmountVisible.isTrue,
         );
       } else {
         file = await controller.generateLedgerPdf(
-          data: widget.invoiceData,
+          data: widget.invoiceData.cast<OrderInvoice>(),
           showAmount: isAmountVisible.isTrue,
         );
       }
@@ -80,7 +81,7 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
             children: [
               ///Title
               Text(
-                AppStrings.viewLedger.tr,
+                widget.isPaymentLedger ? AppStrings.viewPaymentLedger.tr : AppStrings.viewLedger.tr,
                 style: TextStyle(
                   color: AppColors.PRIMARY_COLOR,
                   fontWeight: FontWeight.w700,
@@ -97,46 +98,48 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
         SizedBox(height: 1.h),
 
         ///Amount
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5.w),
-          child: GestureDetector(
-            onTap: () {
-              isAmountVisible.toggle();
-              setGenerateInvoice();
-            },
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              children: [
-                Text(
-                  AppStrings.amount.tr,
-                  style: AppStyles.size16w600,
-                ),
-                SizedBox(width: 2.w),
-                SizedBox(
-                  width: 10.5.w,
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: IgnorePointer(
-                      ignoring: true,
-                      child: Obx(() {
-                        return Switch.adaptive(
-                          value: isAmountVisible.isTrue,
-                          onChanged: (value) {},
-                          activeColor: AppColors.SECONDARY_COLOR,
-                          inactiveTrackColor: AppColors.SECONDARY_COLOR,
-                          activeTrackColor: AppColors.PRIMARY_COLOR,
-                          inactiveThumbColor: AppColors.PRIMARY_COLOR,
-                          trackOutlineColor: WidgetStatePropertyAll(AppColors.PRIMARY_COLOR),
-                        );
-                      }),
+        if (!widget.isPaymentLedger) ...[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.w),
+            child: GestureDetector(
+              onTap: () {
+                isAmountVisible.toggle();
+                setGenerateInvoice();
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                children: [
+                  Text(
+                    AppStrings.amount.tr,
+                    style: AppStyles.size16w600,
+                  ),
+                  SizedBox(width: 2.w),
+                  SizedBox(
+                    width: 10.5.w,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Obx(() {
+                          return Switch.adaptive(
+                            value: isAmountVisible.isTrue,
+                            onChanged: (value) {},
+                            activeColor: AppColors.SECONDARY_COLOR,
+                            inactiveTrackColor: AppColors.SECONDARY_COLOR,
+                            activeTrackColor: AppColors.PRIMARY_COLOR,
+                            inactiveThumbColor: AppColors.PRIMARY_COLOR,
+                            trackOutlineColor: WidgetStatePropertyAll(AppColors.PRIMARY_COLOR),
+                          );
+                        }),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 1.h),
+          SizedBox(height: 1.h),
+        ],
 
         ///Viewer
         Obx(() {
