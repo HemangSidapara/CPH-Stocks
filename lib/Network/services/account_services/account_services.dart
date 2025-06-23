@@ -280,4 +280,31 @@ class AccountServices {
     );
     return response;
   }
+
+  /// Get Pending Payments Service
+  static Future<ResponseModel> getPendingPaymentsService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.getPendingPaymentsApi,
+      showProgress: false,
+      onError: (dioExceptions) {
+        if (kDebugMode) {
+          print("getPendingPaymentsApi onError :: ${dioExceptions.message}");
+        }
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getPendingPaymentsApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getPendingPaymentsApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

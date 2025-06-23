@@ -244,4 +244,7 @@ class AppStrings {
   static const String invoices = "Invoices";
   static const String viewPaymentLedger = "View Payment Ledger";
   static const String closingBalance = "Closing Balance";
+  static const String openingBalance = "Opening Balance";
+  static const String noPendingPaymentsFound = "No pending payments found";
+  static const String totalPayment = "Total Payment";
 }

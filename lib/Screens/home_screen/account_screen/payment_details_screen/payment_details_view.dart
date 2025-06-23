@@ -203,9 +203,8 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                       if (controller.isLoading.isTrue) {
                         return LoadingWidget();
                       } else if (controller.filteredPaymentList.isEmpty) {
-                        return SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 2.h),
+                        return Center(
+                          child: SingleChildScrollView(
                             child: NoDataFoundWidget(
                               subtitle: AppStrings.noPaymentsFound.tr,
                               onPressed: () {

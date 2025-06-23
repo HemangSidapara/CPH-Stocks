@@ -57,11 +57,13 @@ class GetPaymentLedgerModel {
 
 @JsonSerializable()
 class LedgerSummary {
+  double? openingAmount;
   double? totalInvoiceAmount;
   double? totalPaymentAmount;
   double? pendingAmount;
 
   LedgerSummary({
+    this.openingAmount,
     this.totalInvoiceAmount,
     this.totalPaymentAmount,
     this.pendingAmount,
@@ -72,11 +74,13 @@ class LedgerSummary {
   Map<String, dynamic> toJson() => _$LedgerSummaryToJson(this);
 
   LedgerSummary copyWith({
+    double? openingAmount,
     double? totalInvoiceAmount,
     double? totalPaymentAmount,
     double? pendingAmount,
   }) {
     return LedgerSummary(
+      openingAmount: openingAmount ?? this.openingAmount,
       totalInvoiceAmount: totalInvoiceAmount ?? this.totalInvoiceAmount,
       totalPaymentAmount: totalPaymentAmount ?? this.totalPaymentAmount,
       pendingAmount: pendingAmount ?? this.pendingAmount,
