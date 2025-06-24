@@ -290,7 +290,6 @@ class ReportsView extends GetView<ReportsController> {
                             }
                           }),
                         ),
-                        SizedBox(height: 2.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5.w),
                           child: Table(
@@ -305,7 +304,7 @@ class ReportsView extends GetView<ReportsController> {
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
                                     child: Text(
-                                      AppStrings.totalInch.tr,
+                                      AppStrings.totalInch.tr.replaceAll("C1 ", ""),
                                       style: AppStyles.size16w600,
                                     ),
                                   ),
@@ -322,17 +321,21 @@ class ReportsView extends GetView<ReportsController> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                                    child: Text(
-                                      controller.totalInch.value.toString(),
-                                      style: AppStyles.size16w600,
-                                    ),
+                                    child: Obx(() {
+                                      return Text(
+                                        controller.totalInch.value.toString(),
+                                        style: AppStyles.size16w600,
+                                      );
+                                    }),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                                    child: Text(
-                                      controller.totalCompletedInch.value.toString(),
-                                      style: AppStyles.size16w600,
-                                    ),
+                                    child: Obx(() {
+                                      return Text(
+                                        controller.totalCompletedInch.value.toString(),
+                                        style: AppStyles.size16w600,
+                                      );
+                                    }),
                                   ),
                                 ],
                               ),
@@ -452,7 +455,6 @@ class ReportsView extends GetView<ReportsController> {
                             }
                           }),
                         ),
-                        SizedBox(height: 2.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5.w),
                           child: Table(
@@ -467,7 +469,7 @@ class ReportsView extends GetView<ReportsController> {
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
                                     child: Text(
-                                      AppStrings.totalAmount.tr,
+                                      AppStrings.totalAmount.tr.replaceAll("C1 ", ""),
                                       style: AppStyles.size16w600,
                                     ),
                                   ),
@@ -484,17 +486,21 @@ class ReportsView extends GetView<ReportsController> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                                    child: Text(
-                                      NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalAmount.value),
-                                      style: AppStyles.size16w600,
-                                    ),
+                                    child: Obx(() {
+                                      return Text(
+                                        NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalAmount.value),
+                                        style: AppStyles.size16w600,
+                                      );
+                                    }),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                                    child: Text(
-                                      NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalCompletedAmount.value),
-                                      style: AppStyles.size16w600,
-                                    ),
+                                    child: Obx(() {
+                                      return Text(
+                                        NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalCompletedAmount.value),
+                                        style: AppStyles.size16w600,
+                                      );
+                                    }),
                                   ),
                                 ],
                               ),
