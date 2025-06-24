@@ -24,6 +24,11 @@ class ReportsController extends GetxController with GetSingleTickerProviderState
   RxList<get_reports.AmountWiseReport> amountReportList = RxList();
   RxList<get_reports.NoOfEmployeeReport> noOfEmployeeReportList = RxList();
 
+  RxDouble totalInch = 0.0.obs;
+  RxDouble totalCompletedInch = 0.0.obs;
+  RxDouble totalAmount = 0.0.obs;
+  RxDouble totalCompletedAmount = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -63,6 +68,11 @@ class ReportsController extends GetxController with GetSingleTickerProviderState
           inchReportList.addAll(reportsModel.inchWiseReport ?? []);
           amountReportList.addAll(reportsModel.amountWiseReport ?? []);
           noOfEmployeeReportList.addAll(reportsModel.noOfEmployeeReport ?? []);
+
+          totalInch(reportsModel.totalInch ?? 0.0);
+          totalCompletedInch(reportsModel.totalCompletedInch ?? 0.0);
+          totalAmount(reportsModel.totalAmount ?? 0.0);
+          totalCompletedAmount(reportsModel.totalCompletedAmount ?? 0.0);
         }
       }
     } finally {

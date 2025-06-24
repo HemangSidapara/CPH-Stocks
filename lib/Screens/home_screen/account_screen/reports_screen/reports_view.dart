@@ -290,6 +290,56 @@ class ReportsView extends GetView<ReportsController> {
                             }
                           }),
                         ),
+                        SizedBox(height: 2.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w),
+                          child: Table(
+                            border: TableBorder.all(
+                              borderRadius: BorderRadius.circular(8),
+                              color: AppColors.PRIMARY_COLOR,
+                              width: 1,
+                            ),
+                            children: [
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      AppStrings.totalInch.tr,
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      AppStrings.totalCompletedInch.tr,
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      controller.totalInch.value.toString(),
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      controller.totalCompletedInch.value.toString(),
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
                       ],
                     ),
 
@@ -364,7 +414,7 @@ class ReportsView extends GetView<ReportsController> {
                                               style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                             ),
                                             Text(
-                                              "${AppStrings.amount.tr}: ${series.name == AppStrings.totalAmount.replaceAll("C1 ", "") ? controller.amountReportList[pointIndex].totalAmount : controller.amountReportList[pointIndex].completedAmount}",
+                                              "${AppStrings.amount.tr}: ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(series.name == AppStrings.totalAmount.replaceAll("C1 ", "") ? controller.amountReportList[pointIndex].totalAmount : controller.amountReportList[pointIndex].completedAmount)}",
                                               style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                             ),
                                           ],
@@ -402,6 +452,56 @@ class ReportsView extends GetView<ReportsController> {
                             }
                           }),
                         ),
+                        SizedBox(height: 2.h),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5.w),
+                          child: Table(
+                            border: TableBorder.all(
+                              borderRadius: BorderRadius.circular(8),
+                              color: AppColors.PRIMARY_COLOR,
+                              width: 1,
+                            ),
+                            children: [
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      AppStrings.totalAmount.tr,
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      AppStrings.totalCompletedAmount.tr,
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TableRow(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalAmount.value),
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                    child: Text(
+                                      NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalCompletedAmount.value),
+                                      style: AppStyles.size16w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
                       ],
                     ),
                   ],

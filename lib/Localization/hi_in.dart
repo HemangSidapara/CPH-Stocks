@@ -239,4 +239,9 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.invoices: "चालान",
   AppStrings.viewPaymentLedger: "भुगतान खाता-बही देखें",
   AppStrings.closingBalance: "अंतिम शेष",
+  AppStrings.openingBalance: "प्रारंभिक शेष",
+  AppStrings.noPendingPaymentsFound: "कोई बकाया भुगतान नहीं मिला",
+  AppStrings.totalPayment: "कुल भुगतान",
+  AppStrings.totalCompletedInch: "कुल पूर्ण इंच",
+  AppStrings.totalCompletedAmount: "कुल पूर्ण राशि",
 };

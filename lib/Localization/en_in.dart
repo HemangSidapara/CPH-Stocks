@@ -241,4 +241,9 @@ Map<String, String> enIN = <String, String>{
   AppStrings.invoices: "Invoices",
   AppStrings.viewPaymentLedger: "View Payment Ledger",
   AppStrings.closingBalance: "Closing Balance",
+  AppStrings.openingBalance: "Opening Balance",
+  AppStrings.noPendingPaymentsFound: "No pending payments found",
+  AppStrings.totalPayment: "Total Payment",
+  AppStrings.totalCompletedInch: "Total Completed Inch",
+  AppStrings.totalCompletedAmount: "Total Completed Amount",
 };

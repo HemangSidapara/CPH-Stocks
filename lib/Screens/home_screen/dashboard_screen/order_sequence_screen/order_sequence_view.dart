@@ -262,21 +262,38 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                           enabled: false,
                           title: Stack(
                             alignment: Alignment.center,
+                            fit: StackFit.passthrough,
                             children: [
                               ///Party Name
                               Positioned(
                                 right: 0,
                                 left: 0,
                                 top: 0,
-                                bottom: 0,
-                                child: Center(
-                                  child: Tooltip(
-                                    message: controller.searchedColorDataList[index].orders?[orderIndex].partyName ?? "",
-                                    child: Text(
-                                      controller.searchedColorDataList[index].orders?[orderIndex].partyName ?? "",
-                                      style: AppStyles.size22w900.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? '').withValues(alpha: 0.06)),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: Tooltip(
+                                        message: controller.searchedColorDataList[index].orders?[orderIndex].partyName ?? "",
+                                        child: Text(
+                                          controller.searchedColorDataList[index].orders?[orderIndex].partyName ?? "",
+                                          style: AppStyles.size16w600.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? '').withValues(alpha: 0.06), fontWeight: FontWeight.w900),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+
+                                    Flexible(
+                                      child: Tooltip(
+                                        message: controller.searchedColorDataList[index].orders?[orderIndex].categoryName ?? "",
+                                        child: Text(
+                                          controller.searchedColorDataList[index].orders?[orderIndex].categoryName ?? "",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppStyles.size18w600.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? '').withValues(alpha: 0.06), fontWeight: FontWeight.w900),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
 

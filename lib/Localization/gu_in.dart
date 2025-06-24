@@ -241,4 +241,9 @@ Map<String, String> guIN = <String, String>{
   AppStrings.invoices: "ઇન્વૉઇસ",
   AppStrings.viewPaymentLedger: "ચુકવણી લેજર જુઓ",
   AppStrings.closingBalance: "અંતિમ બેલેન્સ",
+  AppStrings.openingBalance: "પ્રારંભિક બેલેન્સ",
+  AppStrings.noPendingPaymentsFound: "કોઈ બાકી ચુકવણીઓ મળી નથી",
+  AppStrings.totalPayment: "કુલ ચુકવણી",
+  AppStrings.totalCompletedInch: "કુલ પૂર્ણ ઇંચ",
+  AppStrings.totalCompletedAmount: "કુલ પૂર્ણ રકમ",
 };

@@ -247,4 +247,6 @@ class AppStrings {
   static const String openingBalance = "Opening Balance";
   static const String noPendingPaymentsFound = "No pending payments found";
   static const String totalPayment = "Total Payment";
+  static const String totalCompletedInch = "Total Completed Inch";
+  static const String totalCompletedAmount = "Total Completed Amount";
 }

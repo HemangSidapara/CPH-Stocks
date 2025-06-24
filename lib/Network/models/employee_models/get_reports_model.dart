@@ -6,6 +6,10 @@ part 'get_reports_model.g.dart';
 class GetReportsModel {
   String? code;
   String? msg;
+  double? totalInch;
+  double? totalCompletedInch;
+  double? totalAmount;
+  double? totalCompletedAmount;
   List<InchWiseReport>? inchWiseReport;
   List<AmountWiseReport>? amountWiseReport;
   List<NoOfEmployeeReport>? noOfEmployeeReport;
@@ -13,6 +17,10 @@ class GetReportsModel {
   GetReportsModel({
     this.code,
     this.msg,
+    this.totalInch,
+    this.totalCompletedInch,
+    this.totalAmount,
+    this.totalCompletedAmount,
     this.inchWiseReport,
     this.amountWiseReport,
     this.noOfEmployeeReport,
@@ -25,6 +33,10 @@ class GetReportsModel {
   GetReportsModel copyWith({
     String? code,
     String? msg,
+    double? totalInch,
+    double? totalCompletedInch,
+    double? totalAmount,
+    double? totalCompletedAmount,
     List<InchWiseReport>? inchWiseReport,
     List<AmountWiseReport>? amountWiseReport,
     List<NoOfEmployeeReport>? noOfEmployeeReport,
@@ -32,6 +44,10 @@ class GetReportsModel {
     return GetReportsModel(
       code: code ?? this.code,
       msg: msg ?? this.msg,
+      totalInch: totalInch ?? this.totalInch,
+      totalCompletedInch: totalCompletedInch ?? this.totalCompletedInch,
+      totalAmount: totalAmount ?? this.totalAmount,
+      totalCompletedAmount: totalCompletedAmount ?? this.totalCompletedAmount,
       inchWiseReport: inchWiseReport ?? this.inchWiseReport,
       amountWiseReport: amountWiseReport ?? this.amountWiseReport,
       noOfEmployeeReport: noOfEmployeeReport ?? this.noOfEmployeeReport,
