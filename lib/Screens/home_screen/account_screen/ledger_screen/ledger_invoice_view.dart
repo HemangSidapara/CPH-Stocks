@@ -22,11 +22,15 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 class LedgerInvoiceView extends StatefulWidget {
   final List invoiceData;
   final bool isPaymentLedger;
+  final String? startDate;
+  final String? endDate;
 
   const LedgerInvoiceView({
     super.key,
     required this.invoiceData,
     required this.isPaymentLedger,
+    this.startDate,
+    this.endDate,
   });
 
   @override
@@ -57,6 +61,8 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> {
         );
       } else {
         file = await controller.generateLedgerPdf(
+          startDate: widget.startDate,
+          endDate: widget.endDate,
           data: widget.invoiceData.cast<OrderInvoice>(),
           showAmount: isAmountVisible.isTrue,
         );

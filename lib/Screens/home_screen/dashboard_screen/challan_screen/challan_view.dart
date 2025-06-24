@@ -4,11 +4,17 @@ import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/app_validators.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/invoice_view.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
+import 'package:cph_stocks/Utils/app_formatter.dart';
+import 'package:cph_stocks/Widgets/button_widget.dart';
+import 'package:cph_stocks/Widgets/close_button_widget.dart';
 import 'package:cph_stocks/Widgets/custom_header_widget.dart';
+import 'package:cph_stocks/Widgets/divider_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
 import 'package:cph_stocks/Widgets/show_bottom_sheet_widget.dart';
@@ -280,8 +286,34 @@ class ChallanView extends GetView<ChallanController> {
                                         mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          ///View Invoice
                                           if (controller.deletingInvoicesEnable.isFalse) ...[
+                                            ///Edit Invoice
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                if (orderInvoice.invoiceMeta?.isNotEmpty == true) {
+                                                  showBottomSheetRowList(
+                                                    ctx: context,
+                                                    data: orderInvoice.invoiceMeta ?? [],
+                                                  );
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: AppColors.WARNING_COLOR,
+                                                shape: CircleBorder(),
+                                                minimumSize: Size.square(8.w),
+                                                maximumSize: Size.square(8.w),
+                                                padding: EdgeInsets.zero,
+                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              ),
+                                              child: Icon(
+                                                Icons.edit_rounded,
+                                                size: 5.w,
+                                                color: AppColors.PRIMARY_COLOR,
+                                              ),
+                                            ),
+                                            SizedBox(width: 2.w),
+
+                                            ///View Invoice
                                             ElevatedButton(
                                               onPressed: () {
                                                 showInvoiceBottomSheet(
@@ -294,11 +326,9 @@ class ChallanView extends GetView<ChallanController> {
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: AppColors.ORANGE_COLOR,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                minimumSize: Size(12.w, 8.w),
-                                                maximumSize: Size(12.w, 8.w),
+                                                shape: CircleBorder(),
+                                                minimumSize: Size.square(8.w),
+                                                maximumSize: Size.square(8.w),
                                                 padding: EdgeInsets.zero,
                                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                               ),
@@ -391,6 +421,266 @@ class ChallanView extends GetView<ChallanController> {
           ),
         );
       }),
+    );
+  }
+
+  Future<void> showBottomSheetRowList({
+    required BuildContext ctx,
+    required List<InvoiceMeta> data,
+  }) async {
+    await showBottomSheetWidget(
+      context: ctx,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            children: [
+              ///Back & Title
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(right: 2.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ///Title
+                    Text(
+                      AppStrings.selectRow.tr,
+                      style: TextStyle(
+                        color: AppColors.PRIMARY_COLOR,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18.sp,
+                      ),
+                    ),
+
+                    ///Back
+                    CloseButtonWidget(),
+                  ],
+                ),
+              ),
+              DividerWidget(color: AppColors.HINT_GREY_COLOR),
+              SizedBox(height: 1.h),
+
+              ///Row List
+              Expanded(
+                child: ListView.separated(
+                  itemCount: data.length,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 2.h),
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data[index].inDate != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(data[index].inDate!)) : "",
+                                  style: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                                ),
+                                Text(
+                                  data[index].itemName ?? "",
+                                  style: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                                ),
+                                Text(
+                                  "${data[index].categoryName ?? ""}: ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data[index].categoryPrice?.toDouble() ?? 0.0)}",
+                                  style: AppStyles.size16w600.copyWith(color: AppColors.PRIMARY_COLOR),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 2.w),
+
+                          ///Edit Row
+                          ElevatedButton(
+                            onPressed: () {
+                              Get.back();
+                              showBottomSheetEditRow(
+                                ctx: context,
+                                data: data[index],
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.WARNING_COLOR,
+                              shape: CircleBorder(),
+                              minimumSize: Size.square(8.w),
+                              maximumSize: Size.square(8.w),
+                              padding: EdgeInsets.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Icon(
+                              Icons.edit_rounded,
+                              size: 5.w,
+                              color: AppColors.PRIMARY_COLOR,
+                            ),
+                          ),
+                          SizedBox(width: 2.w),
+                        ],
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return DividerWidget(color: AppColors.HINT_GREY_COLOR);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showBottomSheetEditRow({
+    required BuildContext ctx,
+    required InvoiceMeta data,
+  }) async {
+    RxBool isLoading = false.obs;
+
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    TextEditingController categoryNameController = TextEditingController(text: data.categoryName);
+    String selectedCategoryId = data.categoryId ?? "";
+    TextEditingController itemNameController = TextEditingController(text: data.itemName);
+    TextEditingController inchController = TextEditingController(text: data.inch);
+
+    String? validateCategoryName(String? value) {
+      if (value == null || value.isEmpty == true) {
+        return AppStrings.pleaseSelectCategoryName.tr;
+      }
+      return null;
+    }
+
+    String? validateSize(String? value) {
+      if (value == null || value.isEmpty == true) {
+        return AppStrings.pleaseEnterSize.tr;
+      } else if (!AppValidators.doubleValidator.hasMatch(value)) {
+        return AppStrings.pleaseEnterValidSize.tr;
+      }
+      return null;
+    }
+
+    await showBottomSheetWidget(
+      context: ctx,
+      builder: (context) {
+        final keyboardPadding = MediaQuery.viewInsetsOf(context).bottom;
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(bottom: keyboardPadding),
+            child: Column(
+              children: [
+                ///Back & Title
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(right: 2.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ///Title
+                      Text(
+                        AppStrings.editRow.tr,
+                        style: TextStyle(
+                          color: AppColors.PRIMARY_COLOR,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+
+                      ///Back
+                      CloseButtonWidget(),
+                    ],
+                  ),
+                ),
+                DividerWidget(color: AppColors.HINT_GREY_COLOR),
+                SizedBox(height: 1.h),
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: [
+                          ///Item Name
+                          TextFieldWidget(
+                            controller: itemNameController,
+                            readOnly: true,
+                            title: AppStrings.itemName.tr,
+                            hintText: AppStrings.enterItemName.tr,
+                          ),
+                          SizedBox(height: 2.h),
+
+                          ///Category Name
+                          TextFieldWidget(
+                            controller: categoryNameController,
+                            title: AppStrings.categoryName.tr,
+                            hintText: AppStrings.selectCategoryName.tr,
+                            validator: validateCategoryName,
+                            textInputAction: TextInputAction.next,
+                            maxLength: 10,
+                            readOnly: true,
+                            onTap: () async {
+                              await CreateOrderView().showBottomSheetSelectAndAdd(
+                                ctx: context,
+                                items: controller.categoryList,
+                                title: AppStrings.category.tr,
+                                fieldHint: AppStrings.enterCategoryName.tr,
+                                searchHint: AppStrings.searchCategoryName.tr,
+                                selectedId: selectedCategoryId.isNotEmpty ? selectedCategoryId.toInt() : -1,
+                                controller: categoryNameController,
+                                onSelect: (id) {
+                                  selectedCategoryId = id.toString();
+                                  categoryNameController.text = controller.categoryList.firstWhereOrNull((element) => element.categoryId == selectedCategoryId)?.categoryName ?? categoryNameController.text;
+                                },
+                                selectOnly: true,
+                              );
+                            },
+                          ),
+                          SizedBox(height: 2.h),
+
+                          ///Inch
+                          TextFieldWidget(
+                            controller: inchController,
+                            title: AppStrings.size.tr,
+                            hintText: AppStrings.enterSize.tr,
+                            validator: validateSize,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            maxLength: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 2.h),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Obx(() {
+                    return ButtonWidget(
+                      onPressed: () async {
+                        try {
+                          isLoading(true);
+                          if (formKey.currentState?.validate() ?? false) {
+                            await controller.editInvoiceApiCall(
+                              invoiceMetaId: data.invoiceMetaId ?? "",
+                              categoryId: selectedCategoryId,
+                              inch: inchController.text.trim(),
+                            );
+                          }
+                        } finally {
+                          isLoading(false);
+                        }
+                      },
+                      isLoading: isLoading.isTrue,
+                      buttonTitle: AppStrings.edit.tr,
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

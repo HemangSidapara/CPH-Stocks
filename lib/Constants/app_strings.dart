@@ -249,4 +249,6 @@ class AppStrings {
   static const String totalPayment = "Total Payment";
   static const String totalCompletedInch = "Total Completed Inch";
   static const String totalCompletedAmount = "Total Completed Amount";
+  static const String selectRow = "Select Row";
+  static const String editRow = "Edit Row";
 }

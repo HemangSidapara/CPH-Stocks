@@ -4,6 +4,7 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_invoice_model.dart' as get_automatic_ledger_invoice;
 import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_payment_model.dart' as get_automatic_ledger;
 import 'package:cph_stocks/Network/models/account_models/get_payment_ledger_model.dart' as get_payment_ledger;
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
@@ -39,6 +40,8 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   RxBool isMonthlyLedgerLoading = false.obs;
   RxList<get_payment_ledger.GetPaymentLedgerModel> automaticLedgerList = RxList();
   RxList<get_payment_ledger.GetPaymentLedgerModel> searchAutomaticLedgerList = RxList();
+  RxList<get_automatic_ledger_invoice.GetPartyData> automaticLedgerInvoiceList = RxList();
+  RxList<get_automatic_ledger_invoice.GetPartyData> searchAutomaticLedgerInvoiceList = RxList();
   late TabController tabController;
   RxInt tabIndex = 0.obs;
 
@@ -46,7 +49,12 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   void onInit() {
     super.onInit();
     getPartiesApi();
-    getAutomaticLedgerPaymentApiCall();
+    if (Get.arguments == true) {
+      getAutomaticLedgerPaymentApiCall();
+    } else {
+      getAutomaticLedgerInvoiceApiCall();
+    }
+
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
       tabIndex(tabController.index);
@@ -100,12 +108,37 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     }
   }
 
+  Future<void> getAutomaticLedgerInvoiceApiCall({bool isRefresh = false}) async {
+    try {
+      isMonthlyLedgerLoading(true);
+      final response = await AccountServices.getAutomaticLedgerInvoiceService();
+      if (response.isSuccess) {
+        get_automatic_ledger_invoice.GetAutomaticLedgerInvoiceModel ledgerInvoiceModel = get_automatic_ledger_invoice.GetAutomaticLedgerInvoiceModel.fromJson(response.response?.data);
+        automaticLedgerInvoiceList.clear();
+        searchAutomaticLedgerInvoiceList.clear();
+        automaticLedgerInvoiceList.addAll(ledgerInvoiceModel.data ?? []);
+        searchAutomaticLedgerInvoiceList.addAll(ledgerInvoiceModel.data ?? []);
+      }
+    } finally {
+      isMonthlyLedgerLoading(false);
+    }
+  }
+
   void searchParty(String value) {
-    searchAutomaticLedgerList.clear();
-    if (value.isNotEmpty) {
-      searchAutomaticLedgerList.addAll(automaticLedgerList.where((element) => element.partyName?.toLowerCase().contains(value.toLowerCase()) == true).toList());
+    if (Get.arguments == true) {
+      searchAutomaticLedgerList.clear();
+      if (value.isNotEmpty) {
+        searchAutomaticLedgerList.addAll(automaticLedgerList.where((element) => element.partyName?.toLowerCase().contains(value.toLowerCase()) == true).toList());
+      } else {
+        searchAutomaticLedgerList.addAll([...automaticLedgerList]);
+      }
     } else {
-      searchAutomaticLedgerList.addAll([...automaticLedgerList]);
+      searchAutomaticLedgerInvoiceList.clear();
+      if (value.isNotEmpty) {
+        searchAutomaticLedgerInvoiceList.addAll(automaticLedgerInvoiceList.where((element) => element.partyName?.toLowerCase().contains(value.toLowerCase()) == true).toList());
+      } else {
+        searchAutomaticLedgerInvoiceList.addAll([...automaticLedgerInvoiceList]);
+      }
     }
   }
 
@@ -160,6 +193,8 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     required BuildContext ctx,
     required List invoiceData,
     required bool isPaymentLedger,
+    String? startDate,
+    String? endDate,
   }) async {
     await showBottomSheetWidget(
       context: ctx,
@@ -167,12 +202,16 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
         return LedgerInvoiceView(
           invoiceData: invoiceData,
           isPaymentLedger: isPaymentLedger,
+          startDate: startDate,
+          endDate: endDate,
         );
       },
     );
   }
 
   Future<File?> generateLedgerPdf({
+    String? startDate,
+    String? endDate,
     required List<get_invoices.OrderInvoice> data,
     bool showAmount = false,
   }) async {
@@ -347,7 +386,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                   /// Date Range
                   pw.Flexible(
                     child: pw.Text(
-                      "${AppStrings.date.tr}: ${startDateController.text} - ${startDateController.text}",
+                      "${AppStrings.date.tr}: ${startDate ?? startDateController.text} - ${endDate ?? startDateController.text}",
                       style: size20Font,
                     ),
                   ),

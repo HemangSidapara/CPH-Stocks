@@ -40,4 +40,6 @@ class ApiKeys {
   static const year = "year";
   static const noOfEmployees = "noOfEmployees";
   static const totalEmployeeId = "totalEmployeeId";
+  static const invoiceMetaId = "invoiceMetaId";
+  static const inch = "inch";
 }

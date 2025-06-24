@@ -89,4 +89,38 @@ class ChallanService {
     );
     return response;
   }
+
+  /// Delete Invoices
+  static Future<ResponseModel> editInvoiceService({
+    required String invoiceMetaId,
+    required String categoryId,
+    required String inch,
+  }) async {
+    final params = {
+      ApiKeys.invoiceMetaId: invoiceMetaId,
+      ApiKeys.categoryId: categoryId,
+      ApiKeys.inch: inch,
+    };
+    final response = await ApiBaseHelper.postHTTP(
+      ApiUrls.editInvoiceApi,
+      params: params,
+      showProgress: false,
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("editInvoiceApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("editInvoiceApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

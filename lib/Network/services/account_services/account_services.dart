@@ -244,6 +244,33 @@ class AccountServices {
     return response;
   }
 
+  /// Get Automatic Ledger Invoice Service
+  static Future<ResponseModel> getAutomaticLedgerInvoiceService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.getAutomaticLedgerInvoiceApi,
+      showProgress: false,
+      onError: (dioExceptions) {
+        if (kDebugMode) {
+          print("getAutomaticLedgerInvoiceApi onError :: ${dioExceptions.message}");
+        }
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getAutomaticLedgerInvoiceApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getAutomaticLedgerPaymentApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
+
   /// Get Ledger Payment Service
   static Future<ResponseModel> getLedgerPaymentService({
     required String startDate,

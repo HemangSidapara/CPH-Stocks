@@ -54,6 +54,7 @@ class AccountView extends GetView<AccountController> {
                   route: Routes.paymentLedgerScreen,
                   title: AppStrings.paymentLedger.tr,
                   icon: AppAssets.ledgerIcon,
+                  arguments: true,
                 ),
                 SliverToBoxAdapter(
                   child: SizedBox(height: 2.h),
@@ -124,12 +125,12 @@ class AccountView extends GetView<AccountController> {
     required String title,
     required String icon,
     double? iconWidth,
-    bool isRepair = false,
+    dynamic arguments,
   }) {
     return SliverToBoxAdapter(
       child: ElevatedButton(
         onPressed: () async {
-          Get.toNamed(route, arguments: isRepair);
+          Get.toNamed(route, arguments: arguments);
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.zero,

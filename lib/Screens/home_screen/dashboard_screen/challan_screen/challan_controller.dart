@@ -5,7 +5,9 @@ import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
+import 'package:cph_stocks/Network/models/order_models/get_categories_model.dart' as get_categories;
 import 'package:cph_stocks/Network/services/challan_services/challan_service.dart';
+import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +32,27 @@ class ChallanController extends GetxController {
   RxList<String> selectedInvoices = RxList();
   RxBool isDeleteInvoicesLoading = false.obs;
 
+  RxList<get_categories.CategoryData> categoryList = RxList();
+
   @override
   void onInit() async {
     super.onInit();
-    await getInvoicesApi();
+    await Future.wait(
+      [
+        getCategoriesApi(),
+        getInvoicesApi(),
+      ],
+    );
+  }
+
+  Future<List<get_categories.CategoryData>> getCategoriesApi() async {
+    final response = await OrderServices.getCategoriesService();
+    if (response.isSuccess) {
+      get_categories.GetCategoriesModel getCategoriesModel = get_categories.GetCategoriesModel.fromJson(response.response?.data);
+      categoryList.clear();
+      categoryList.addAll(getCategoriesModel.data ?? []);
+    }
+    return [...categoryList];
   }
 
   Future<void> getInvoicesApi({bool isLoading = true}) async {
@@ -66,6 +85,24 @@ class ChallanController extends GetxController {
       }
     } finally {
       isDeleteInvoicesLoading(false);
+    }
+  }
+
+  Future<void> editInvoiceApiCall({
+    required String invoiceMetaId,
+    required String categoryId,
+    required String inch,
+  }) async {
+    final response = await ChallanService.editInvoiceService(
+      invoiceMetaId: invoiceMetaId,
+      categoryId: categoryId,
+      inch: inch,
+    );
+    if (response.isSuccess) {
+      await getInvoicesApi(isLoading: false);
+      searchPartyName(searchController.text);
+      Get.back();
+      Utils.handleMessage(message: response.message);
     }
   }
 
@@ -416,7 +453,9 @@ class ChallanController extends GetxController {
                         ),
 
                         /// Total Amount
-                        TableCell(title: data[i].totalAmount != null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(data[i].totalAmount!.toDouble()) : ""),
+                        TableCell(
+                          title: data[i].totalAmount != null && data[i].totalAmount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(data[i].totalAmount!.toDouble()) : "",
+                        ),
                       ],
                     ],
                   ),
