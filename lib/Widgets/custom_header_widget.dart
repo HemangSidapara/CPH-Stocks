@@ -9,6 +9,7 @@ class CustomHeaderWidget extends StatelessWidget {
   final String title;
   final String titleIcon;
   final double? titleIconSize;
+  final Color? titleColor;
   final void Function()? onBackPressed;
   final bool isCustomer;
 
@@ -19,6 +20,7 @@ class CustomHeaderWidget extends StatelessWidget {
     this.onBackPressed,
     this.titleIconSize,
     this.isCustomer = false,
+    this.titleColor,
   });
 
   @override
@@ -72,7 +74,7 @@ class CustomHeaderWidget extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            color: AppColors.PRIMARY_COLOR,
+            color: titleColor ?? AppColors.PRIMARY_COLOR,
             fontSize: 20.sp,
             fontWeight: FontWeight.w900,
           ),

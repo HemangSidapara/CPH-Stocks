@@ -28,6 +28,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
         child: UnfocusWidget(
           child: Obx(() {
             return Scaffold(
+              backgroundColor: AppColors.PRIMARY_COLOR.withValues(alpha: 0.5),
               appBar: AppBar(
                 backgroundColor: controller.isDeleteMultipleOrdersEnable.isTrue ? AppColors.DARK_RED_COLOR : AppColors.TRANSPARENT,
                 leadingWidth: 0,
@@ -126,6 +127,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                   title: controller.isRepairScreen.isTrue ? AppStrings.repairingDetails.tr : AppStrings.orderDetails.tr,
                                   titleIcon: controller.isRepairScreen.isTrue ? AppAssets.repairingIcon : AppAssets.orderDetailsIcon,
                                   titleIconSize: controller.isRepairScreen.isTrue ? 9.w : null,
+                                  titleColor: AppColors.SECONDARY_COLOR,
                                   onBackPressed: () {
                                     Get.back(closeOverlays: true);
                                   },
@@ -157,7 +159,7 @@ class OrderDetailsView extends GetView<OrderDetailsController> {
                                           angle: value * 2 * 3.141592653589793,
                                           child: Icon(
                                             Icons.refresh_rounded,
-                                            color: AppColors.PRIMARY_COLOR,
+                                            color: AppColors.SECONDARY_COLOR,
                                             size: context.isPortrait ? 6.w : 6.h,
                                           ),
                                         );

@@ -246,8 +246,12 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                                     style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                                   ),
                                                   Text(
-                                                    DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
-                                                    style: AppStyles.size15w600.copyWith(color: AppColors.ORANGE_COLOR),
+                                                    DateFormat("dd/MM/yyyy").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
+                                                    style: AppStyles.size14w600.copyWith(color: AppColors.ORANGE_COLOR),
+                                                  ),
+                                                  Text(
+                                                    DateFormat("hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
+                                                    style: AppStyles.size14w600.copyWith(color: AppColors.ORANGE_COLOR),
                                                   ),
                                                 ],
                                               ),

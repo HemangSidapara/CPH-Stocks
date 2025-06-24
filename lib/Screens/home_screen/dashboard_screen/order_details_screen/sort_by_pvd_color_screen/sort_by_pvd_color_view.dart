@@ -43,9 +43,11 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                     child: TextFieldWidget(
                       prefixIcon: Icon(
                         Icons.search_rounded,
-                        color: AppColors.SECONDARY_COLOR,
+                        color: AppColors.PRIMARY_COLOR,
                         size: 5.w,
                       ),
+                      primaryColor: AppColors.SECONDARY_COLOR,
+                      secondaryColor: AppColors.PRIMARY_COLOR,
                       prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
                       suffixIcon: InkWell(
                         onTap: () {
@@ -55,7 +57,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                         },
                         child: Icon(
                           Icons.close_rounded,
-                          color: AppColors.SECONDARY_COLOR,
+                          color: AppColors.PRIMARY_COLOR,
                           size: 5.w,
                         ),
                       ),
@@ -130,7 +132,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                 child: Text(
                                   controller.searchedColorDataList[i].pvdColor ?? '',
                                   style: TextStyle(
-                                    color: AppColors.WHITE_COLOR,
+                                    color: AppColors.SECONDARY_COLOR,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 16.sp,
                                   ),
@@ -251,7 +253,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                   );
                                 },
                                 style: IconButton.styleFrom(
-                                  backgroundColor: AppColors.WARNING_COLOR,
+                                  backgroundColor: controller.searchedColorDataList[index].pvdColor == "Gold" ? AppColors.BRONZE_COLOR : AppColors.WARNING_COLOR,
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   padding: EdgeInsets.zero,
                                   elevation: 4,
@@ -409,8 +411,8 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                             ),
                                             TextSpan(
                                               text: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
-                                                  ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
-                                                  : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
+                                                  ? DateFormat("dd-MM-yyyy, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
+                                                  : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}")) : ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
                                               style: TextStyle(
                                                 color: AppColors.DARK_RED_COLOR,
                                                 fontSize: 16.sp,
@@ -434,8 +436,8 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                           onPressed: () {
                                             showBillCycleBottomSheet(
                                               orderDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null && controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime != null
-                                                  ? DateFormat("yyyy-MM-dd, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
-                                                  : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
+                                                  ? DateFormat("dd-MM-yyyy, hh:mm a").format(DateTime.parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}T${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime}"))
+                                                  : "${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse("${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate}")) : ""}, ${controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? ""}",
                                               createdDate: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdDate ?? "",
                                               createdTime: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderDate?[dateIndex].createdTime ?? "",
                                               pvdColor: controller.searchedColorDataList[index].pvdColor ?? "",
@@ -1108,7 +1110,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                           ),
                           SizedBox(width: 2.w),
                           Text(
-                            itemDetails?.createdDate ?? '',
+                            itemDetails?.createdDate != null ? DateFormat('dd-MM-yyyy').format(DateFormat("yyyy-MM-dd").parse(itemDetails?.createdDate ?? "")) : '',
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
@@ -1814,7 +1816,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                                               ///Cycle Date
                                                               Flexible(
                                                                 child: Text(
-                                                                  itemsList[orderIndex].orderCycles?[cycleIndex].createdDate ?? "",
+                                                                  itemsList[orderIndex].orderCycles?[cycleIndex].createdDate != null ? DateFormat('dd-MM-yyyy, hh:mm a').format(DateFormat("yyyy-MM-dd, hh:mm a").parse(itemsList[orderIndex].orderCycles?[cycleIndex].createdDate ?? "")) : "",
                                                                   style: TextStyle(
                                                                     color: AppColors.DARK_BLACK_COLOR,
                                                                     fontSize: 16.sp,

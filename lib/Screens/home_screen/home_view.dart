@@ -1,3 +1,4 @@
+import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
@@ -16,43 +17,46 @@ class HomeView extends GetView<HomeController> {
       onPopInvokedWithResult: (didPop, result) async {
         await showExitDialog(context);
       },
-      child: Scaffold(
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: AppColors.SECONDARY_COLOR,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.MAIN_BORDER_COLOR.withValues(alpha: 0.2),
-                spreadRadius: 5,
-                blurRadius: 80,
-              )
-            ],
-          ),
-          child: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                for (int i = 0; i < controller.bottomItemWidgetList.length; i++)
-                  SizedBox(
-                    width: 100.w / controller.bottomItemWidgetList.length,
-                    child: AssetImages(
-                      index: i,
-                      iconName: controller.listOfImages[i],
-                      iconSize: controller.listOfImageSizes[i],
-                    ),
-                  ),
+      child: Obx(() {
+        return Scaffold(
+          backgroundColor: controller.bottomIndex.value == controller.listOfImages.indexOf(AppAssets.recycleBinIcon) ? AppColors.PRIMARY_COLOR.withValues(alpha: 0.5) : AppColors.SECONDARY_COLOR,
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: AppColors.SECONDARY_COLOR,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.MAIN_BORDER_COLOR.withValues(alpha: 0.2),
+                  spreadRadius: 5,
+                  blurRadius: 80,
+                ),
               ],
             ),
+            child: SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  for (int i = 0; i < controller.bottomItemWidgetList.length; i++)
+                    SizedBox(
+                      width: 100.w / controller.bottomItemWidgetList.length,
+                      child: AssetImages(
+                        index: i,
+                        iconName: controller.listOfImages[i],
+                        iconSize: controller.listOfImageSizes[i],
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
-        body: SafeArea(
-          child: PageView(
-            controller: controller.pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: controller.bottomItemWidgetList,
+          body: SafeArea(
+            child: PageView(
+              controller: controller.pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: controller.bottomItemWidgetList,
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -66,27 +70,29 @@ class HomeView extends GetView<HomeController> {
       onTap: () async {
         await controller.onBottomItemChange(index: index);
       },
-      child: StatefulBuilder(builder: (context, state) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          state(() {});
-        });
-        return SizedBox(
-          height: 12.w,
-          width: 12.w,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Obx(() {
-                return Image.asset(
-                  iconName,
-                  width: iconSize ?? 8.w,
-                  color: controller.bottomIndex.value == index ? AppColors.TERTIARY_COLOR : AppColors.WHITE_COLOR,
-                );
-              }),
-            ],
-          ),
-        );
-      }),
+      child: StatefulBuilder(
+        builder: (context, state) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            state(() {});
+          });
+          return SizedBox(
+            height: 12.w,
+            width: 12.w,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Obx(() {
+                  return Image.asset(
+                    iconName,
+                    width: iconSize ?? 8.w,
+                    color: controller.bottomIndex.value == index ? AppColors.TERTIARY_COLOR : AppColors.WHITE_COLOR,
+                  );
+                }),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 

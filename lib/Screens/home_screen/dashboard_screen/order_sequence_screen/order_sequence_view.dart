@@ -24,6 +24,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
   Widget build(BuildContext context) {
     return UnfocusWidget(
       child: Scaffold(
+        backgroundColor: AppColors.PRIMARY_COLOR.withValues(alpha: 0.5),
         appBar: AppBar(
           backgroundColor: AppColors.TRANSPARENT,
           leadingWidth: 0,
@@ -39,6 +40,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                     title: AppStrings.orderSequence.tr,
                     titleIcon: AppAssets.orderSequenceIcon,
                     titleIconSize: 8.5.w,
+                    titleColor: AppColors.SECONDARY_COLOR,
                     onBackPressed: () {
                       Get.back(closeOverlays: true);
                     },
@@ -69,7 +71,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                               angle: value * 2 * 3.141592653589793,
                               child: Icon(
                                 Icons.refresh_rounded,
-                                color: AppColors.PRIMARY_COLOR,
+                                color: AppColors.SECONDARY_COLOR,
                                 size: context.isPortrait ? 6.w : 6.h,
                               ),
                             );
@@ -94,9 +96,11 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                   child: TextFieldWidget(
                     prefixIcon: Icon(
                       Icons.search_rounded,
-                      color: AppColors.SECONDARY_COLOR,
+                      color: AppColors.PRIMARY_COLOR,
                       size: 5.w,
                     ),
+                    primaryColor: AppColors.SECONDARY_COLOR,
+                    secondaryColor: AppColors.PRIMARY_COLOR,
                     prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
                     suffixIcon: InkWell(
                       onTap: () {
@@ -106,7 +110,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                       },
                       child: Icon(
                         Icons.close_rounded,
-                        color: AppColors.SECONDARY_COLOR,
+                        color: AppColors.PRIMARY_COLOR,
                         size: 5.w,
                       ),
                     ),
@@ -174,7 +178,7 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                                       child: Text(
                                         controller.searchedColorDataList[i].pvdColor ?? '',
                                         style: TextStyle(
-                                          color: AppColors.WHITE_COLOR,
+                                          color: AppColors.SECONDARY_COLOR,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 16.sp,
                                         ),
@@ -257,18 +261,20 @@ class OrderSequenceView extends GetView<OrderSequenceController> {
                         child: ExpansionTile(
                           enabled: false,
                           title: Stack(
+                            alignment: Alignment.center,
                             children: [
-                              ///Category Name
+                              ///Party Name
                               Positioned(
                                 right: 0,
                                 left: 0,
-                                top: -1.5.h,
+                                top: 0,
+                                bottom: 0,
                                 child: Center(
                                   child: Tooltip(
-                                    message: controller.searchedColorDataList[index].orders?[orderIndex].categoryName ?? "",
+                                    message: controller.searchedColorDataList[index].orders?[orderIndex].partyName ?? "",
                                     child: Text(
-                                      controller.searchedColorDataList[index].orders?[orderIndex].categoryName ?? "",
-                                      style: AppStyles.size30w900.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? '').withValues(alpha: 0.04)),
+                                      controller.searchedColorDataList[index].orders?[orderIndex].partyName ?? "",
+                                      style: AppStyles.size22w900.copyWith(color: controller.getTextColor(controller.searchedColorDataList[index].pvdColor ?? '').withValues(alpha: 0.06)),
                                     ),
                                   ),
                                 ),

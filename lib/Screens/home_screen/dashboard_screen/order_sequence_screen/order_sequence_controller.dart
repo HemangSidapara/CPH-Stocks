@@ -27,9 +27,9 @@ class OrderSequenceController extends GetxController with GetTickerProviderState
   };
 
   Map<String, Color> backgroundColorCodes = {
-    "Gold": AppColors.GOLD_COLOR.withValues(alpha: 0.3),
+    "Gold": AppColors.GOLD_COLOR.withValues(alpha: 0.5),
     "Rosegold": AppColors.ROSEGOLD_COLOR.withValues(alpha: 0.5),
-    "Black": AppColors.Medium_BLACK_COLOR,
+    "Black": AppColors.SECONDARY_COLOR,
     "Grey": AppColors.TRANSPARENT,
     "Bronze": AppColors.BRONZE_COLOR.withValues(alpha: 0.5),
   };

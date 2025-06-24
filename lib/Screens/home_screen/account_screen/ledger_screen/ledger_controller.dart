@@ -115,13 +115,13 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
       if (ledgerFormKey.currentState?.validate() ?? false) {
         final response = isPaymentLedger
             ? await AccountServices.getLedgerPaymentService(
-                startDate: startDateController.text,
-                endDate: endDateController.text,
+                startDate: DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(startDateController.text)),
+                endDate: DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(endDateController.text)),
                 partyId: selectedParty.value,
               )
             : await AccountServices.generateLedgerInvoiceService(
-                startDate: startDateController.text,
-                endDate: endDateController.text,
+                startDate: DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(startDateController.text)),
+                endDate: DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(endDateController.text)),
                 partyId: selectedParty.value,
               );
 
@@ -260,12 +260,6 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
       return listOfAmount.isNotEmpty ? listOfAmount.reduce((value, element) => value + element) : 0.0;
     }
 
-    // double megaTotalInchCount() {
-    //   final totalInvoices = data.map((e) => e.invoiceMeta ?? []).toList();
-    //   final listOfInch = totalInvoices.map((e) => totalInchCount(e)).toList();
-    //   return listOfInch.isNotEmpty ? listOfInch.reduce((value, element) => value + element) : 0.0;
-    // }
-
     List<CategoryModel> getCategoryList(List<get_invoices.InvoiceMeta> invoiceMetaData) {
       List<CategoryModel> catModel = [];
       for (var element in invoiceMetaData) {
@@ -353,7 +347,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                   /// Date Range
                   pw.Flexible(
                     child: pw.Text(
-                      "${AppStrings.date.tr}: ${DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(startDateController.text))} - ${DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(endDateController.text))}",
+                      "${AppStrings.date.tr}: ${startDateController.text} - ${startDateController.text}",
                       style: size20Font,
                     ),
                   ),
@@ -846,6 +840,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     pdfDoc.addPage(
       pw.MultiPage(
         pageTheme: pdfPageTheme,
+        maxPages: 1000,
         footer: (context) {
           if (context.pageNumber == context.pagesCount) {
             return pw.Padding(
@@ -895,11 +890,11 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                           ),
                         ),
                       ),
-                      pw.SizedBox(width: 10),
+                      pw.SizedBox(width: 8),
                       pw.Padding(
                         padding: pw.EdgeInsets.symmetric(vertical: 5),
                         child: pw.Text(
-                          AppStrings.closingBalance.tr,
+                          "DB ${AppStrings.closingBalance.tr}",
                           style: size14Font.copyWith(fontWeight: pw.FontWeight.bold),
                         ),
                       ),
@@ -977,7 +972,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
               ),
             );
           }
-          return pw.SizedBox();
+          return pw.SizedBox.shrink();
         },
         build: (context) {
           return <pw.Widget>[
@@ -1002,7 +997,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
 
                   /// Date Range
                   pw.Text(
-                    "${AppStrings.date.tr}: ${DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.startDate ?? startDateController.text))} - ${DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.endDate ?? endDateController.text))}",
+                    "${AppStrings.date.tr}: ${data.startDate != null && data.startDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.startDate!)) : startDateController.text} - ${data.endDate != null && data.endDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.endDate!)) : endDateController.text}",
                     style: size16Font,
                   ),
                 ],
@@ -1053,58 +1048,68 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
             ),
             pw.SizedBox(height: 10),
 
-            /// Opening Balance
-            pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.end,
+            pw.Table(
+              columnWidths: {
+                0: pw.FixedColumnWidth(pdfPageTheme.pageFormat.width / 2),
+                1: pw.FixedColumnWidth(pdfPageTheme.pageFormat.width / 2),
+              },
               children: [
-                pw.SizedBox(
-                  width: pdfPageTheme.pageFormat.width / 2,
-                ),
-                pw.SizedBox(
-                  width: pdfPageTheme.pageFormat.width / 2,
-                  child: pw.Row(
-                    children: [
-                      pw.SizedBox(
-                        width: (pdfPageTheme.pageFormat.width / 2) * 0.4,
-                        child: pw.Text(
-                          data.summary?.openingAmount?.toString() ?? "0.0",
-                          textAlign: pw.TextAlign.end,
-                          style: size14Font.copyWith(fontWeight: pw.FontWeight.bold),
-                        ),
+                /// Opening Balance
+                pw.TableRow(
+                  children: [
+                    pw.SizedBox(
+                      width: pdfPageTheme.pageFormat.width / 2,
+                    ),
+                    pw.SizedBox(
+                      width: pdfPageTheme.pageFormat.width / 2,
+                      child: pw.Row(
+                        mainAxisSize: pw.MainAxisSize.max,
+                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                        children: [
+                          pw.SizedBox(
+                            width: (pdfPageTheme.pageFormat.width / 2) * 0.4,
+                            child: pw.Text(
+                              data.summary?.openingAmount?.toString() ?? "0.0",
+                              textAlign: pw.TextAlign.end,
+                              style: size14Font.copyWith(fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.SizedBox(width: 10),
+                          pw.SizedBox(
+                            width: (pdfPageTheme.pageFormat.width / 2) * 0.6,
+                            child: pw.Text(
+                              "DB ${AppStrings.openingBalance.tr}",
+                              textAlign: pw.TextAlign.start,
+                              style: size14Font.copyWith(fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
-                      pw.SizedBox(width: 10),
-                      pw.SizedBox(
-                        width: (pdfPageTheme.pageFormat.width / 2) * 0.6,
-                        child: pw.Text(
-                          AppStrings.openingBalance.tr,
-                          textAlign: pw.TextAlign.start,
-                          style: size14Font.copyWith(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            pw.SizedBox(height: 10),
+                pw.TableRow(
+                  children: [
+                    pw.SizedBox(
+                      width: pdfPageTheme.pageFormat.width / 2,
+                    ),
+                    pw.SizedBox(height: 8),
+                  ],
+                ),
 
-            /// Payments & Invoices Data
-            pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                /// Payments
-                pw.SizedBox(
-                  width: pdfPageTheme.pageFormat.width / 2,
-                  child: pw.Column(
+                /// Payments & Invoices Data
+                for (int rowIndex = 0; rowIndex < ((data.invoices?.length ?? 0) > (data.payments?.length ?? 0) ? (data.invoices?.length ?? 0) : (data.payments?.length ?? 0)); rowIndex++) ...[
+                  pw.TableRow(
                     children: [
-                      for (int paymentIndex = 0; paymentIndex < (data.payments?.length ?? 0); paymentIndex++) ...[
+                      if (rowIndex < (data.payments?.length ?? 0)) ...[
+                        /// Payments
                         pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.center,
                           children: [
                             pw.SizedBox(
                               width: (pdfPageTheme.pageFormat.width / 2) * 0.4,
                               child: pw.Text(
-                                data.payments?[paymentIndex].amount?.toString() ?? "",
+                                data.payments?[rowIndex].amount?.toString() ?? "",
                                 textAlign: pw.TextAlign.end,
                                 style: size14Font,
                               ),
@@ -1113,37 +1118,29 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                             pw.SizedBox(
                               width: (pdfPageTheme.pageFormat.width / 2) * 0.6,
                               child: pw.Text(
-                                data.payments?[paymentIndex].createdDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.payments?[paymentIndex].createdDate ?? "")) : "",
+                                data.payments?[rowIndex].createdDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.payments?[rowIndex].createdDate ?? "")) : "",
                                 textAlign: pw.TextAlign.start,
                                 style: size14Font,
                               ),
                             ),
                           ],
                         ),
-                        pw.SizedBox(height: 3),
-                        pw.Text(
-                          data.payments?[paymentIndex].paymentMode ?? "",
-                          style: size14Font,
+                      ] else ...[
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          height: 3,
                         ),
-                        pw.SizedBox(height: 10),
                       ],
-                    ],
-                  ),
-                ),
 
-                /// Invoices
-                pw.SizedBox(
-                  width: pdfPageTheme.pageFormat.width / 2,
-                  child: pw.Column(
-                    children: [
-                      for (int invoiceIndex = 0; invoiceIndex < (data.invoices?.length ?? 0); invoiceIndex++) ...[
+                      if (rowIndex < (data.invoices?.length ?? 0)) ...[
+                        /// Invoices
                         pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.center,
                           children: [
                             pw.SizedBox(
                               width: (pdfPageTheme.pageFormat.width / 2) * 0.4,
                               child: pw.Text(
-                                data.invoices?[invoiceIndex].totalAmount?.toString() ?? "",
+                                data.invoices?[rowIndex].totalAmount?.toString() ?? "",
                                 textAlign: pw.TextAlign.end,
                                 style: size14Font,
                               ),
@@ -1152,27 +1149,86 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                             pw.SizedBox(
                               width: (pdfPageTheme.pageFormat.width / 2) * 0.6,
                               child: pw.Text(
-                                data.invoices?[invoiceIndex].challanNumber ?? "",
+                                data.invoices?[rowIndex].challanNumber ?? "",
                                 textAlign: pw.TextAlign.start,
                                 style: size14Font,
                               ),
                             ),
                           ],
                         ),
-                        pw.SizedBox(height: 3),
-                        pw.Text(
-                          data.invoices?[invoiceIndex].createdDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.invoices?[invoiceIndex].createdDate ?? "")) : "",
-                          style: size14Font,
+                      ] else ...[
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          height: 3,
                         ),
-
-                        pw.SizedBox(height: 10),
                       ],
                     ],
                   ),
-                ),
+
+                  pw.TableRow(
+                    children: [
+                      pw.SizedBox(
+                        width: pdfPageTheme.pageFormat.width / 2,
+                        height: 3,
+                      ),
+                      pw.SizedBox(
+                        width: pdfPageTheme.pageFormat.width / 2,
+                        height: 3,
+                      ),
+                    ],
+                  ),
+
+                  pw.TableRow(
+                    children: [
+                      /// Payment Mode
+                      if (rowIndex < (data.payments?.length ?? 0)) ...[
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          child: pw.Text(
+                            data.payments?[rowIndex].paymentMode ?? "",
+                            textAlign: pw.TextAlign.center,
+                            style: size14Font,
+                          ),
+                        ),
+                      ] else ...[
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                        ),
+                      ],
+
+                      /// Invoice Date
+                      if (rowIndex < (data.invoices?.length ?? 0)) ...[
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          child: pw.Text(
+                            data.invoices?[rowIndex].createdDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").parse(data.invoices?[rowIndex].createdDate ?? "")) : "",
+                            textAlign: pw.TextAlign.center,
+                            style: size14Font,
+                          ),
+                        ),
+                      ] else ...[
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                        ),
+                      ],
+                    ],
+                  ),
+
+                  pw.TableRow(
+                    children: [
+                      pw.SizedBox(
+                        width: pdfPageTheme.pageFormat.width / 2,
+                        height: 10,
+                      ),
+                      pw.SizedBox(
+                        width: pdfPageTheme.pageFormat.width / 2,
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
-            pw.SizedBox(height: 15),
           ];
         },
       ),

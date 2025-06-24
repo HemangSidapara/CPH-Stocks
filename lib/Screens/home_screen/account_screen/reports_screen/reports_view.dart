@@ -248,7 +248,7 @@ class ReportsView extends GetView<ReportsController> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "${AppStrings.date.tr}: ${controller.inchReportList[pointIndex].date}",
+                                              "${AppStrings.date.tr}: ${controller.inchReportList[pointIndex].date != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(controller.inchReportList[pointIndex].date!)) : ""}",
                                               style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                             ),
                                             Text(
@@ -265,7 +265,7 @@ class ReportsView extends GetView<ReportsController> {
                                   ///Total Inch Series
                                   ColumnSeries<get_reports.InchWiseReport, String>(
                                     dataSource: [...controller.inchReportList],
-                                    xValueMapper: (get_reports.InchWiseReport data, _) => data.date,
+                                    xValueMapper: (get_reports.InchWiseReport data, _) => data.date != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(data.date!)) : "",
                                     yValueMapper: (get_reports.InchWiseReport data, _) => data.totalInch,
                                     enableTooltip: true,
                                     legendItemText: AppStrings.totalInch.tr.replaceAll("C1 ", ""),
@@ -277,7 +277,7 @@ class ReportsView extends GetView<ReportsController> {
                                   ///Completed Inch Series
                                   ColumnSeries<get_reports.InchWiseReport, String>(
                                     dataSource: [...controller.inchReportList],
-                                    xValueMapper: (get_reports.InchWiseReport data, _) => data.date,
+                                    xValueMapper: (get_reports.InchWiseReport data, _) => data.date != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(data.date!)) : "",
                                     yValueMapper: (get_reports.InchWiseReport data, _) => data.completedInch,
                                     enableTooltip: true,
                                     legendItemText: AppStrings.completedInch.tr,
@@ -360,7 +360,7 @@ class ReportsView extends GetView<ReportsController> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "${AppStrings.date.tr}: ${controller.amountReportList[pointIndex].date}",
+                                              "${AppStrings.date.tr}: ${controller.amountReportList[pointIndex].date != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(controller.amountReportList[pointIndex].date!)) : ""}",
                                               style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                             ),
                                             Text(
@@ -377,7 +377,7 @@ class ReportsView extends GetView<ReportsController> {
                                   ///Total Amount Series
                                   ColumnSeries<get_reports.AmountWiseReport, String>(
                                     dataSource: [...controller.amountReportList],
-                                    xValueMapper: (get_reports.AmountWiseReport data, _) => data.date,
+                                    xValueMapper: (get_reports.AmountWiseReport data, _) => data.date != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(data.date!)) : "",
                                     yValueMapper: (get_reports.AmountWiseReport data, _) => data.totalAmount,
                                     enableTooltip: true,
                                     legendItemText: AppStrings.totalAmount.tr.replaceAll("C1 ", ""),
@@ -389,7 +389,7 @@ class ReportsView extends GetView<ReportsController> {
                                   ///Completed Amount Series
                                   ColumnSeries<get_reports.AmountWiseReport, String>(
                                     dataSource: [...controller.amountReportList],
-                                    xValueMapper: (get_reports.AmountWiseReport data, _) => data.date,
+                                    xValueMapper: (get_reports.AmountWiseReport data, _) => data.date != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(data.date!)) : "",
                                     yValueMapper: (get_reports.AmountWiseReport data, _) => data.completedAmount,
                                     enableTooltip: true,
                                     legendItemText: AppStrings.completedAmount.tr,

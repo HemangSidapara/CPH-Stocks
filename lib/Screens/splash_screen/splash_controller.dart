@@ -28,42 +28,47 @@ class SplashController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: AppColors.SECONDARY_COLOR,
-      systemNavigationBarIconBrightness: Brightness.light,
-      statusBarColor: AppColors.SECONDARY_COLOR,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: AppColors.SECONDARY_COLOR,
+        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarColor: AppColors.SECONDARY_COLOR,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
+
+    currentVersion.value = (await PackageInfo.fromPlatform()).version;
 
     await _getLatestVersion().then((value) {
       newAPKUrl(value.$1 ?? '');
       newAPKVersion(value.$2 ?? '');
     });
 
-    newAPKUrl.addListener(GetStream(
-      onListen: () async {
-        currentVersion.value = (await PackageInfo.fromPlatform()).version;
-        if (kDebugMode) {
-          print('currentVersion :: ${currentVersion.value}');
-          print('newVersion :: ${newAPKVersion.value}');
-        }
-        if (newAPKUrl.value.isNotEmpty && newAPKVersion.value.isNotEmpty) {
-          if (Utils.isUpdateAvailable(currentVersion.value, newAPKVersion.value)) {
-            await showUpdateDialog(
-              onUpdate: () async {
-                await _downloadAndInstall();
-              },
-              isUpdateLoading: isUpdateLoading,
-              downloadedProgress: downloadedProgress,
-            );
+    newAPKUrl.addListener(
+      GetStream(
+        onListen: () async {
+          if (kDebugMode) {
+            print('currentVersion :: ${currentVersion.value}');
+            print('newVersion :: ${newAPKVersion.value}');
+          }
+          if (newAPKUrl.value.isNotEmpty && newAPKVersion.value.isNotEmpty) {
+            if (Utils.isUpdateAvailable(currentVersion.value, newAPKVersion.value)) {
+              await showUpdateDialog(
+                onUpdate: () async {
+                  await _downloadAndInstall();
+                },
+                isUpdateLoading: isUpdateLoading,
+                downloadedProgress: downloadedProgress,
+              );
+            } else {
+              nextScreenRoute();
+            }
           } else {
             nextScreenRoute();
           }
-        } else {
-          nextScreenRoute();
-        }
-      },
-    ));
+        },
+      ),
+    );
   }
 
   /// Next Screen Route

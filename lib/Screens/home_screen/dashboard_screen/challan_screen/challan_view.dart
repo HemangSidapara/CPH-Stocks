@@ -331,7 +331,7 @@ class ChallanView extends GetView<ChallanController> {
                                                   ),
                                                 ),
                                               );
-                                            })
+                                            }),
                                           ],
                                         ],
                                       ),
@@ -367,7 +367,7 @@ class ChallanView extends GetView<ChallanController> {
                                             style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                           ),
                                           Text(
-                                            "${orderInvoice.createdDate ?? ''}, ${DateFormat("hh:mm a").format(DateFormat("hh:mm:ss").parse(orderInvoice.createdTime!))}".trim(),
+                                            "${orderInvoice.createdDate != null ? DateFormat("dd-MM-yyyy").format(DateFormat("yyyy-MM-dd").parse(orderInvoice.createdDate!)) : ""}, ${DateFormat("hh:mm a").format(DateFormat("hh:mm:ss").parse(orderInvoice.createdTime!))}".trim(),
                                             style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                           ),
                                         ],

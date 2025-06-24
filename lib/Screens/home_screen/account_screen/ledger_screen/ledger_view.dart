@@ -371,20 +371,20 @@ class LedgerView extends GetView<LedgerController> {
                       controller: controller.startDateController,
                       readOnly: true,
                       title: AppStrings.startDate.tr,
-                      hintText: "2025-01-01",
+                      hintText: "01/01/2025",
                       validator: controller.validateStartDate,
                       onTap: () async {
                         await showDatePicker(
                           context: ctx,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(DateTime.now().year - 50),
-                          lastDate: controller.endDateController.text.isNotEmpty ? DateFormat("yyyy-MM-dd").parse(controller.endDateController.text) : DateTime(DateTime.now().year + 50),
+                          lastDate: controller.endDateController.text.isNotEmpty ? DateFormat("dd/MM/yyyy").parse(controller.endDateController.text) : DateTime(DateTime.now().year + 50),
                           builder: (context, child) {
                             return themeData(context: context, child: child!);
                           },
                         ).then((value) {
                           if (value != null) {
-                            controller.startDateController.text = DateFormat("yyyy-MM-dd").format(value);
+                            controller.startDateController.text = DateFormat("dd/MM/yyyy").format(value);
                           }
                         });
                       },
@@ -396,20 +396,20 @@ class LedgerView extends GetView<LedgerController> {
                       controller: controller.endDateController,
                       readOnly: true,
                       title: AppStrings.endDate.tr,
-                      hintText: "2025-01-31",
+                      hintText: "31/01/2025",
                       validator: controller.validateEndDate,
                       onTap: () async {
                         await showDatePicker(
                           context: ctx,
                           initialDate: DateTime.now(),
-                          firstDate: controller.startDateController.text.isNotEmpty ? DateFormat("yyyy-MM-dd").parse(controller.startDateController.text) : DateTime(DateTime.now().year - 50),
+                          firstDate: controller.startDateController.text.isNotEmpty ? DateFormat("dd/MM/yyyy").parse(controller.startDateController.text) : DateTime(DateTime.now().year - 50),
                           lastDate: DateTime(DateTime.now().year + 50),
                           builder: (context, child) {
                             return themeData(context: context, child: child!);
                           },
                         ).then((value) {
                           if (value != null) {
-                            controller.endDateController.text = DateFormat("yyyy-MM-dd").format(value);
+                            controller.endDateController.text = DateFormat("dd/MM/yyyy").format(value);
                           }
                         });
                       },

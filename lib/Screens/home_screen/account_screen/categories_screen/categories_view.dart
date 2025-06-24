@@ -355,7 +355,7 @@ class CategoriesView extends GetView<CategoriesController> {
                             style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
                           ),
                           Text(
-                            data.createdDate ?? "",
+                            data.createdDate != null ? DateFormat("dd-MM-yyyy").format(DateTime.parse(data.createdDate!)) : "",
                             style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
                           ),
                         ],

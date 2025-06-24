@@ -28,6 +28,7 @@ class RecycleBinView extends GetView<RecycleBinController> {
                   title: AppStrings.recycleBin.tr,
                   titleIcon: AppAssets.recycleBinAnim,
                   titleIconSize: 8.5.w,
+                  titleColor: AppColors.SECONDARY_COLOR,
                 ),
                 Obx(() {
                   return IconButton(
@@ -55,7 +56,7 @@ class RecycleBinView extends GetView<RecycleBinController> {
                             angle: value * 2 * 3.141592653589793,
                             child: Icon(
                               Icons.refresh_rounded,
-                              color: AppColors.PRIMARY_COLOR,
+                              color: AppColors.SECONDARY_COLOR,
                               size: context.isPortrait ? 6.w : 6.h,
                             ),
                           );
@@ -67,7 +68,7 @@ class RecycleBinView extends GetView<RecycleBinController> {
               ],
             ),
           ),
-          SizedBox(height: 3.h),
+          SizedBox(height: 1.h),
 
           ///Sort by Color
           const Expanded(
