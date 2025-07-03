@@ -246,4 +246,7 @@ Map<String, String> guIN = <String, String>{
   AppStrings.totalPayment: "કુલ ચુકવણી",
   AppStrings.totalCompletedInch: "કુલ પૂર્ણ ઇંચ",
   AppStrings.totalCompletedAmount: "કુલ પૂર્ણ રકમ",
+  AppStrings.selectRow: "રોવ પસંદ કરો",
+  AppStrings.editRow: "રોવ સુધારો",
+  AppStrings.billGST: "બિલ (GST)",
 };

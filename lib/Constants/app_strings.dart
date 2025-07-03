@@ -251,4 +251,5 @@ class AppStrings {
   static const String totalCompletedAmount = "Total Completed Amount";
   static const String selectRow = "Select Row";
   static const String editRow = "Edit Row";
+  static const String billGST = "Bill (GST)";
 }

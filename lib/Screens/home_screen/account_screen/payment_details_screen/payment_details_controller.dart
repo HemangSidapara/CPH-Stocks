@@ -32,6 +32,7 @@ class PaymentDetailsController extends GetxController {
     AppStrings.online,
     AppStrings.onlinePatel,
     AppStrings.onlineKevin,
+    AppStrings.billGST,
   ];
 
   @override

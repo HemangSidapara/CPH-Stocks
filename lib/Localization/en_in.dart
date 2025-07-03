@@ -246,4 +246,7 @@ Map<String, String> enIN = <String, String>{
   AppStrings.totalPayment: "Total Payment",
   AppStrings.totalCompletedInch: "Total Completed Inch",
   AppStrings.totalCompletedAmount: "Total Completed Amount",
+  AppStrings.selectRow: "Select Row",
+  AppStrings.editRow: "Edit Row",
+  AppStrings.billGST: "Bill (GST)",
 };

@@ -244,4 +244,7 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.totalPayment: "कुल भुगतान",
   AppStrings.totalCompletedInch: "कुल पूर्ण इंच",
   AppStrings.totalCompletedAmount: "कुल पूर्ण राशि",
+  AppStrings.selectRow: "सत्र चुनें",
+  AppStrings.editRow: "सत्र संपादित करें",
+  AppStrings.billGST: "चालान (GST)",
 };
