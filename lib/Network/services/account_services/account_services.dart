@@ -334,4 +334,31 @@ class AccountServices {
     );
     return response;
   }
+
+  /// Get All Payments Service
+  static Future<ResponseModel> getAllPaymentsService() async {
+    final response = await ApiBaseHelper.getHTTP(
+      ApiUrls.getAllPaymentsApi,
+      showProgress: false,
+      onError: (dioExceptions) {
+        if (kDebugMode) {
+          print("getAllPaymentsApi onError :: ${dioExceptions.message}");
+        }
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      onSuccess: (res) {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("getAllPaymentsApi success :: ${res.message}");
+          }
+        } else {
+          if (kDebugMode) {
+            print("getAllPaymentsApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+    return response;
+  }
 }

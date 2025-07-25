@@ -252,4 +252,5 @@ class AppStrings {
   static const String selectRow = "Select Row";
   static const String editRow = "Edit Row";
   static const String billGST = "Bill (GST)";
+  static const String allPayments = "All Payments";
 }

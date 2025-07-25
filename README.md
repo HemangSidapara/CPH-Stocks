@@ -4,7 +4,7 @@ Stocks handle of CPH.
 
 ## Flutter Version:
 
-- v3.32.5 (Stable)
+- v3.32.7 (Stable)
 
 ## Notes:
 
@@ -12,4 +12,4 @@ Stocks handle of CPH.
    - `dart run flutter_native_splash:create`
 
 2) Run for generate json model class
-   - `dart run build_runner build`
+   - `dart run build_runner build -d`

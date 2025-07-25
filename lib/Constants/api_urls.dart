@@ -48,6 +48,7 @@ class ApiUrls {
   static const String getPendingPaymentsApi = '${_apiPath}getPendingPayments';
   static const String getAutomaticLedgerInvoiceApi = '${_apiPath}getAutomaticLedgerInvoice';
   static const String editInvoiceApi = '${_apiPath}editInvoice';
+  static const String getAllPaymentsApi = '${_apiPath}getAllPayments';
 
   /// Notes APIs
   static const String getNotesApi = '${_apiPath}getNotes';

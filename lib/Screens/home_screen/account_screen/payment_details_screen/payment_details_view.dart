@@ -55,297 +55,477 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
             padding: EdgeInsets.only(bottom: 2.h),
             child: Column(
               children: [
-                Form(
-                  key: controller.formKey,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ///Party
-                            Expanded(
-                              child: TextFieldWidget(
-                                controller: controller.partyNameController,
-                                readOnly: true,
-                                hintText: AppStrings.selectParty.tr,
-                                validator: controller.validatePartyName,
-                                onTap: () {
-                                  CreateOrderView().showBottomSheetSelectAndAdd(
-                                    ctx: context,
-                                    selectOnly: true,
-                                    items: controller.partyList,
-                                    title: AppStrings.party.tr,
-                                    fieldHint: AppStrings.enterPartyName.tr,
-                                    searchHint: AppStrings.searchParty.tr,
-                                    selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
-                                    controller: controller.partyNameController,
-                                    onInit: () async {
-                                      return await controller.getPartiesApi();
-                                    },
-                                    onSelect: (id) {
-                                      controller.selectedParty.value = id.toString();
-                                      controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? "";
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 2.w),
-
-                            ///Add Payment Enable
-                            IconButton(
-                              onPressed: () {
-                                controller.isPaymentAddEnable.toggle();
-                              },
-                              style: IconButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size(context.isPortrait ? 7.w : 7.h, context.isPortrait ? 4.h : 4.w),
-                                maximumSize: Size(context.isPortrait ? 7.w : 7.h, context.isPortrait ? 4.h : 4.w),
-                              ),
-                              icon: Obx(() {
-                                return AnimatedRotation(
-                                  turns: controller.isPaymentAddEnable.isTrue ? 1 / 2 : 0,
-                                  duration: 375.milliseconds,
-                                  child: Icon(
-                                    Icons.add_circle_rounded,
-                                    color: controller.isPaymentAddEnable.isTrue ? AppColors.DARK_GREEN_COLOR : AppColors.WHITE_COLOR,
-                                    size: context.isPortrait ? 7.w : 7.h,
-                                  ),
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-
-                        ///Fields
-                        Obx(() {
-                          if (controller.isPaymentAddEnable.isTrue) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: 2.h),
-
-                                ///Amount
-                                TextFieldWidget(
-                                  controller: controller.amountController,
-                                  title: AppStrings.amount.tr,
-                                  hintText: AppStrings.enterAmount.tr,
-                                  validator: controller.validateAmount,
-                                  keyboardType: TextInputType.number,
-                                  maxLength: 10,
-                                ),
-                                SizedBox(height: 2.h),
-
-                                ///Payment Mode
-                                TextFieldWidget(
-                                  controller: controller.paymentModeController,
-                                  readOnly: true,
-                                  title: AppStrings.paymentMode.tr,
-                                  hintText: AppStrings.selectPaymentMode.tr,
-                                  validator: controller.validatePaymentMode,
-                                  onTap: () {
-                                    CreateOrderView().showBottomSheetSelectAndAdd(
-                                      ctx: context,
-                                      selectOnly: true,
-                                      items: controller.paymentModeList,
-                                      title: AppStrings.paymentMode.tr,
-                                      fieldHint: "",
-                                      searchHint: AppStrings.searchPaymentMode.tr,
-                                      selectedId: controller.selectedPaymentMode.value,
-                                      controller: controller.paymentModeController,
-                                      onSelect: (id) {
-                                        controller.selectedPaymentMode.value = id;
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          } else {
-                            return SizedBox();
-                          }
-                        }),
-                      ],
+                ///Tabs
+                TabBar(
+                  controller: controller.tabController,
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  tabAlignment: TabAlignment.fill,
+                  labelPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                  indicatorPadding: EdgeInsets.zero,
+                  indicatorColor: AppColors.TERTIARY_COLOR,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorWeight: 2.5,
+                  indicator: UnderlineTabIndicator(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.TERTIARY_COLOR,
+                      width: 2.5,
                     ),
                   ),
+                  dividerColor: AppColors.TRANSPARENT,
+                  onTap: (value) {
+                    Utils.unfocus();
+                    controller.tabIndex(value);
+                  },
+                  tabs: [
+                    Text(
+                      AppStrings.allPayments.tr,
+                      style: TextStyle(
+                        color: AppColors.WHITE_COLOR,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                    Text(
+                      AppStrings.addPayment.tr,
+                      style: TextStyle(
+                        color: AppColors.WHITE_COLOR,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 1.h),
 
-                ///Get/Add Payment
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 1.5.h),
-                  child: Obx(() {
-                    return ButtonWidget(
-                      onPressed: () {
-                        if (controller.isPaymentAddEnable.isTrue) {
-                          controller.createPaymentApiCall();
-                        } else {
-                          controller.getPartyPaymentApiCall();
-                        }
-                      },
-                      isLoading: controller.isPaymentAddEnable.isTrue ? controller.isPaymentAdding.isTrue : controller.isLoading.isTrue,
-                      buttonTitle: controller.isPaymentAddEnable.isTrue ? AppStrings.addPayment.tr : AppStrings.getPayments.tr,
-                    );
-                  }),
-                ),
-                DividerWidget(),
-
-                ///Payments
                 Expanded(
-                  child: RefreshIndicatorWidget(
-                    onRefresh: () async {
-                      await controller.getPartyPaymentApiCall(isRefresh: true);
-                    },
-                    child: Obx(() {
-                      if (controller.isLoading.isTrue) {
-                        return LoadingWidget();
-                      } else if (controller.filteredPaymentList.isEmpty) {
-                        return Center(
-                          child: SingleChildScrollView(
-                            child: NoDataFoundWidget(
-                              subtitle: AppStrings.noPaymentsFound.tr,
-                              onPressed: () {
-                                controller.getPartyPaymentApiCall();
-                              },
-                            ),
-                          ),
-                        );
-                      } else {
-                        return AnimationLimiter(
-                          child: ListView.separated(
-                            itemCount: controller.filteredPaymentList.length,
-                            shrinkWrap: true,
-                            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h).copyWith(bottom: 5.h),
-                            itemBuilder: (context, index) {
-                              final data = controller.filteredPaymentList[index];
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: const Duration(milliseconds: 375),
-                                child: SlideAnimation(
-                                  verticalOffset: 50.0,
-                                  child: FadeInAnimation(
-                                    child: Card(
-                                      color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                      clipBehavior: Clip.antiAlias,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: ExpansionTile(
-                                        title: Row(
-                                          children: [
-                                            ///Amount & Date
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    data.amount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toDouble()) : "",
-                                                    style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                  ),
-                                                  Text(
-                                                    DateFormat("dd/MM/yyyy").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
-                                                    style: AppStyles.size14w600.copyWith(color: AppColors.ORANGE_COLOR),
-                                                  ),
-                                                  Text(
-                                                    DateFormat("hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
-                                                    style: AppStyles.size14w600.copyWith(color: AppColors.ORANGE_COLOR),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(width: 2.w),
-
-                                            ///Payment Mode
-                                            Text(
-                                              data.paymentMode ?? "",
-                                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                            ),
-                                            SizedBox(width: 2.w),
-                                          ],
-                                        ),
-                                        enabled: false,
-                                        tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
-                                        trailing: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            ///Edit
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                showBottomSheetEditPayment(ctx: context, paymentData: data);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: AppColors.WARNING_COLOR,
-                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                padding: EdgeInsets.zero,
-                                                maximumSize: Size.square(8.w),
-                                                minimumSize: Size.square(8.w),
-                                                elevation: 4,
-                                              ),
-                                              child: Icon(
-                                                Icons.edit_rounded,
-                                                size: 5.w,
-                                                color: AppColors.PRIMARY_COLOR,
-                                              ),
-                                            ),
-                                            SizedBox(width: 2.w),
-
-                                            ///Delete
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                showDeleteDialog(
-                                                  ctx: context,
-                                                  onPressed: () {
-                                                    Get.back();
-                                                    controller.deletePaymentApiCall(partyPaymentMetaId: data.partyPaymentMetaId);
-                                                  },
-                                                  title: AppStrings.areYouSureYouWantToDeleteThisPayment.tr,
-                                                );
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: AppColors.DARK_RED_COLOR,
-                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                padding: EdgeInsets.zero,
-                                                maximumSize: Size.square(8.w),
-                                                minimumSize: Size.square(8.w),
-                                                elevation: 4,
-                                              ),
-                                              child: Icon(
-                                                Icons.delete_forever_rounded,
-                                                size: 5.w,
-                                                color: AppColors.PRIMARY_COLOR,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        dense: true,
-                                        collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                        backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                        iconColor: AppColors.SECONDARY_COLOR,
-                                        collapsedShape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                          side: BorderSide.none,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                          side: BorderSide.none,
-                                        ),
-                                        childrenPadding: EdgeInsets.only(bottom: 2.h),
-                                      ),
-                                    ),
+                  child: TabBarView(
+                    controller: controller.tabController,
+                    children: [
+                      ///All Payments
+                      RefreshIndicatorWidget(
+                        onRefresh: () async {
+                          await controller.getAllPaymentsApiCall(isRefresh: true);
+                        },
+                        child: Obx(() {
+                          if (controller.isPaymentsLoading.isTrue) {
+                            return SizedBox(
+                              height: 70.h,
+                              child: Center(
+                                child: LoadingWidget(),
+                              ),
+                            );
+                          } else if (controller.filteredAllPaymentsList.isEmpty) {
+                            return SizedBox(
+                              height: 70.h,
+                              child: Center(
+                                child: SingleChildScrollView(
+                                  child: NoDataFoundWidget(
+                                    subtitle: AppStrings.noPaymentsFound.tr,
+                                    onPressed: () {
+                                      Utils.unfocus();
+                                      controller.getAllPaymentsApiCall();
+                                    },
                                   ),
                                 ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(height: 1.5.h);
-                            },
+                              ),
+                            );
+                          } else {
+                            return AnimationLimiter(
+                              child: ListView.separated(
+                                itemCount: controller.filteredAllPaymentsList.length,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h).copyWith(top: 1.h),
+                                itemBuilder: (context, index) {
+                                  final data = controller.filteredAllPaymentsList[index];
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: const Duration(milliseconds: 375),
+                                    child: SlideAnimation(
+                                      verticalOffset: 50.0,
+                                      child: FadeInAnimation(
+                                        child: Card(
+                                          color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                          clipBehavior: Clip.antiAlias,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: ExpansionTile(
+                                            title: Column(
+                                              children: [
+                                                ///Name & Amount
+                                                Row(
+                                                  children: [
+                                                    ///Party Name
+                                                    Expanded(
+                                                      child: Text(
+                                                        data.partyName ?? "",
+                                                        style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 2.w),
+
+                                                    ///Pending Amount
+                                                    Text(
+                                                      data.amount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toTryDouble() ?? 0.0) : "",
+                                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 0.7.h),
+
+                                                ///Date & Mode
+                                                Row(
+                                                  children: [
+                                                    ///Party Name
+                                                    Expanded(
+                                                      child: Text(
+                                                        DateFormat("dd-MM-yyyy hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}")),
+                                                        style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 2.w),
+
+                                                    ///Pending Amount
+                                                    Text(
+                                                      data.paymentMode?.tr ?? "",
+                                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            enabled: false,
+                                            tilePadding: EdgeInsets.symmetric(horizontal: 3.w),
+                                            dense: true,
+                                            showTrailingIcon: false,
+                                            collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                            backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                            iconColor: AppColors.SECONDARY_COLOR,
+                                            collapsedShape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                              side: BorderSide.none,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                              side: BorderSide.none,
+                                            ),
+                                            childrenPadding: EdgeInsets.only(bottom: 2.h),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder: (context, index) {
+                                  return SizedBox(height: 1.5.h);
+                                },
+                              ),
+                            );
+                          }
+                        }),
+                      ),
+
+                      ///Add Payment
+                      Column(
+                        children: [
+                          SizedBox(height: 1.h),
+                          Form(
+                            key: controller.formKey,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ///Party
+                                      Expanded(
+                                        child: TextFieldWidget(
+                                          controller: controller.partyNameController,
+                                          readOnly: true,
+                                          hintText: AppStrings.selectParty.tr,
+                                          validator: controller.validatePartyName,
+                                          onTap: () {
+                                            CreateOrderView().showBottomSheetSelectAndAdd(
+                                              ctx: context,
+                                              selectOnly: true,
+                                              items: controller.partyList,
+                                              title: AppStrings.party.tr,
+                                              fieldHint: AppStrings.enterPartyName.tr,
+                                              searchHint: AppStrings.searchParty.tr,
+                                              selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
+                                              controller: controller.partyNameController,
+                                              onInit: () async {
+                                                return await controller.getPartiesApi();
+                                              },
+                                              onSelect: (id) {
+                                                controller.selectedParty.value = id.toString();
+                                                controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? "";
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(width: 2.w),
+
+                                      ///Add Payment Enable
+                                      IconButton(
+                                        onPressed: () {
+                                          controller.isPaymentAddEnable.toggle();
+                                        },
+                                        style: IconButton.styleFrom(
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          padding: EdgeInsets.zero,
+                                          minimumSize: Size(context.isPortrait ? 7.w : 7.h, context.isPortrait ? 4.h : 4.w),
+                                          maximumSize: Size(context.isPortrait ? 7.w : 7.h, context.isPortrait ? 4.h : 4.w),
+                                        ),
+                                        icon: Obx(() {
+                                          return AnimatedRotation(
+                                            turns: controller.isPaymentAddEnable.isTrue ? 1 / 2 : 0,
+                                            duration: 375.milliseconds,
+                                            child: Icon(
+                                              Icons.add_circle_rounded,
+                                              color: controller.isPaymentAddEnable.isTrue ? AppColors.DARK_GREEN_COLOR : AppColors.WHITE_COLOR,
+                                              size: context.isPortrait ? 7.w : 7.h,
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+
+                                  ///Fields
+                                  Obx(() {
+                                    if (controller.isPaymentAddEnable.isTrue) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(height: 2.h),
+
+                                          ///Amount
+                                          TextFieldWidget(
+                                            controller: controller.amountController,
+                                            title: AppStrings.amount.tr,
+                                            hintText: AppStrings.enterAmount.tr,
+                                            validator: controller.validateAmount,
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 10,
+                                          ),
+                                          SizedBox(height: 2.h),
+
+                                          ///Payment Mode
+                                          TextFieldWidget(
+                                            controller: controller.paymentModeController,
+                                            readOnly: true,
+                                            title: AppStrings.paymentMode.tr,
+                                            hintText: AppStrings.selectPaymentMode.tr,
+                                            validator: controller.validatePaymentMode,
+                                            onTap: () {
+                                              CreateOrderView().showBottomSheetSelectAndAdd(
+                                                ctx: context,
+                                                selectOnly: true,
+                                                items: controller.paymentModeList,
+                                                title: AppStrings.paymentMode.tr,
+                                                fieldHint: "",
+                                                searchHint: AppStrings.searchPaymentMode.tr,
+                                                selectedId: controller.selectedPaymentMode.value,
+                                                controller: controller.paymentModeController,
+                                                onSelect: (id) {
+                                                  controller.selectedPaymentMode.value = id;
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return SizedBox();
+                                    }
+                                  }),
+                                ],
+                              ),
+                            ),
                           ),
-                        );
-                      }
-                    }),
+                          SizedBox(height: 2.h),
+
+                          ///Get/Add Payment
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.w).copyWith(bottom: 1.5.h),
+                            child: Obx(() {
+                              return ButtonWidget(
+                                onPressed: () {
+                                  if (controller.isPaymentAddEnable.isTrue) {
+                                    controller.createPaymentApiCall();
+                                  } else {
+                                    controller.getPartyPaymentApiCall();
+                                  }
+                                },
+                                isLoading: controller.isPaymentAddEnable.isTrue ? controller.isPaymentAdding.isTrue : controller.isLoading.isTrue,
+                                buttonTitle: controller.isPaymentAddEnable.isTrue ? AppStrings.addPayment.tr : AppStrings.getPayments.tr,
+                              );
+                            }),
+                          ),
+                          DividerWidget(),
+
+                          ///Payments
+                          Expanded(
+                            child: RefreshIndicatorWidget(
+                              onRefresh: () async {
+                                await controller.getPartyPaymentApiCall(isRefresh: true);
+                              },
+                              child: Obx(() {
+                                if (controller.isLoading.isTrue) {
+                                  return LoadingWidget();
+                                } else if (controller.filteredPaymentList.isEmpty) {
+                                  return Center(
+                                    child: SingleChildScrollView(
+                                      child: NoDataFoundWidget(
+                                        subtitle: AppStrings.noPaymentsFound.tr,
+                                        onPressed: () {
+                                          controller.getPartyPaymentApiCall();
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return AnimationLimiter(
+                                    child: ListView.separated(
+                                      itemCount: controller.filteredPaymentList.length,
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.5.h).copyWith(bottom: 5.h),
+                                      itemBuilder: (context, index) {
+                                        final data = controller.filteredPaymentList[index];
+                                        return AnimationConfiguration.staggeredList(
+                                          position: index,
+                                          duration: const Duration(milliseconds: 375),
+                                          child: SlideAnimation(
+                                            verticalOffset: 50.0,
+                                            child: FadeInAnimation(
+                                              child: Card(
+                                                color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                clipBehavior: Clip.antiAlias,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                child: ExpansionTile(
+                                                  title: Row(
+                                                    children: [
+                                                      ///Amount & Date
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              data.amount?.isNotEmpty == true ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toDouble()) : "",
+                                                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                            ),
+                                                            Text(
+                                                              DateFormat("dd/MM/yyyy").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
+                                                              style: AppStyles.size14w600.copyWith(color: AppColors.ORANGE_COLOR),
+                                                            ),
+                                                            Text(
+                                                              DateFormat("hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}".trim())),
+                                                              style: AppStyles.size14w600.copyWith(color: AppColors.ORANGE_COLOR),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 2.w),
+
+                                                      ///Payment Mode
+                                                      Text(
+                                                        data.paymentMode ?? "",
+                                                        style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                      SizedBox(width: 2.w),
+                                                    ],
+                                                  ),
+                                                  enabled: false,
+                                                  tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
+                                                  trailing: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      ///Edit
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          showBottomSheetEditPayment(ctx: context, paymentData: data);
+                                                        },
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: AppColors.WARNING_COLOR,
+                                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          padding: EdgeInsets.zero,
+                                                          maximumSize: Size.square(8.w),
+                                                          minimumSize: Size.square(8.w),
+                                                          elevation: 4,
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.edit_rounded,
+                                                          size: 5.w,
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 2.w),
+
+                                                      ///Delete
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          showDeleteDialog(
+                                                            ctx: context,
+                                                            onPressed: () {
+                                                              Get.back();
+                                                              controller.deletePaymentApiCall(partyPaymentMetaId: data.partyPaymentMetaId);
+                                                            },
+                                                            title: AppStrings.areYouSureYouWantToDeleteThisPayment.tr,
+                                                          );
+                                                        },
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: AppColors.DARK_RED_COLOR,
+                                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          padding: EdgeInsets.zero,
+                                                          maximumSize: Size.square(8.w),
+                                                          minimumSize: Size.square(8.w),
+                                                          elevation: 4,
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.delete_forever_rounded,
+                                                          size: 5.w,
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  dense: true,
+                                                  collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                  backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                  iconColor: AppColors.SECONDARY_COLOR,
+                                                  collapsedShape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    side: BorderSide.none,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    side: BorderSide.none,
+                                                  ),
+                                                  childrenPadding: EdgeInsets.only(bottom: 2.h),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return SizedBox(height: 1.5.h);
+                                      },
+                                    ),
+                                  );
+                                }
+                              }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],

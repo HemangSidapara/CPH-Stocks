@@ -29,6 +29,10 @@ extension StringToDouble on String {
   double toDouble() {
     return double.parse(this);
   }
+
+  double? toTryDouble() {
+    return double.tryParse(this);
+  }
 }
 
 extension EmptyToZero on String {

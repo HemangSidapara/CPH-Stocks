@@ -1,6 +1,7 @@
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/app_validators.dart';
+import 'package:cph_stocks/Network/models/account_models/get_all_payments_model.dart' as get_all_payments;
 import 'package:cph_stocks/Network/models/account_models/get_party_payment_model.dart' as get_payments;
 import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/account_services/account_services.dart';
@@ -8,7 +9,10 @@ import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PaymentDetailsController extends GetxController {
+class PaymentDetailsController extends GetxController with GetSingleTickerProviderStateMixin {
+  late TabController tabController;
+  RxInt tabIndex = 0.obs;
+
   RxBool isLoading = false.obs;
 
   RxList<get_parties.Data> partyList = <get_parties.Data>[].obs;
@@ -35,10 +39,19 @@ class PaymentDetailsController extends GetxController {
     AppStrings.billGST,
   ];
 
+  RxBool isPaymentsLoading = false.obs;
+  RxList<get_all_payments.PartyPaymentData> allPaymentsList = RxList();
+  RxList<get_all_payments.PartyPaymentData> filteredAllPaymentsList = RxList();
+
   @override
   void onInit() {
     super.onInit();
+    tabController = TabController(length: 2, vsync: this);
+    tabController.addListener(() {
+      tabIndex(tabController.index);
+    });
     getPartiesApi();
+    getAllPaymentsApiCall();
   }
 
   String? validatePartyName(String? value) {
@@ -72,6 +85,23 @@ class PaymentDetailsController extends GetxController {
       partyList.addAll(getPartiesModel.data ?? []);
     }
     return partyList;
+  }
+
+  Future<void> getAllPaymentsApiCall({bool isRefresh = false}) async {
+    try {
+      isPaymentsLoading(!isRefresh);
+      final response = await AccountServices.getAllPaymentsService();
+
+      if (response.isSuccess) {
+        get_all_payments.GetAllPaymentsModel getAllPaymentsModel = get_all_payments.GetAllPaymentsModel.fromJson(response.response?.data ?? {});
+        allPaymentsList.clear();
+        filteredAllPaymentsList.clear();
+        allPaymentsList.addAll(getAllPaymentsModel.data ?? []);
+        filteredAllPaymentsList.addAll(getAllPaymentsModel.data ?? []);
+      }
+    } finally {
+      isPaymentsLoading(false);
+    }
   }
 
   Future<void> getPartyPaymentApiCall({
