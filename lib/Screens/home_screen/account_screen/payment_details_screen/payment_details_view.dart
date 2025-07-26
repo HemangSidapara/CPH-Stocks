@@ -103,127 +103,161 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                     controller: controller.tabController,
                     children: [
                       ///All Payments
-                      RefreshIndicatorWidget(
-                        onRefresh: () async {
-                          await controller.getAllPaymentsApiCall(isRefresh: true);
-                        },
-                        child: Obx(() {
-                          if (controller.isPaymentsLoading.isTrue) {
-                            return SizedBox(
-                              height: 70.h,
-                              child: Center(
-                                child: LoadingWidget(),
-                              ),
-                            );
-                          } else if (controller.filteredAllPaymentsList.isEmpty) {
-                            return SizedBox(
-                              height: 70.h,
-                              child: Center(
-                                child: SingleChildScrollView(
-                                  child: NoDataFoundWidget(
-                                    subtitle: AppStrings.noPaymentsFound.tr,
-                                    onPressed: () {
-                                      Utils.unfocus();
-                                      controller.getAllPaymentsApiCall();
-                                    },
-                                  ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          ///Filter
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.w),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                await showDialogDateRangePicker(ctx: context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
+                                elevation: 4,
+                                padding: EdgeInsets.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                minimumSize: Size.square(8.w),
+                                maximumSize: Size.square(8.w),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                            );
-                          } else {
-                            return AnimationLimiter(
-                              child: ListView.separated(
-                                itemCount: controller.filteredAllPaymentsList.length,
-                                shrinkWrap: true,
-                                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h).copyWith(top: 1.h),
-                                itemBuilder: (context, index) {
-                                  final data = controller.filteredAllPaymentsList[index];
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 375),
-                                    child: SlideAnimation(
-                                      verticalOffset: 50.0,
-                                      child: FadeInAnimation(
-                                        child: Card(
-                                          color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                          clipBehavior: Clip.antiAlias,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: ExpansionTile(
-                                            title: Column(
-                                              children: [
-                                                ///Name & Amount
-                                                Row(
-                                                  children: [
-                                                    ///Party Name
-                                                    Expanded(
-                                                      child: Text(
-                                                        data.partyName ?? "",
-                                                        style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 2.w),
+                              child: Icon(
+                                Icons.calendar_month_rounded,
+                                color: AppColors.WHITE_COLOR,
+                                size: 5.w,
+                              ),
+                            ),
+                          ),
 
-                                                    ///Pending Amount
-                                                    Text(
-                                                      data.amount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toTryDouble() ?? 0.0) : "",
-                                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 0.7.h),
-
-                                                ///Date & Mode
-                                                Row(
-                                                  children: [
-                                                    ///Party Name
-                                                    Expanded(
-                                                      child: Text(
-                                                        DateFormat("dd-MM-yyyy hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}")),
-                                                        style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 2.w),
-
-                                                    ///Pending Amount
-                                                    Text(
-                                                      data.paymentMode?.tr ?? "",
-                                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            enabled: false,
-                                            tilePadding: EdgeInsets.symmetric(horizontal: 3.w),
-                                            dense: true,
-                                            showTrailingIcon: false,
-                                            collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                            backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                            iconColor: AppColors.SECONDARY_COLOR,
-                                            collapsedShape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              side: BorderSide.none,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              side: BorderSide.none,
-                                            ),
-                                            childrenPadding: EdgeInsets.only(bottom: 2.h),
-                                          ),
+                          ///Payments
+                          Expanded(
+                            child: RefreshIndicatorWidget(
+                              onRefresh: () async {
+                                await controller.getAllPaymentsApiCall(isRefresh: true);
+                              },
+                              child: Obx(() {
+                                if (controller.isPaymentsLoading.isTrue) {
+                                  return SizedBox(
+                                    height: 70.h,
+                                    child: Center(
+                                      child: LoadingWidget(),
+                                    ),
+                                  );
+                                } else if (controller.filteredAllPaymentsList.isEmpty) {
+                                  return SizedBox(
+                                    height: 70.h,
+                                    child: Center(
+                                      child: SingleChildScrollView(
+                                        child: NoDataFoundWidget(
+                                          subtitle: AppStrings.noPaymentsFound.tr,
+                                          onPressed: () {
+                                            Utils.unfocus();
+                                            controller.getAllPaymentsApiCall();
+                                          },
                                         ),
                                       ),
                                     ),
                                   );
-                                },
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(height: 1.5.h);
-                                },
-                              ),
-                            );
-                          }
-                        }),
+                                } else {
+                                  return AnimationLimiter(
+                                    child: ListView.separated(
+                                      itemCount: controller.filteredAllPaymentsList.length,
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h).copyWith(top: 1.h),
+                                      itemBuilder: (context, index) {
+                                        final data = controller.filteredAllPaymentsList[index];
+                                        return AnimationConfiguration.staggeredList(
+                                          position: index,
+                                          duration: const Duration(milliseconds: 375),
+                                          child: SlideAnimation(
+                                            verticalOffset: 50.0,
+                                            child: FadeInAnimation(
+                                              child: Card(
+                                                color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                clipBehavior: Clip.antiAlias,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                child: ExpansionTile(
+                                                  title: Column(
+                                                    children: [
+                                                      ///Name & Amount
+                                                      Row(
+                                                        children: [
+                                                          ///Party Name
+                                                          Expanded(
+                                                            child: Text(
+                                                              data.partyName ?? "",
+                                                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 2.w),
+
+                                                          ///Pending Amount
+                                                          Text(
+                                                            data.amount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toTryDouble() ?? 0.0) : "",
+                                                            style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 0.7.h),
+
+                                                      ///Date & Mode
+                                                      Row(
+                                                        children: [
+                                                          ///Party Name
+                                                          Expanded(
+                                                            child: Text(
+                                                              DateFormat("dd-MM-yyyy hh:mm a").format(DateTime.parse("${data.createdDate ?? ""} ${data.createdTime ?? ""}")),
+                                                              style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 2.w),
+
+                                                          ///Pending Amount
+                                                          Text(
+                                                            data.paymentMode?.tr ?? "",
+                                                            style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  enabled: false,
+                                                  tilePadding: EdgeInsets.symmetric(horizontal: 3.w),
+                                                  dense: true,
+                                                  showTrailingIcon: false,
+                                                  collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                  backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                  iconColor: AppColors.SECONDARY_COLOR,
+                                                  collapsedShape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    side: BorderSide.none,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    side: BorderSide.none,
+                                                  ),
+                                                  childrenPadding: EdgeInsets.only(bottom: 2.h),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return SizedBox(height: 1.5.h);
+                                      },
+                                    ),
+                                  );
+                                }
+                              }),
+                            ),
+                          ),
+                        ],
                       ),
 
                       ///Add Payment
@@ -656,5 +690,31 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
         );
       },
     );
+  }
+
+  Future<DateTimeRange<DateTime>?> showDialogDateRangePicker({
+    required BuildContext ctx,
+  }) async {
+    final range = await showDateRangePicker(
+      context: ctx,
+      firstDate: DateTime(2023, 1, 1),
+      lastDate: DateTime(DateTime.now().year + 2, 12, 31),
+      initialDateRange: controller.filterDateRange.value,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            scaffoldBackgroundColor: AppColors.PRIMARY_COLOR,
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (range != null) {
+      controller.filterDateRange.value = range;
+      controller.filterAllPayments();
+      return range;
+    }
+    return null;
   }
 }

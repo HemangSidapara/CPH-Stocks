@@ -42,6 +42,7 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
   RxBool isPaymentsLoading = false.obs;
   RxList<get_all_payments.PartyPaymentData> allPaymentsList = RxList();
   RxList<get_all_payments.PartyPaymentData> filteredAllPaymentsList = RxList();
+  Rx<DateTimeRange<DateTime>?> filterDateRange = Rx(null);
 
   @override
   void onInit() {
@@ -101,6 +102,23 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
       }
     } finally {
       isPaymentsLoading(false);
+    }
+  }
+
+  void filterAllPayments() {
+    filteredAllPaymentsList.clear();
+    if (filterDateRange.value != null) {
+      filteredAllPaymentsList.addAll(
+        allPaymentsList.where((element) {
+          if (element.createdDate == null || element.createdDate?.isEmpty == true) {
+            return false;
+          }
+          final paymentDate = DateTime.parse(element.createdDate!);
+          return (paymentDate.isAfter(filterDateRange.value!.start) && paymentDate.isBefore(filterDateRange.value!.end)) || paymentDate.isAtSameMomentAs(filterDateRange.value!.start) || paymentDate.isAtSameMomentAs(filterDateRange.value!.end);
+        }).toList(),
+      );
+    } else {
+      filteredAllPaymentsList.addAll([...allPaymentsList]);
     }
   }
 
