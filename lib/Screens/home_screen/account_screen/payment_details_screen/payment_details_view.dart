@@ -109,26 +109,56 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                           ///Filter
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 5.w),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await showDialogDateRangePicker(ctx: context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
-                                elevation: 4,
-                                padding: EdgeInsets.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                minimumSize: Size.square(8.w),
-                                maximumSize: Size.square(8.w),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Obx(() {
+                                  if (controller.filterDateRange.value != null) {
+                                    return IconButton(
+                                      onPressed: () {
+                                        controller.filterDateRange.value = null;
+                                        controller.filterAllPayments();
+                                      },
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.5),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        minimumSize: Size.square(8.w),
+                                        maximumSize: Size.square(8.w),
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                      icon: Icon(
+                                        Icons.close_rounded,
+                                        color: AppColors.PRIMARY_COLOR,
+                                        size: 5.w,
+                                      ),
+                                    );
+                                  }
+                                  return SizedBox.shrink();
+                                }),
+                                SizedBox(width: 2.w),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await showDialogDateRangePicker(ctx: context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
+                                    elevation: 4,
+                                    padding: EdgeInsets.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    minimumSize: Size.square(8.w),
+                                    maximumSize: Size.square(8.w),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.calendar_month_rounded,
+                                    color: AppColors.WHITE_COLOR,
+                                    size: 5.w,
+                                  ),
                                 ),
-                              ),
-                              child: Icon(
-                                Icons.calendar_month_rounded,
-                                color: AppColors.WHITE_COLOR,
-                                size: 5.w,
-                              ),
+                              ],
                             ),
                           ),
 
@@ -705,6 +735,12 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
         return Theme(
           data: Theme.of(context).copyWith(
             scaffoldBackgroundColor: AppColors.PRIMARY_COLOR,
+            colorScheme: ColorScheme.of(context).copyWith(
+              primary: AppColors.TERTIARY_COLOR,
+            ),
+            datePickerTheme: DatePickerThemeData(
+              rangeSelectionBackgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.3),
+            ),
           ),
           child: child!,
         );
