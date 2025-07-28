@@ -98,7 +98,7 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
         allPaymentsList.clear();
         filteredAllPaymentsList.clear();
         allPaymentsList.addAll(getAllPaymentsModel.data ?? []);
-        filteredAllPaymentsList.addAll(getAllPaymentsModel.data ?? []);
+        filterAllPayments();
       }
     } finally {
       isPaymentsLoading(false);
@@ -151,6 +151,7 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
     if (response.isSuccess) {
       Utils.handleMessage(message: response.message);
       getPartyPaymentApiCall(isRefresh: true);
+      getAllPaymentsApiCall(isRefresh: true);
     }
   }
 

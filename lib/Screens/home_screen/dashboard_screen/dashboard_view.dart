@@ -97,7 +97,7 @@ class DashboardView extends GetView<DashboardController> {
                 ],
 
                 ///Order Sequence
-                if (![AppConstance.customer, AppConstance.employee].contains(getData(AppConstance.role))) ...[
+                if (![AppConstance.customer].contains(getData(AppConstance.role))) ...[
                   CommonButton(
                     route: Routes.orderSequenceScreen,
                     isRepair: true,

@@ -161,6 +161,7 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                               ],
                             ),
                           ),
+                          SizedBox(height: 1.h),
 
                           ///Payments
                           Expanded(
@@ -257,9 +258,39 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                                     ],
                                                   ),
                                                   enabled: false,
-                                                  tilePadding: EdgeInsets.symmetric(horizontal: 3.w),
+                                                  tilePadding: EdgeInsets.symmetric(horizontal: 3.w).copyWith(right: 2.w),
                                                   dense: true,
-                                                  showTrailingIcon: false,
+                                                  trailing: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      ///Delete
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          showDeleteDialog(
+                                                            ctx: context,
+                                                            onPressed: () {
+                                                              Get.back();
+                                                              controller.deletePaymentApiCall(partyPaymentMetaId: data.partyPaymentMetaId);
+                                                            },
+                                                            title: AppStrings.areYouSureYouWantToDeleteThisPayment.tr,
+                                                          );
+                                                        },
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: AppColors.DARK_RED_COLOR,
+                                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          padding: EdgeInsets.zero,
+                                                          maximumSize: Size.square(8.w),
+                                                          minimumSize: Size.square(8.w),
+                                                          elevation: 4,
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.delete_forever_rounded,
+                                                          size: 5.w,
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                   collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                                                   backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
                                                   iconColor: AppColors.SECONDARY_COLOR,
