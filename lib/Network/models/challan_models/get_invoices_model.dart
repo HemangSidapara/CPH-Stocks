@@ -30,6 +30,7 @@ class GetInvoicesModel {
 @JsonSerializable(explicitToJson: true)
 class OrderInvoice {
   String? orderInvoiceId;
+  String? partyId;
   String? partyName;
   String? createdDate;
   String? createdTime;
@@ -38,6 +39,7 @@ class OrderInvoice {
 
   OrderInvoice({
     this.orderInvoiceId,
+    this.partyId,
     this.partyName,
     this.createdDate,
     this.createdTime,
@@ -51,6 +53,7 @@ class OrderInvoice {
 
   OrderInvoice copyWith({
     String? orderInvoiceId,
+    String? partyId,
     String? partyName,
     String? createdDate,
     String? createdTime,
@@ -59,6 +62,7 @@ class OrderInvoice {
   }) {
     return OrderInvoice(
       orderInvoiceId: orderInvoiceId ?? this.orderInvoiceId,
+      partyId: partyId ?? this.partyId,
       partyName: partyName ?? this.partyName,
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,

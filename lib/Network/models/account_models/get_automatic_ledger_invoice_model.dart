@@ -54,6 +54,7 @@ class GetAutomaticLedgerInvoiceModel {
 class GetPartyData {
   String? partyId;
   String? partyName;
+  bool? isGst;
   String? startDate;
   String? endDate;
   List<OrderInvoice>? invoices;
@@ -61,6 +62,7 @@ class GetPartyData {
   GetPartyData({
     this.partyId,
     this.partyName,
+    this.isGst,
     this.startDate,
     this.endDate,
     this.invoices,
@@ -83,6 +85,7 @@ class GetPartyData {
   GetPartyData copyWith({
     String? partyId,
     String? partyName,
+    bool? isGst,
     String? startDate,
     String? endDate,
     List<OrderInvoice>? invoices,
@@ -90,6 +93,7 @@ class GetPartyData {
     return GetPartyData(
       partyId: partyId ?? this.partyId,
       partyName: partyName ?? this.partyName,
+      isGst: isGst ?? this.isGst,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       invoices: invoices ?? this.invoices,

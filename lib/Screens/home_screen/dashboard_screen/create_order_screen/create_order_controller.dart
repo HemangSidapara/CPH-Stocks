@@ -46,6 +46,8 @@ class CreateOrderController extends GetxController {
   RxBool isCreateOrderLoading = false.obs;
   RxList<bool> isImageSelectedList = RxList();
 
+  RxBool withGST = false.obs;
+
   @override
   void onInit() async {
     super.onInit();
@@ -176,8 +178,10 @@ class CreateOrderController extends GetxController {
             });
           }
           final response = await OrderServices.createOrderService(
+            partyId: selectedParty.isNotEmpty ? selectedParty.value : null,
             partyName: partyNameController.text.trim(),
             contactNumber: contactNumberController.text.trim(),
+            isGst: withGST.isTrue,
             description: descriptionController.text.trim(),
             meta: tempMetaList,
           );
@@ -203,6 +207,7 @@ class CreateOrderController extends GetxController {
       partyNameController.text = data[ApiKeys.partyName] ?? '';
       selectedParty.value = partyList.firstWhereOrNull((element) => element.partyName == data[ApiKeys.partyName])?.orderId ?? "";
       contactNumberController.text = data[ApiKeys.contactNumber] ?? '';
+      withGST(data[ApiKeys.isGst] ?? false);
       descriptionController.text = data[ApiKeys.description] ?? '';
 
       for (int i = 0; i < (data[ApiKeys.meta]?.length ?? 0); i++) {
@@ -244,6 +249,7 @@ class CreateOrderController extends GetxController {
 
     data[ApiKeys.partyName] = partyNameController.text.trim();
     data[ApiKeys.contactNumber] = contactNumberController.text.trim();
+    data[ApiKeys.isGst] = withGST.isTrue;
     data[ApiKeys.description] = descriptionController.text.trim();
     data[ApiKeys.meta] = [];
 

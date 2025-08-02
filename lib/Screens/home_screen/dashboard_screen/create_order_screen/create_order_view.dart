@@ -135,9 +135,11 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     return await controller.getPartiesApi();
                                   },
                                   onSelect: (id) {
-                                    controller.selectedParty.value = id.toString();
-                                    controller.partyNameController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.partyName ?? controller.partyNameController.text;
-                                    controller.contactNumberController.text = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value)?.contactNumber ?? controller.contactNumberController.text;
+                                    controller.selectedParty.value = id == -1 ? "" : id.toString();
+                                    final selectedParty = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value);
+                                    controller.partyNameController.text = selectedParty?.partyName ?? controller.partyNameController.text;
+                                    controller.contactNumberController.text = selectedParty?.contactNumber ?? controller.contactNumberController.text;
+                                    controller.withGST(selectedParty?.isGst ?? false);
                                     controller.storeOrderDetails();
                                   },
                                 );
@@ -160,12 +162,104 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                   } else {
                                     return newValue;
                                   }
-                                })
+                                }),
                               ],
                               onChanged: (value) {
                                 controller.storeOrderDetails();
                               },
                               maxLength: 10,
+                            ),
+                            SizedBox(height: 2.h),
+
+                            ///With GST
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 2.w),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  AppStrings.gstOptions.tr,
+                                  style: AppStyles.size16w600,
+                                ),
+                              ),
+                            ),
+                            DividerWidget(),
+                            SizedBox(height: 0.7.h),
+                            GestureDetector(
+                              onTap: () {
+                                controller.withGST.toggle();
+                              },
+                              behavior: HitTestBehavior.opaque,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ///With GST
+                                  Flexible(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Obx(() {
+                                          return AnimatedContainer(
+                                            duration: 375.milliseconds,
+                                            padding: EdgeInsets.all(0.7.w),
+                                            decoration: BoxDecoration(
+                                              color: controller.withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: AppColors.PRIMARY_COLOR,
+                                                width: 1.2,
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              Icons.check_rounded,
+                                              color: AppColors.SECONDARY_COLOR,
+                                              size: 4.w,
+                                            ),
+                                          );
+                                        }),
+                                        SizedBox(width: 2.w),
+                                        Text(
+                                          AppStrings.withKey.tr,
+                                          style: AppStyles.size16w600,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 2.w),
+
+                                  ///Without GST
+                                  Flexible(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Obx(() {
+                                          return AnimatedContainer(
+                                            duration: 375.milliseconds,
+                                            padding: EdgeInsets.all(0.7.w),
+                                            decoration: BoxDecoration(
+                                              color: controller.withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: AppColors.PRIMARY_COLOR,
+                                                width: 1.2,
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              Icons.check_rounded,
+                                              color: AppColors.SECONDARY_COLOR,
+                                              size: 4.w,
+                                            ),
+                                          );
+                                        }),
+                                        SizedBox(width: 2.w),
+                                        Text(
+                                          AppStrings.without.tr,
+                                          style: AppStyles.size16w600,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 2.h),
 
@@ -296,10 +390,10 @@ class CreateOrderView extends GetView<CreateOrderController> {
                               format: fileFormat == 'png'
                                   ? CompressFormat.png
                                   : fileFormat == 'jpg' || fileFormat == 'jpeg'
-                                      ? CompressFormat.jpeg
-                                      : fileFormat == 'heic'
-                                          ? CompressFormat.heic
-                                          : CompressFormat.webp,
+                                  ? CompressFormat.jpeg
+                                  : fileFormat == 'heic'
+                                  ? CompressFormat.heic
+                                  : CompressFormat.webp,
                             );
                             if (result != null) {
                               controller.base64ImageList[index] = base64Encode(await result.readAsBytes());
@@ -346,10 +440,10 @@ class CreateOrderView extends GetView<CreateOrderController> {
                               format: fileFormat == 'png'
                                   ? CompressFormat.png
                                   : fileFormat == 'jpg' || fileFormat == 'jpeg'
-                                      ? CompressFormat.jpeg
-                                      : fileFormat == 'heic'
-                                          ? CompressFormat.heic
-                                          : CompressFormat.webp,
+                                  ? CompressFormat.jpeg
+                                  : fileFormat == 'heic'
+                                  ? CompressFormat.heic
+                                  : CompressFormat.webp,
                             );
                             if (result != null) {
                               controller.base64ImageList[index] = base64Encode(await result.readAsBytes());
@@ -761,11 +855,15 @@ class CreateOrderView extends GetView<CreateOrderController> {
     void searchItems(value) {
       searchItemsList.clear();
       if (value.isNotEmpty) {
-        searchItemsList.addAll(itemsList.where((element) => element is get_parties.Data
-            ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true
-            : element is get_categories.CategoryData
+        searchItemsList.addAll(
+          itemsList.where(
+            (element) => element is get_parties.Data
+                ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true
+                : element is get_categories.CategoryData
                 ? element.categoryName?.toLowerCase().contains(value.toLowerCase()) == true
-                : element.toString().toLowerCase().contains(value.toLowerCase())));
+                : element.toString().toLowerCase().contains(value.toLowerCase()),
+          ),
+        );
       } else {
         searchItemsList.addAll([...itemsList]);
       }
@@ -789,7 +887,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
                     children: [
                       CloseButtonWidget(),
                       SizedBox(width: 2.w),
-                      Flexible(child: Text(title, textAlign: TextAlign.center, style: AppStyles.size18w600)),
+                      Flexible(
+                        child: Text(title, textAlign: TextAlign.center, style: AppStyles.size18w600),
+                      ),
                       SizedBox(width: 2.w),
                       TextButton(
                         onPressed: () {
@@ -801,8 +901,8 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             controller.text = itemsList.firstOrNull is get_parties.Data
                                 ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "")
                                 : itemsList.firstOrNull is get_categories.CategoryData
-                                    ? (searchItemsList.firstWhereOrNull((element) => element.categoryId == selectedIndex.value.toString())?.categoryName ?? "")
-                                    : searchItemsList[selectedIndex.value].toString();
+                                ? (searchItemsList.firstWhereOrNull((element) => element.categoryId == selectedIndex.value.toString())?.categoryName ?? "")
+                                : searchItemsList[selectedIndex.value].toString();
                             onSelect.call(selectedIndex.value);
                           } else {
                             controller.clear();
@@ -924,8 +1024,8 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                       (searchItemsList[index] is get_parties.Data
                                               ? searchItemsList[index].partyName
                                               : searchItemsList[index] is get_categories.CategoryData
-                                                  ? searchItemsList[index].categoryName
-                                                  : searchItemsList[index])
+                                              ? searchItemsList[index].categoryName
+                                              : searchItemsList[index])
                                           .toString()
                                           .tr,
                                       style: AppStyles.size16w600.copyWith(fontSize: 16.sp),
@@ -936,11 +1036,12 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                     return AnimatedContainer(
                                       duration: 375.milliseconds,
                                       decoration: BoxDecoration(
-                                        color: (searchItemsList[index] is get_parties.Data
+                                        color:
+                                            (searchItemsList[index] is get_parties.Data
                                                 ? searchItemsList[index].orderId == selectedIndex.value.toString()
                                                 : searchItemsList[index] is get_categories.CategoryData
-                                                    ? searchItemsList[index].categoryId == selectedIndex.value.toString()
-                                                    : selectedIndex.value == index)
+                                                ? searchItemsList[index].categoryId == selectedIndex.value.toString()
+                                                : selectedIndex.value == index)
                                             ? AppColors.PRIMARY_COLOR
                                             : AppColors.SECONDARY_COLOR,
                                         shape: BoxShape.circle,

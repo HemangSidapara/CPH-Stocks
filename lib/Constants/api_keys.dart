@@ -42,4 +42,5 @@ class ApiKeys {
   static const totalEmployeeId = "totalEmployeeId";
   static const invoiceMetaId = "invoiceMetaId";
   static const inch = "inch";
+  static const isGst = "isGst";
 }

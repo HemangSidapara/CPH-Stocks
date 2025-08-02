@@ -10,6 +10,7 @@ class GetPaymentLedgerModel {
   String? endDate;
   String? partyId;
   String? partyName;
+  bool? isGst;
   LedgerSummary? summary;
   List<LedgerPayment>? payments;
   List<LedgerInvoice>? invoices;
@@ -21,6 +22,7 @@ class GetPaymentLedgerModel {
     this.endDate,
     this.partyId,
     this.partyName,
+    this.isGst,
     this.summary,
     this.payments,
     this.invoices,
@@ -37,6 +39,7 @@ class GetPaymentLedgerModel {
     String? endDate,
     String? partyId,
     String? partyName,
+    bool? isGst,
     LedgerSummary? summary,
     List<LedgerPayment>? payments,
     List<LedgerInvoice>? invoices,
@@ -48,6 +51,7 @@ class GetPaymentLedgerModel {
       endDate: endDate ?? this.endDate,
       partyId: partyId ?? this.partyId,
       partyName: partyName ?? this.partyName,
+      isGst: isGst ?? this.isGst,
       summary: summary ?? this.summary,
       payments: payments ?? this.payments,
       invoices: invoices ?? this.invoices,

@@ -253,4 +253,10 @@ class AppStrings {
   static const String editRow = "Edit Row";
   static const String billGST = "Bill (GST)";
   static const String allPayments = "All Payments";
+  static const String gstOptions = "GST Options";
+  static const String withKey = "With";
+  static const String without = "Without";
+  static const String sharePaymentLedger = "Share Payment Ledger";
+  static const String shareLedgerInvoice = "Share Ledger Invoice";
+  static const String shareInvoice = "Share Invoice";
 }

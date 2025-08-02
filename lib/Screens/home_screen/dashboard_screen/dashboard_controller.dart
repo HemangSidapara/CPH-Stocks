@@ -16,10 +16,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mime/mime.dart';
 import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:printing/printing.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DashboardController extends GetxController {
   /// @function downloadPdf
@@ -258,14 +260,23 @@ class DashboardController extends GetxController {
   /// @param {File} pdfFile - File object
   /// @returns {Future\<bool>} - Returns a Future of a boolean value
   /// @throws {Exception} - Throws an exception if an error occurs
-  Future<bool> sharePdf({required File pdfFile}) async {
-    if (pdfFile.existsSync()) {
-      return await Printing.sharePdf(
-        bytes: pdfFile.readAsBytesSync(),
-        filename: pdfFile.path.split('/').last,
-      );
+  Future<bool> sharePdf({
+    required List<File> pdfFiles,
+    required String shareText,
+  }) async {
+    final existingFiles = pdfFiles.where((element) => element.existsSync()).toList();
+    if (existingFiles.isEmpty) {
+      return false;
     }
-    return false;
+    ShareParams params = ShareParams(
+      title: shareText,
+      files: existingFiles.map((e) {
+        final mimeType = lookupMimeType(e.path);
+        return XFile(e.path, mimeType: mimeType);
+      }).toList(),
+    );
+    final result = await SharePlus.instance.share(params);
+    return result.status == ShareResultStatus.success;
   }
 
   /// @function permissionStatus

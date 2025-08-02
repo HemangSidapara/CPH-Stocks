@@ -249,4 +249,10 @@ Map<String, String> guIN = <String, String>{
   AppStrings.selectRow: "રોવ પસંદ કરો",
   AppStrings.editRow: "રોવ સુધારો",
   AppStrings.billGST: "બિલ (GST)",
+  AppStrings.gstOptions: "જીએસટી વિકલ્પો",
+  AppStrings.withKey: "સાથે",
+  AppStrings.without: "વિના",
+  AppStrings.sharePaymentLedger: "ચુકવણી લેજર શેર કરો",
+  AppStrings.shareLedgerInvoice: "લેજર ઇનવોઇસ શેર કરો",
+  AppStrings.shareInvoice: "ઇનવોઇસ શેર કરો",
 };

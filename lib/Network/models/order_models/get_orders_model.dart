@@ -38,12 +38,11 @@ class GetOrdersModel {
     String? code,
     String? msg,
     List<ColorData>? colorData,
-  }) =>
-      GetOrdersModel(
-        code: code ?? _code,
-        msg: msg ?? _msg,
-        colorData: colorData ?? _colorData,
-      );
+  }) => GetOrdersModel(
+    code: code ?? _code,
+    msg: msg ?? _msg,
+    colorData: colorData ?? _colorData,
+  );
 
   String? get code => _code;
 
@@ -94,11 +93,10 @@ class ColorData {
   ColorData copyWith({
     String? pvdColor,
     List<PartyMeta>? partyMeta,
-  }) =>
-      ColorData(
-        pvdColor: pvdColor ?? _pvdColor,
-        partyMeta: partyMeta ?? _partyMeta,
-      );
+  }) => ColorData(
+    pvdColor: pvdColor ?? _pvdColor,
+    partyMeta: partyMeta ?? _partyMeta,
+  );
 
   String? get pvdColor => _pvdColor;
 
@@ -128,12 +126,14 @@ class PartyMeta {
   PartyMeta({
     String? orderId,
     String? partyName,
+    bool? isGst,
     String? contactNumber,
     String? createdDate,
     List<OrderDate>? orderDate,
   }) {
     _orderId = orderId;
     _partyName = partyName;
+    _isGst = isGst;
     _contactNumber = contactNumber;
     _createdDate = createdDate;
     _orderDate = orderDate;
@@ -142,6 +142,7 @@ class PartyMeta {
   PartyMeta.fromJson(dynamic json) {
     _orderId = json['orderId'];
     _partyName = json['partyName'];
+    _isGst = json['isGst'];
     _contactNumber = json['contactNumber'];
     _createdDate = json['createdDate'];
     if (json['order_date'] != null) {
@@ -154,6 +155,7 @@ class PartyMeta {
 
   String? _orderId;
   String? _partyName;
+  bool? _isGst;
   String? _contactNumber;
   String? _createdDate;
   List<OrderDate>? _orderDate;
@@ -161,21 +163,24 @@ class PartyMeta {
   PartyMeta copyWith({
     String? orderId,
     String? partyName,
+    bool? isGst,
     String? contactNumber,
     String? createdDate,
     List<OrderDate>? orderDate,
-  }) =>
-      PartyMeta(
-        orderId: orderId ?? _orderId,
-        partyName: partyName ?? _partyName,
-        contactNumber: contactNumber ?? _contactNumber,
-        createdDate: createdDate ?? _createdDate,
-        orderDate: orderDate ?? _orderDate,
-      );
+  }) => PartyMeta(
+    orderId: orderId ?? _orderId,
+    partyName: partyName ?? _partyName,
+    isGst: isGst ?? _isGst,
+    contactNumber: contactNumber ?? _contactNumber,
+    createdDate: createdDate ?? _createdDate,
+    orderDate: orderDate ?? _orderDate,
+  );
 
   String? get orderId => _orderId;
 
   String? get partyName => _partyName;
+
+  bool? get isGst => _isGst;
 
   String? get contactNumber => _contactNumber;
 
@@ -187,6 +192,7 @@ class PartyMeta {
     final map = <String, dynamic>{};
     map['orderId'] = _orderId;
     map['partyName'] = _partyName;
+    map['isGst'] = _isGst;
     map['contactNumber'] = _contactNumber;
     map['createdDate'] = _createdDate;
     if (_orderDate != null) {
@@ -240,13 +246,12 @@ class OrderDate {
     String? createdTime,
     String? description,
     List<ModelMeta>? modelMeta,
-  }) =>
-      OrderDate(
-        createdDate: createdDate ?? _createdDate,
-        createdTime: createdTime ?? _createdTime,
-        description: description ?? _description,
-        modelMeta: modelMeta ?? _modelMeta,
-      );
+  }) => OrderDate(
+    createdDate: createdDate ?? _createdDate,
+    createdTime: createdTime ?? _createdTime,
+    description: description ?? _description,
+    modelMeta: modelMeta ?? _modelMeta,
+  );
 
   String? get createdDate => _createdDate;
 
@@ -363,23 +368,22 @@ class ModelMeta {
     String? repair,
     String? createdBy,
     bool? isInvoiceGenerated,
-  }) =>
-      ModelMeta(
-        orderMetaId: orderMetaId ?? _orderMetaId,
-        itemImage: itemImage ?? _itemImage,
-        itemName: itemName ?? _itemName,
-        categoryName: categoryName ?? _categoryName,
-        size: size ?? _size,
-        quantity: quantity ?? _quantity,
-        pvdColor: pvdColor ?? _pvdColor,
-        createdDate: createdDate ?? _createdDate,
-        okPcs: okPcs ?? _okPcs,
-        woProcess: woProcess ?? _woProcess,
-        pending: pending ?? _pending,
-        repair: repair ?? _repair,
-        createdBy: createdBy ?? _createdBy,
-        isInvoiceGenerated: isInvoiceGenerated ?? _isInvoiceGenerated,
-      );
+  }) => ModelMeta(
+    orderMetaId: orderMetaId ?? _orderMetaId,
+    itemImage: itemImage ?? _itemImage,
+    itemName: itemName ?? _itemName,
+    categoryName: categoryName ?? _categoryName,
+    size: size ?? _size,
+    quantity: quantity ?? _quantity,
+    pvdColor: pvdColor ?? _pvdColor,
+    createdDate: createdDate ?? _createdDate,
+    okPcs: okPcs ?? _okPcs,
+    woProcess: woProcess ?? _woProcess,
+    pending: pending ?? _pending,
+    repair: repair ?? _repair,
+    createdBy: createdBy ?? _createdBy,
+    isInvoiceGenerated: isInvoiceGenerated ?? _isInvoiceGenerated,
+  );
 
   String? get orderMetaId => _orderMetaId;
 

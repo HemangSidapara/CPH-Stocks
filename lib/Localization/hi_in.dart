@@ -247,4 +247,10 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.selectRow: "सत्र चुनें",
   AppStrings.editRow: "सत्र संपादित करें",
   AppStrings.billGST: "चालान (GST)",
+  AppStrings.gstOptions: "जीएसटी विकल्प",
+  AppStrings.withKey: "के साथ",
+  AppStrings.without: "के बिना",
+  AppStrings.sharePaymentLedger: "भुगतान लेज़र साझा करें",
+  AppStrings.shareLedgerInvoice: "लेज़र इनवॉइस साझा करें",
+  AppStrings.shareInvoice: "इनवॉइस साझा करें",
 };

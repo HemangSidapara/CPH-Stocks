@@ -182,6 +182,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     required String orderId,
     required String partyName,
     required String contactNumber,
+    required bool isGst,
   }) async {
     final isValidate = editPartyFormKey.currentState?.validate();
 
@@ -190,6 +191,7 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
         orderId: orderId,
         partyName: partyName,
         contactNumber: contactNumber,
+        isGst: isGst,
       );
 
       if (response.isSuccess) {

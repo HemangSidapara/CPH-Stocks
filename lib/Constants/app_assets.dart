@@ -38,6 +38,7 @@ class AppAssets {
   static const String reportsIcon = "assets/icons/reports_icon.png";
   static const String employeeIcon = "assets/icons/employee_icon.png";
   static const String categoriesIcon = "assets/icons/categories_icon.png";
+  static const String gstIcon = "assets/icons/gst_icon.png";
 
   ///Fonts
   static const String robotoRegular = "assets/fonts/Roboto/Roboto-Regular.ttf";

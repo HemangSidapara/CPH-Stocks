@@ -36,10 +36,14 @@ class OrderServices {
     required String contactNumber,
     required List<Map<String, dynamic>> meta,
     required String description,
+    required bool isGst,
+    String? partyId,
   }) async {
     final params = {
+      ApiKeys.partyId: partyId,
       ApiKeys.partyName: partyName,
       ApiKeys.contactNumber: contactNumber,
+      ApiKeys.isGst: isGst,
       ApiKeys.description: description,
       ApiKeys.meta: meta,
     };
@@ -194,11 +198,13 @@ class OrderServices {
     required String orderId,
     required String partyName,
     required String contactNumber,
+    required bool isGst,
   }) async {
     final params = {
       ApiKeys.orderId: orderId,
       ApiKeys.partyName: partyName,
       ApiKeys.contactNumber: contactNumber,
+      ApiKeys.isGst: isGst,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.updatePartyApi,

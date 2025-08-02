@@ -245,7 +245,12 @@ class _InvoiceViewState extends State<InvoiceView> {
             ///Share
             ElevatedButton(
               onPressed: () async {
-                Utils.getDashboardController.sharePdf(pdfFile: pdfFile.value);
+                Utils.getDashboardController.sharePdf(
+                  pdfFiles: [
+                    pdfFile.value,
+                  ],
+                  shareText: AppStrings.shareInvoice.tr,
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.LIGHT_BLUE_COLOR,

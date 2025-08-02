@@ -13,6 +13,7 @@ import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_details_screen/order_details_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
+import 'package:cph_stocks/Widgets/divider_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
 import 'package:cph_stocks/Widgets/refresh_indicator_widget.dart';
@@ -250,6 +251,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                     orderId: controller.searchedColorDataList[index].partyMeta?[partyIndex].orderId ?? '',
                                     partyName: controller.searchedColorDataList[index].partyMeta?[partyIndex].partyName ?? '',
                                     contactNumber: controller.searchedColorDataList[index].partyMeta?[partyIndex].contactNumber ?? '',
+                                    isGst: controller.searchedColorDataList[index].partyMeta?[partyIndex].isGst ?? false,
                                   );
                                 },
                                 style: IconButton.styleFrom(
@@ -841,9 +843,11 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
     required String orderId,
     required String partyName,
     required String contactNumber,
+    required bool isGst,
   }) async {
     TextEditingController partyNameController = TextEditingController(text: partyName);
     TextEditingController contactNumberController = TextEditingController(text: contactNumber);
+    RxBool withGST = isGst.obs;
     await showModalBottomSheet(
       context: Get.context!,
       constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 90.h, minHeight: 0.h),
@@ -946,6 +950,98 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                           primaryColor: AppColors.SECONDARY_COLOR,
                           secondaryColor: AppColors.PRIMARY_COLOR,
                         ),
+                        SizedBox(height: 1.h),
+
+                        ///GST Option
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              AppStrings.gstOptions.tr,
+                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                            ),
+                          ),
+                        ),
+                        DividerWidget(),
+                        SizedBox(height: 0.7.h),
+                        GestureDetector(
+                          onTap: () {
+                            withGST.toggle();
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ///With GST
+                              Flexible(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Obx(() {
+                                      return AnimatedContainer(
+                                        duration: 375.milliseconds,
+                                        padding: EdgeInsets.all(0.7.w),
+                                        decoration: BoxDecoration(
+                                          color: withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.SECONDARY_COLOR,
+                                            width: 1.2,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.check_rounded,
+                                          color: AppColors.PRIMARY_COLOR,
+                                          size: 4.w,
+                                        ),
+                                      );
+                                    }),
+                                    SizedBox(width: 2.w),
+                                    Text(
+                                      AppStrings.withKey.tr,
+                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 2.w),
+
+                              ///Without GST
+                              Flexible(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Obx(() {
+                                      return AnimatedContainer(
+                                        duration: 375.milliseconds,
+                                        padding: EdgeInsets.all(0.7.w),
+                                        decoration: BoxDecoration(
+                                          color: withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.SECONDARY_COLOR,
+                                            width: 1.2,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.check_rounded,
+                                          color: AppColors.PRIMARY_COLOR,
+                                          size: 4.w,
+                                        ),
+                                      );
+                                    }),
+                                    SizedBox(width: 2.w),
+                                    Text(
+                                      AppStrings.without.tr,
+                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         SizedBox(height: 3.h),
 
                         Row(
@@ -982,6 +1078,7 @@ class SortByPvdColorView extends GetView<OrderDetailsController> {
                                   orderId: orderId,
                                   partyName: partyNameController.text.trim(),
                                   contactNumber: contactNumberController.text.trim(),
+                                  isGst: withGST.isTrue,
                                 );
                               },
                               style: ElevatedButton.styleFrom(

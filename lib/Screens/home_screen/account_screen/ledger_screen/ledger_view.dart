@@ -5,6 +5,7 @@ import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_invoice_model.dart';
 import 'package:cph_stocks/Network/models/account_models/get_payment_ledger_model.dart';
+import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -119,34 +120,69 @@ class LedgerView extends GetView<LedgerController> {
                           children: [
                             SizedBox(height: 1.h),
 
-                            ///Search Party
+                            ///Search Party & Filter
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 7.w),
-                              child: TextFieldWidget(
-                                prefixIcon: Icon(
-                                  Icons.search_rounded,
-                                  color: AppColors.SECONDARY_COLOR,
-                                  size: 5.w,
-                                ),
-                                prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
-                                suffixIcon: InkWell(
-                                  onTap: () {
-                                    Utils.unfocus();
-                                    controller.searchPartyNameController.clear();
-                                    controller.searchParty(controller.searchPartyNameController.text);
-                                  },
-                                  child: Icon(
-                                    Icons.close_rounded,
-                                    color: AppColors.SECONDARY_COLOR,
-                                    size: 5.w,
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              child: Row(
+                                children: [
+                                  ///Search
+                                  Expanded(
+                                    child: TextFieldWidget(
+                                      prefixIcon: Icon(
+                                        Icons.search_rounded,
+                                        color: AppColors.SECONDARY_COLOR,
+                                        size: 5.w,
+                                      ),
+                                      prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
+                                      suffixIcon: InkWell(
+                                        onTap: () {
+                                          Utils.unfocus();
+                                          controller.searchPartyNameController.clear();
+                                          controller.searchParty(controller.searchPartyNameController.text);
+                                        },
+                                        child: Icon(
+                                          Icons.close_rounded,
+                                          color: AppColors.SECONDARY_COLOR,
+                                          size: 5.w,
+                                        ),
+                                      ),
+                                      suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
+                                      hintText: AppStrings.searchParty.tr,
+                                      controller: controller.searchPartyNameController,
+                                      onChanged: (value) {
+                                        controller.searchParty(value);
+                                      },
+                                    ),
                                   ),
-                                ),
-                                suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
-                                hintText: AppStrings.searchParty.tr,
-                                controller: controller.searchPartyNameController,
-                                onChanged: (value) {
-                                  controller.searchParty(value);
-                                },
+
+                                  if (Get.arguments == true) ...[
+                                    SizedBox(width: 2.w),
+
+                                    ///Filter
+                                    Obx(() {
+                                      return ElevatedButton(
+                                        onPressed: () {
+                                          controller.isGstFilteredParties.toggle();
+                                          controller.searchParty(controller.searchPartyNameController.text);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: controller.isGstFilteredParties.isTrue ? AppColors.DARK_GREEN_COLOR : AppColors.WARNING_COLOR,
+                                          elevation: 4,
+                                          maximumSize: Size.square(8.w),
+                                          minimumSize: Size.square(8.w),
+                                          padding: EdgeInsets.zero,
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                        child: Image.asset(
+                                          AppAssets.gstIcon,
+                                          width: 5.w,
+                                          height: 5.w,
+                                          color: AppColors.PRIMARY_COLOR,
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ],
                               ),
                             ),
                             SizedBox(height: 1.h),
@@ -209,12 +245,19 @@ class LedgerView extends GetView<LedgerController> {
                                                   tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
                                                   trailing: ElevatedButton(
                                                     onPressed: () {
+                                                      List<get_invoices.OrderInvoice> ledgerInvoiceData = [];
+                                                      if (isPaymentLedger) {
+                                                        ledgerInvoiceData = controller.automaticLedgerInvoiceList.firstWhereOrNull((element) => element.partyId == (data as GetPaymentLedgerModel).partyId)?.invoices ?? [];
+                                                      } else {
+                                                        ledgerInvoiceData = (data as GetPartyData).invoices ?? [];
+                                                      }
                                                       controller.showInvoiceBottomSheet(
                                                         ctx: context,
-                                                        invoiceData: isPaymentLedger ? [data] : ((data as GetPartyData).invoices ?? []),
+                                                        ledgerInvoiceData: ledgerInvoiceData,
+                                                        paymentLedgerInvoiceData: isPaymentLedger ? (data as GetPaymentLedgerModel) : null,
                                                         isPaymentLedger: isPaymentLedger,
-                                                        startDate: !isPaymentLedger ? ((data as GetPartyData).startDate) : null,
-                                                        endDate: !isPaymentLedger ? ((data as GetPartyData).endDate) : null,
+                                                        startDate: !isPaymentLedger ? ((data as GetPartyData).startDate) : (data as GetPaymentLedgerModel).startDate,
+                                                        endDate: !isPaymentLedger ? ((data as GetPartyData).endDate) : (data as GetPaymentLedgerModel).endDate,
                                                       );
                                                     },
                                                     style: ElevatedButton.styleFrom(

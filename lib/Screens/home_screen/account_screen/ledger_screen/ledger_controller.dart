@@ -45,14 +45,15 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   late TabController tabController;
   RxInt tabIndex = 0.obs;
 
+  RxBool isGstFilteredParties = false.obs;
+
   @override
   void onInit() {
     super.onInit();
     getPartiesApi();
+    getAutomaticLedgerInvoiceApiCall();
     if (Get.arguments == true) {
       getAutomaticLedgerPaymentApiCall();
-    } else {
-      getAutomaticLedgerInvoiceApiCall();
     }
 
     tabController = TabController(length: 2, vsync: this);
@@ -128,9 +129,9 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     if (Get.arguments == true) {
       searchAutomaticLedgerList.clear();
       if (value.isNotEmpty) {
-        searchAutomaticLedgerList.addAll(automaticLedgerList.where((element) => element.partyName?.toLowerCase().contains(value.toLowerCase()) == true).toList());
+        searchAutomaticLedgerList.addAll(automaticLedgerList.where((element) => element.partyName?.toLowerCase().contains(value.toLowerCase()) == true && (isGstFilteredParties.isTrue ? element.isGst == true : true)).toList());
       } else {
-        searchAutomaticLedgerList.addAll([...automaticLedgerList]);
+        searchAutomaticLedgerList.addAll(automaticLedgerList.where((element) => isGstFilteredParties.isTrue ? element.isGst == true : true).toList());
       }
     } else {
       searchAutomaticLedgerInvoiceList.clear();
@@ -162,9 +163,16 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
           if (isPaymentLedger) {
             get_payment_ledger.GetPaymentLedgerModel paymentLedgerModel = get_payment_ledger.GetPaymentLedgerModel.fromJson(response.response?.data);
             if (paymentLedgerModel.invoices?.isNotEmpty == true || paymentLedgerModel.payments?.isNotEmpty == true) {
+              final ledgerResponse = await AccountServices.generateLedgerInvoiceService(
+                startDate: DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(startDateController.text)),
+                endDate: DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(endDateController.text)),
+                partyId: selectedParty.value,
+              );
+              get_invoices.GetInvoicesModel invoicesModel = get_invoices.GetInvoicesModel.fromJson(ledgerResponse.response?.data ?? {});
               showInvoiceBottomSheet(
                 ctx: Get.context!,
-                invoiceData: [paymentLedgerModel],
+                ledgerInvoiceData: invoicesModel.data ?? [],
+                paymentLedgerInvoiceData: paymentLedgerModel,
                 isPaymentLedger: isPaymentLedger,
               );
             } else {
@@ -175,7 +183,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
             if (invoicesModel.data?.isNotEmpty == true) {
               showInvoiceBottomSheet(
                 ctx: Get.context!,
-                invoiceData: invoicesModel.data ?? [],
+                ledgerInvoiceData: invoicesModel.data ?? [],
                 isPaymentLedger: isPaymentLedger,
               );
             } else {
@@ -191,7 +199,8 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
 
   Future<void> showInvoiceBottomSheet({
     required BuildContext ctx,
-    required List invoiceData,
+    required List<get_invoices.OrderInvoice> ledgerInvoiceData,
+    get_payment_ledger.GetPaymentLedgerModel? paymentLedgerInvoiceData,
     required bool isPaymentLedger,
     String? startDate,
     String? endDate,
@@ -200,7 +209,8 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
       context: ctx,
       builder: (context) {
         return LedgerInvoiceView(
-          invoiceData: invoiceData,
+          ledgerInvoiceData: ledgerInvoiceData,
+          paymentLedgerInvoiceData: paymentLedgerInvoiceData,
           isPaymentLedger: isPaymentLedger,
           startDate: startDate,
           endDate: endDate,
@@ -212,6 +222,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   Future<File?> generateLedgerPdf({
     String? startDate,
     String? endDate,
+    required String? selectedPartyId,
     required List<get_invoices.OrderInvoice> data,
     bool showAmount = false,
   }) async {
@@ -386,7 +397,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                   /// Date Range
                   pw.Flexible(
                     child: pw.Text(
-                      "${AppStrings.date.tr}: ${startDate ?? startDateController.text} - ${endDate ?? startDateController.text}",
+                      "${AppStrings.date.tr}: ${startDate ?? startDateController.text} - ${endDate ?? endDateController.text}",
                       style: size20Font,
                     ),
                   ),
@@ -814,7 +825,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     final status = await Utils.getDashboardController.permissionStatus();
     if (status.$1.isGranted || status.$2.isGranted) {
       final dir = await getApplicationCacheDirectory();
-      final fileName = 'Ledger_${partyList.firstWhereOrNull((element) => element.orderId == selectedParty.value)?.partyName ?? ""}_${startDateController.text}_${endDateController.text}'.cleanFileName;
+      final fileName = 'Ledger_${partyList.firstWhereOrNull((element) => element.orderId == (selectedPartyId ?? selectedParty.value))?.partyName ?? ""}_${startDate ?? startDateController.text}_${endDate ?? endDateController.text}'.cleanFileName;
       final file = File('${dir.path}/$fileName.pdf');
       final fileBytes = await pdfDoc.save();
       return await file.writeAsBytes(fileBytes);
@@ -1276,7 +1287,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     final status = await Utils.getDashboardController.permissionStatus();
     if (status.$1.isGranted || status.$2.isGranted) {
       final dir = await getApplicationCacheDirectory();
-      final fileName = 'Ledger_${partyList.firstWhereOrNull((element) => element.orderId == selectedParty.value)?.partyName ?? ""}_${startDateController.text}_${endDateController.text}'.cleanFileName;
+      final fileName = 'Payment_Ledger_${partyList.firstWhereOrNull((element) => element.orderId == data.partyId)?.partyName ?? ""}_${data.startDate}_${data.endDate}'.cleanFileName;
       final file = File('${dir.path}/$fileName.pdf');
       final fileBytes = await pdfDoc.save();
       return await file.writeAsBytes(fileBytes);

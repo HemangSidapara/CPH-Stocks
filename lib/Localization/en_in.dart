@@ -249,4 +249,10 @@ Map<String, String> enIN = <String, String>{
   AppStrings.selectRow: "Select Row",
   AppStrings.editRow: "Edit Row",
   AppStrings.billGST: "Bill (GST)",
+  AppStrings.gstOptions: "GST Options",
+  AppStrings.withKey: "With",
+  AppStrings.without: "Without",
+  AppStrings.sharePaymentLedger: "Share Payment Ledger",
+  AppStrings.shareLedgerInvoice: "Share Ledger Invoice",
+  AppStrings.shareInvoice: "Share Invoice",
 };
