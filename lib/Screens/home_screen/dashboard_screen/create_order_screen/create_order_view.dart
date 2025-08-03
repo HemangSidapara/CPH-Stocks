@@ -115,32 +115,38 @@ class CreateOrderView extends GetView<CreateOrderController> {
                               ),
                             ),
                             SizedBox(height: 1.h),
-                            TextFieldWidget(
-                              controller: controller.partyNameController,
-                              hintText: AppStrings.selectParty.tr,
-                              validator: controller.validatePartyName,
-                              textInputAction: TextInputAction.next,
-                              maxLength: 50,
-                              readOnly: true,
-                              onTap: () async {
-                                await showBottomSheetSelectAndAdd(
-                                  ctx: context,
-                                  items: controller.partyList,
-                                  title: AppStrings.party.tr,
-                                  fieldHint: AppStrings.enterPartyName.tr,
-                                  searchHint: AppStrings.searchParty.tr,
-                                  selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
+                            StatefulBuilder(
+                              builder: (context, state) {
+                                return TextFieldWidget(
                                   controller: controller.partyNameController,
-                                  onInit: () async {
-                                    return await controller.getPartiesApi();
-                                  },
-                                  onSelect: (id) {
-                                    controller.selectedParty.value = id == -1 ? "" : id.toString();
-                                    final selectedParty = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value);
-                                    controller.partyNameController.text = selectedParty?.partyName ?? controller.partyNameController.text;
-                                    controller.contactNumberController.text = selectedParty?.contactNumber ?? controller.contactNumberController.text;
-                                    controller.withGST(selectedParty?.isGst ?? false);
-                                    controller.storeOrderDetails();
+                                  hintText: AppStrings.selectParty.tr,
+                                  validator: controller.validatePartyName,
+                                  textInputAction: TextInputAction.next,
+                                  maxLength: 50,
+                                  readOnly: true,
+                                  onTap: () async {
+                                    await showBottomSheetSelectAndAdd(
+                                      ctx: context,
+                                      items: controller.partyList,
+                                      title: AppStrings.party.tr,
+                                      fieldHint: AppStrings.enterPartyName.tr,
+                                      searchHint: AppStrings.searchParty.tr,
+                                      selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
+                                      controller: controller.partyNameController,
+                                      onInit: () async {
+                                        return await controller.getPartiesApi();
+                                      },
+                                      onSelect: (id) {
+                                        state(() {
+                                          controller.selectedParty.value = id == -1 ? "" : id.toString();
+                                          final selectedParty = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value);
+                                          controller.partyNameController.text = selectedParty?.partyName ?? controller.partyNameController.text;
+                                          controller.contactNumberController.text = selectedParty?.contactNumber ?? controller.contactNumberController.text;
+                                          controller.withGST(selectedParty?.isGst ?? false);
+                                          controller.storeOrderDetails();
+                                        });
+                                      },
+                                    );
                                   },
                                 );
                               },
@@ -184,81 +190,84 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             ),
                             DividerWidget(),
                             SizedBox(height: 0.7.h),
-                            GestureDetector(
-                              onTap: () {
-                                controller.withGST.toggle();
-                              },
-                              behavior: HitTestBehavior.opaque,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  ///With GST
-                                  Flexible(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Obx(() {
-                                          return AnimatedContainer(
-                                            duration: 375.milliseconds,
-                                            padding: EdgeInsets.all(0.7.w),
-                                            decoration: BoxDecoration(
-                                              color: controller.withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: AppColors.PRIMARY_COLOR,
-                                                width: 1.2,
+                            IgnorePointer(
+                              ignoring: controller.selectedParty.isNotEmpty && controller.partyNameController.text.isNotEmpty,
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.withGST.toggle();
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ///With GST
+                                    Flexible(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Obx(() {
+                                            return AnimatedContainer(
+                                              duration: 375.milliseconds,
+                                              padding: EdgeInsets.all(0.7.w),
+                                              decoration: BoxDecoration(
+                                                color: controller.withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: AppColors.PRIMARY_COLOR,
+                                                  width: 1.2,
+                                                ),
                                               ),
-                                            ),
-                                            child: Icon(
-                                              Icons.check_rounded,
-                                              color: AppColors.SECONDARY_COLOR,
-                                              size: 4.w,
-                                            ),
-                                          );
-                                        }),
-                                        SizedBox(width: 2.w),
-                                        Text(
-                                          AppStrings.withKey.tr,
-                                          style: AppStyles.size16w600,
-                                        ),
-                                      ],
+                                              child: Icon(
+                                                Icons.check_rounded,
+                                                color: AppColors.SECONDARY_COLOR,
+                                                size: 4.w,
+                                              ),
+                                            );
+                                          }),
+                                          SizedBox(width: 2.w),
+                                          Text(
+                                            AppStrings.withKey.tr,
+                                            style: AppStyles.size16w600,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(width: 2.w),
+                                    SizedBox(width: 2.w),
 
-                                  ///Without GST
-                                  Flexible(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Obx(() {
-                                          return AnimatedContainer(
-                                            duration: 375.milliseconds,
-                                            padding: EdgeInsets.all(0.7.w),
-                                            decoration: BoxDecoration(
-                                              color: controller.withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: AppColors.PRIMARY_COLOR,
-                                                width: 1.2,
+                                    ///Without GST
+                                    Flexible(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Obx(() {
+                                            return AnimatedContainer(
+                                              duration: 375.milliseconds,
+                                              padding: EdgeInsets.all(0.7.w),
+                                              decoration: BoxDecoration(
+                                                color: controller.withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: AppColors.PRIMARY_COLOR,
+                                                  width: 1.2,
+                                                ),
                                               ),
-                                            ),
-                                            child: Icon(
-                                              Icons.check_rounded,
-                                              color: AppColors.SECONDARY_COLOR,
-                                              size: 4.w,
-                                            ),
-                                          );
-                                        }),
-                                        SizedBox(width: 2.w),
-                                        Text(
-                                          AppStrings.without.tr,
-                                          style: AppStyles.size16w600,
-                                        ),
-                                      ],
+                                              child: Icon(
+                                                Icons.check_rounded,
+                                                color: AppColors.SECONDARY_COLOR,
+                                                size: 4.w,
+                                              ),
+                                            );
+                                          }),
+                                          SizedBox(width: 2.w),
+                                          Text(
+                                            AppStrings.without.tr,
+                                            style: AppStyles.size16w600,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(height: 2.h),
