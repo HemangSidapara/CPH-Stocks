@@ -187,8 +187,8 @@ class CreateOrderController extends GetxController {
           );
 
           if (response.isSuccess) {
-            Get.back();
-            removeData(AppConstance.setOrderData);
+            Get.back(closeOverlays: true);
+            await removeData(AppConstance.setOrderData);
             Utils.handleMessage(message: response.message);
           }
         } else {

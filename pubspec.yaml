@@ -2,7 +2,7 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.1.14+66
+version: 2.1.15+67
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -16,9 +16,8 @@ dependencies:
   responsive_sizer: ^3.3.1
   google_fonts: ^6.3.0
   intl: ^0.20.2
-  dropdown_search: ^6.0.2
   flutter_image_compress: ^2.4.0
-  font_awesome_flutter: ^10.8.0
+  font_awesome_flutter: ^10.9.0
   flutter_staggered_animations: ^1.1.1
   flutter_native_splash: ^2.4.6
   lottie: ^3.3.1
@@ -27,7 +26,7 @@ dependencies:
   get: ^4.7.2
 
   # Network Libs
-  dio: ^5.8.0+1
+  dio: ^5.9.0
   cached_network_image: ^3.4.1
   json_serializable: ^6.10.0
   json_annotation: ^4.9.0
@@ -53,12 +52,11 @@ dependencies:
   flutter_quill_delta_from_html: ^1.5.3
 
   # Printing Libs
-  brother_printer: ^0.2.5
   pdf: ^3.11.3
   printing: ^5.14.2
-  syncfusion_flutter_core: ^30.1.42
-  syncfusion_flutter_pdfviewer: ^30.1.42
-  syncfusion_flutter_charts: ^30.1.42
+  syncfusion_flutter_core: ^30.2.4
+  syncfusion_flutter_pdfviewer: ^30.2.4
+  syncfusion_flutter_charts: ^30.2.4
 
 dependency_overrides:
   intl: ^0.20.2
@@ -67,12 +65,13 @@ dependency_overrides:
       url: https://github.com/Gustl22/dart_pdf.git
       path: pdf/
       ref: 313-column-span
+  meta: ^1.17.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.6.0
+  build_runner: ^2.6.1
 
 flutter:
   uses-material-design: true
