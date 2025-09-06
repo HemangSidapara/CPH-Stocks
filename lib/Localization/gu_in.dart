@@ -255,4 +255,11 @@ Map<String, String> guIN = <String, String>{
   AppStrings.sharePaymentLedger: "ચુકવણી લેજર શેર કરો",
   AppStrings.shareLedgerInvoice: "લેજર ઇનવોઇસ શેર કરો",
   AppStrings.shareInvoice: "ઇનવોઇસ શેર કરો",
+  AppStrings.paymentDate: "ચુકવણી તારીખ",
+  AppStrings.selectDate: "તારીખ પસંદ કરો",
+  AppStrings.pleaseSelectDate: "કૃપા કરીને તારીખ પસંદ કરો",
+  AppStrings.viewPendingPayment: "બાકી ચુકવણી જુઓ",
+  AppStrings.sharePendingPayment: "બાકી ચુકવણી શેર કરો",
+  AppStrings.qr: "QR",
+  AppStrings.shareQr: "QR શેર કરો",
 };

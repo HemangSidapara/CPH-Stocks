@@ -115,11 +115,15 @@ class AccountServices {
     required String partyId,
     required String amount,
     required String paymentMode,
+
+    /// Format: yyyy-MM-dd
+    required String paymentDate,
   }) async {
     final params = {
       ApiKeys.partyId: partyId,
       ApiKeys.amount: amount,
       ApiKeys.paymentMode: paymentMode,
+      ApiKeys.paymentDate: paymentDate,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.createPartyPaymentApi,
@@ -152,11 +156,15 @@ class AccountServices {
     required String partyPaymentMetaId,
     required String amount,
     required String paymentMode,
+
+    /// Format: yyyy-MM-dd
+    required String paymentDate,
   }) async {
     final params = {
       ApiKeys.partyPaymentMetaId: partyPaymentMetaId,
       ApiKeys.amount: amount,
       ApiKeys.paymentMode: paymentMode,
+      ApiKeys.paymentDate: paymentDate,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.editPartyPaymentApi,
@@ -309,9 +317,12 @@ class AccountServices {
   }
 
   /// Get Pending Payments Service
-  static Future<ResponseModel> getPendingPaymentsService() async {
+  static Future<ResponseModel> getPendingPaymentsService({
+    String? startDate,
+    String? endDate,
+  }) async {
     final response = await ApiBaseHelper.getHTTP(
-      ApiUrls.getPendingPaymentsApi,
+      "${ApiUrls.getPendingPaymentsApi}&startDate=$startDate&endDate=$endDate",
       showProgress: false,
       onError: (dioExceptions) {
         if (kDebugMode) {

@@ -124,7 +124,7 @@ class _InvoiceViewState extends State<InvoiceView> {
                         return Switch.adaptive(
                           value: isAmountVisible.isTrue,
                           onChanged: (value) {},
-                          activeColor: AppColors.SECONDARY_COLOR,
+                          activeThumbColor: AppColors.SECONDARY_COLOR,
                           inactiveTrackColor: AppColors.SECONDARY_COLOR,
                           activeTrackColor: AppColors.PRIMARY_COLOR,
                           inactiveThumbColor: AppColors.PRIMARY_COLOR,

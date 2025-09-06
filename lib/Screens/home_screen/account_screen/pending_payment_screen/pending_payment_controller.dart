@@ -13,6 +13,8 @@ class PendingPaymentController extends GetxController {
 
   RxDouble totalPendingAmount = 0.0.obs;
 
+  Rx<DateTimeRange<DateTime>?> filterDateRange = Rx(null);
+
   @override
   void onInit() {
     super.onInit();
@@ -22,7 +24,10 @@ class PendingPaymentController extends GetxController {
   Future<void> getPendingPaymentApiCall({bool isRefresh = false}) async {
     try {
       isLoading(!isRefresh);
-      final response = await AccountServices.getPendingPaymentsService();
+      final response = await AccountServices.getPendingPaymentsService(
+        startDate: filterDateRange.value?.start.toLocal().toIso8601String(),
+        endDate: filterDateRange.value?.start.toLocal().toIso8601String(),
+      );
 
       if (response.isSuccess) {
         get_pending_payments.GetPendingPaymentsModel pendingPaymentModel = get_pending_payments.GetPendingPaymentsModel.fromJson(response.response?.data);

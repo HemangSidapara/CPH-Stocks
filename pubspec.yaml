@@ -2,10 +2,10 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.1.15+67
+version: 2.1.16+68
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
+  sdk: ^3.9.0
 
 dependencies:
   flutter:
@@ -14,10 +14,10 @@ dependencies:
   # Widgets Libs
   cupertino_icons: ^1.0.8
   responsive_sizer: ^3.3.1
-  google_fonts: ^6.3.0
+  google_fonts: ^6.3.1
   intl: ^0.20.2
   flutter_image_compress: ^2.4.0
-  font_awesome_flutter: ^10.9.0
+  font_awesome_flutter: ^10.10.0
   flutter_staggered_animations: ^1.1.1
   flutter_native_splash: ^2.4.6
   lottie: ^3.3.1
@@ -28,22 +28,22 @@ dependencies:
   # Network Libs
   dio: ^5.9.0
   cached_network_image: ^3.4.1
-  json_serializable: ^6.10.0
+  json_serializable: ^6.11.1
   json_annotation: ^4.9.0
 
   # Storage Libs
   get_storage: ^2.1.1
 
   # Device & App Info Libs
-  package_info_plus: ^8.3.0
+  package_info_plus: ^8.3.1
   device_info_plus: ^11.5.0
 
   # File Libs
   permission_handler: ^12.0.1
-  image_picker: ^1.1.2
+  image_picker: ^1.2.0
   path_provider: ^2.1.5
   open_filex: ^4.7.0
-  share_plus: ^11.0.0
+  share_plus: ^11.1.0
   mime: ^2.0.0
 
   # Quill Formation Libs
@@ -54,9 +54,9 @@ dependencies:
   # Printing Libs
   pdf: ^3.11.3
   printing: ^5.14.2
-  syncfusion_flutter_core: ^30.2.4
-  syncfusion_flutter_pdfviewer: ^30.2.4
-  syncfusion_flutter_charts: ^30.2.4
+  syncfusion_flutter_core: ^31.1.17
+  syncfusion_flutter_pdfviewer: ^31.1.17
+  syncfusion_flutter_charts: ^31.1.17
 
 dependency_overrides:
   intl: ^0.20.2
@@ -71,7 +71,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.6.1
+  build_runner: ^2.8.0
 
 flutter:
   uses-material-design: true

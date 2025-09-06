@@ -8,6 +8,7 @@ import 'package:cph_stocks/Network/services/account_services/account_services.da
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class PaymentDetailsController extends GetxController with GetSingleTickerProviderStateMixin {
   late TabController tabController;
@@ -38,6 +39,8 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
     AppStrings.onlineKevin,
     AppStrings.billGST,
   ];
+
+  TextEditingController paymentDateController = TextEditingController(text: DateFormat("dd/MM/yyyy").format(DateTime.now()));
 
   RxBool isPaymentsLoading = false.obs;
   RxList<get_all_payments.PartyPaymentData> allPaymentsList = RxList();
@@ -74,6 +77,13 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
   String? validatePaymentMode(String? value) {
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseSelectPaymentMode.tr;
+    }
+    return null;
+  }
+
+  String? validatePaymentDate(String? value) {
+    if (value == null || value.isEmpty == true) {
+      return AppStrings.pleaseSelectDate.tr;
     }
     return null;
   }
@@ -163,6 +173,7 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
           partyId: selectedParty.value,
           amount: amountController.text.trim(),
           paymentMode: paymentModeList[selectedPaymentMode.value],
+          paymentDate: paymentDateController.text.trim().isNotEmpty ? DateFormat("yyyy-MM-dd").format(DateFormat("dd/MM/yyyy").parse(paymentDateController.text.trim())) : DateFormat("yyyy-MM-dd").format(DateTime.now()),
         );
 
         if (response.isSuccess) {
@@ -179,11 +190,13 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
     required String partyPaymentMetaId,
     required String amount,
     required String paymentMode,
+    required String paymentDate,
   }) async {
     final response = await AccountServices.editPartyPaymentService(
       partyPaymentMetaId: partyPaymentMetaId,
       amount: amount,
       paymentMode: paymentMode,
+      paymentDate: paymentDate,
     );
 
     if (response.isSuccess) {

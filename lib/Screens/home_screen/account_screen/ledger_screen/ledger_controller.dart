@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_invoice_model.dart' as get_automatic_ledger_invoice;
@@ -12,6 +14,7 @@ import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' a
 import 'package:cph_stocks/Network/services/account_services/account_services.dart';
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_invoice_view.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/pending_payments_pdf_view.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:cph_stocks/Widgets/show_bottom_sheet_widget.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +50,12 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
 
   RxBool isGstFilteredParties = false.obs;
 
+  Uint8List? upiQrImage;
+
   @override
   void onInit() {
     super.onInit();
+    setQrImage();
     getPartiesApi();
     getAutomaticLedgerInvoiceApiCall();
     if (Get.arguments == true) {
@@ -81,6 +87,11 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
       return AppStrings.pleaseSelectEndDate.tr;
     }
     return null;
+  }
+
+  void setQrImage() {
+    final cleanedBase64 = AppConstance.cphUpiQrBase64.split(',').lastOrNull;
+    if (cleanedBase64 != null) upiQrImage = base64Decode(cleanedBase64);
   }
 
   Future<RxList<get_parties.Data>> getPartiesApi() async {
@@ -195,6 +206,17 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     } finally {
       isGenerateLoading(false);
     }
+  }
+
+  Future<void> showPendingPdfBottomSheet({
+    required BuildContext ctx,
+  }) async {
+    await showBottomSheetWidget(
+      context: ctx,
+      builder: (context) {
+        return PendingPaymentsPdfView();
+      },
+    );
   }
 
   Future<void> showInvoiceBottomSheet({
@@ -1288,6 +1310,172 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     if (status.$1.isGranted || status.$2.isGranted) {
       final dir = await getApplicationCacheDirectory();
       final fileName = 'Payment_Ledger_${partyList.firstWhereOrNull((element) => element.orderId == data.partyId)?.partyName ?? ""}_${data.startDate}_${data.endDate}'.cleanFileName;
+      final file = File('${dir.path}/$fileName.pdf');
+      final fileBytes = await pdfDoc.save();
+      return await file.writeAsBytes(fileBytes);
+    }
+    return null;
+  }
+
+  Future<File?> generatePendingPaymentsPdf() async {
+    final pdfDoc = pw.Document();
+
+    final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
+    final ttfBold = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBold));
+    final ttfItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoItalic));
+    final ttfBoldItalic = pw.Font.ttf(await rootBundle.load(AppAssets.robotoBoldItalic));
+    final ttfNotoSansSymbols = pw.Font.ttf(await rootBundle.load(AppAssets.notoSansSymbols));
+
+    pw.TextStyle size20Font = pw.TextStyle(
+      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
+      fontSize: 20,
+      fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
+    );
+
+    pw.TextStyle size16Font = pw.TextStyle(
+      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
+      fontSize: 16,
+      fontWeight: pw.FontWeight.bold,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
+    );
+
+    pw.TextStyle size14Font = pw.TextStyle(
+      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
+      fontSize: 14,
+      fontWeight: pw.FontWeight.normal,
+      fontFallback: [
+        ttfNotoSansSymbols,
+      ],
+    );
+
+    pw.PageTheme? pdfPageTheme = pw.PageTheme(
+      pageFormat: pdf.PdfPageFormat.a4,
+      margin: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      theme: pw.ThemeData.withFont(
+        base: ttfRegular,
+        bold: ttfBold,
+        italic: ttfItalic,
+        boldItalic: ttfBoldItalic,
+        icons: ttfBold,
+        fontFallback: [
+          ttfNotoSansSymbols,
+        ],
+      ),
+    );
+
+    pdfDoc.addPage(
+      pw.MultiPage(
+        pageTheme: pdfPageTheme,
+        build: (context) {
+          return <pw.Widget>[
+            /// Title
+            pw.Align(
+              alignment: pw.Alignment.topCenter,
+              child: pw.Text(
+                AppStrings.pendingPayment.tr,
+                style: size20Font,
+              ),
+            ),
+            pw.SizedBox(height: 10),
+
+            pw.Table(
+              columnWidths: {
+                0: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3) - 10),
+                1: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3) - 10),
+                2: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3) - 10),
+              },
+              border: pw.TableBorder.all(
+                width: 1,
+                color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
+              ),
+              children: [
+                ///Headings
+                pw.TableRow(
+                  children: [
+                    /// Party
+                    pw.Padding(
+                      padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: pw.Text(
+                        AppStrings.party.tr,
+                        textAlign: pw.TextAlign.center,
+                        style: size14Font,
+                      ),
+                    ),
+
+                    /// Phone Number
+                    pw.Padding(
+                      padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: pw.Text(
+                        AppStrings.phoneNumber.tr,
+                        textAlign: pw.TextAlign.center,
+                        style: size14Font,
+                      ),
+                    ),
+
+                    /// Pending Payment
+                    pw.Padding(
+                      padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: pw.Text(
+                        AppStrings.pendingAmount.tr,
+                        textAlign: pw.TextAlign.center,
+                        style: size14Font,
+                      ),
+                    ),
+                  ],
+                ),
+
+                /// Data
+                for (int rowIndex = 0; rowIndex < searchAutomaticLedgerList.length; rowIndex++) ...[
+                  pw.TableRow(
+                    children: [
+                      /// Party
+                      pw.Padding(
+                        padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        child: pw.Text(
+                          searchAutomaticLedgerList[rowIndex].partyName ?? "",
+                          textAlign: pw.TextAlign.start,
+                          style: size14Font,
+                        ),
+                      ),
+
+                      /// Phone Number
+                      pw.Padding(
+                        padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        child: pw.Text(
+                          searchAutomaticLedgerList[rowIndex].phoneNumber ?? "",
+                          textAlign: pw.TextAlign.start,
+                          style: size14Font,
+                        ),
+                      ),
+
+                      /// Pending Payment
+                      pw.Padding(
+                        padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        child: pw.Text(
+                          searchAutomaticLedgerList[rowIndex].summary?.pendingAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(searchAutomaticLedgerList[rowIndex].summary?.pendingAmount) : "",
+                          textAlign: pw.TextAlign.start,
+                          style: size14Font,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ];
+        },
+      ),
+    );
+
+    final status = await Utils.getDashboardController.permissionStatus();
+    if (status.$1.isGranted || status.$2.isGranted) {
+      final dir = await getApplicationCacheDirectory();
+      final fileName = 'Pending_Payments_PartyWise_${DateTime.now().millisecondsSinceEpoch}'.cleanFileName;
       final file = File('${dir.path}/$fileName.pdf');
       final fileBytes = await pdfDoc.save();
       return await file.writeAsBytes(fileBytes);

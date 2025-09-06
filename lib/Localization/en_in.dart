@@ -255,4 +255,11 @@ Map<String, String> enIN = <String, String>{
   AppStrings.sharePaymentLedger: "Share Payment Ledger",
   AppStrings.shareLedgerInvoice: "Share Ledger Invoice",
   AppStrings.shareInvoice: "Share Invoice",
+  AppStrings.paymentDate: "Payment Date",
+  AppStrings.selectDate: "Select Date",
+  AppStrings.pleaseSelectDate: "Please select date",
+  AppStrings.viewPendingPayment: "View Pending Payment",
+  AppStrings.sharePendingPayment: "Share Pending Payment",
+  AppStrings.qr: "QR",
+  AppStrings.shareQr: "Share QR",
 };

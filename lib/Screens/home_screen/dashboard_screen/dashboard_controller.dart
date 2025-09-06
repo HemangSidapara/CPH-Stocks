@@ -31,11 +31,11 @@ class DashboardController extends GetxController {
   /// @param {File} pdfFile - File object
   /// @returns {Future\<bool>} - Returns a Future of a boolean value
   /// @throws {Exception} - Throws an exception if an error occurs
-  Future<bool> printPdf({required File pdfFile, bool isLandscape = true}) async {
-    if (pdfFile.existsSync()) {
+  Future<bool> printPdf({File? pdfFile, Uint8List? pdfData, bool isLandscape = true}) async {
+    if ((pdfFile != null && pdfFile.existsSync() == true) || pdfData != null) {
       return await Printing.layoutPdf(
         format: isLandscape ? PdfPageFormat.a5 : PdfPageFormat.a4,
-        onLayout: (format) => pdfFile.readAsBytesSync(),
+        onLayout: (format) => pdfFile?.readAsBytesSync() ?? pdfData!,
       );
     }
     return false;
@@ -47,19 +47,35 @@ class DashboardController extends GetxController {
   /// @returns {Future\<bool>} - Returns a Future of a boolean value
   /// @throws {Exception} - Throws an exception if an error occurs
   Future<bool> sharePdf({
-    required List<File> pdfFiles,
+    List<File>? pdfFiles,
+    List<Uint8List>? pdfData,
     required String shareText,
   }) async {
-    final existingFiles = pdfFiles.where((element) => element.existsSync()).toList();
-    if (existingFiles.isEmpty) {
+    if (pdfFiles == null && pdfData == null) {
+      return false;
+    }
+    final existingFiles = pdfFiles?.where((element) => element.existsSync()).toList();
+    if (existingFiles != null && existingFiles.isEmpty) {
+      return false;
+    }
+    final existingData = pdfData?.where((element) => element.isNotEmpty).toList();
+    if (existingData != null && existingData.isEmpty) {
       return false;
     }
     ShareParams params = ShareParams(
       title: shareText,
-      files: existingFiles.map((e) {
-        final mimeType = lookupMimeType(e.path);
-        return XFile(e.path, mimeType: mimeType);
-      }).toList(),
+      files:
+          existingFiles?.map((e) {
+            final mimeType = lookupMimeType(e.path);
+            return XFile(e.path, mimeType: mimeType);
+          }).toList() ??
+          existingData?.map((e) {
+            final mimeType = lookupMimeType(File.fromRawPath(e).path);
+            return XFile.fromData(
+              e,
+              mimeType: mimeType,
+            );
+          }).toList(),
     );
     final result = await SharePlus.instance.share(params);
     return result.status == ShareResultStatus.success;

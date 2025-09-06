@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -53,7 +54,7 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: controller.upiQrImage != null ? 3 : 2, vsync: this);
     setGenerateInvoice();
   }
 
@@ -111,11 +112,14 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
                 children: [
                   if (widget.isPaymentLedger) ...[
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final dir = await getApplicationDocumentsDirectory();
+                        final qrFile = await File("${dir.path}/cph_upi_qr_image.jpeg").writeAsBytes(controller.upiQrImage!);
                         Utils.getDashboardController.sharePdf(
                           pdfFiles: [
                             ledgerPdfFile.value,
                             paymentLedgerPdfFile.value,
+                            qrFile,
                           ],
                           shareText: widget.isPaymentLedger ? AppStrings.sharePaymentLedger.tr : AppStrings.shareLedgerInvoice.tr,
                         );
@@ -182,8 +186,18 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
                   color: AppColors.WHITE_COLOR,
                   fontWeight: FontWeight.w700,
                   fontSize: 16.sp,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              if (controller.upiQrImage != null)
+                Text(
+                  AppStrings.qr.tr,
+                  style: TextStyle(
+                    color: AppColors.WHITE_COLOR,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16.sp,
+                  ),
+                ),
             ],
           ),
 
@@ -200,6 +214,9 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
                 Obx(() {
                   return PaymentLedgerInvoiceWidget(paymentLedgerFile: paymentLedgerPdfFile.value);
                 }),
+
+                ///QR
+                if (controller.upiQrImage != null) UpiQRWidget(),
               ],
             ),
           ),
@@ -246,7 +263,7 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
                         return Switch.adaptive(
                           value: isAmountVisible.isTrue,
                           onChanged: (value) {},
-                          activeColor: AppColors.SECONDARY_COLOR,
+                          activeThumbColor: AppColors.SECONDARY_COLOR,
                           inactiveTrackColor: AppColors.SECONDARY_COLOR,
                           activeTrackColor: AppColors.PRIMARY_COLOR,
                           inactiveThumbColor: AppColors.PRIMARY_COLOR,
@@ -499,6 +516,105 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
                 Utils.getDashboardController.sharePdf(
                   pdfFiles: [paymentLedgerFile],
                   shareText: widget.isPaymentLedger ? AppStrings.sharePaymentLedger.tr : AppStrings.shareLedgerInvoice.tr,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.LIGHT_BLUE_COLOR,
+                fixedSize: Size(30.w, 5.h),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Icon(
+                FontAwesomeIcons.whatsapp,
+                color: AppColors.PRIMARY_COLOR,
+                size: 6.w,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 3.h),
+      ],
+    );
+  }
+
+  Widget UpiQRWidget() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ///Viewer
+        Expanded(
+          child: Image.memory(
+            controller.upiQrImage!,
+          ),
+        ),
+        SizedBox(height: 2.h),
+
+        ///Download, Print & Share
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ///Download
+            ElevatedButton(
+              onPressed: () async {
+                final dir = await getApplicationDocumentsDirectory();
+                final file = await File("${dir.path}/cph_upi_qr_image.jpeg").writeAsBytes(controller.upiQrImage!);
+                final downloadedFile = await Utils.getDashboardController.downloadPdf(pdfFile: file);
+                if (downloadedFile != null && downloadedFile.existsSync()) {
+                  Utils.handleMessage(
+                    message: AppStrings.successfullyDownloadedAtDownloadFolder.tr,
+                    onTap: () async {
+                      OpenFilex.open(downloadedFile.path);
+                    },
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.DARK_GREEN_COLOR,
+                fixedSize: Size(30.w, 5.h),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Icon(
+                Icons.download_rounded,
+                color: AppColors.PRIMARY_COLOR,
+                size: 6.w,
+              ),
+            ),
+
+            ///Print
+            ElevatedButton(
+              onPressed: () async {
+                final dir = await getApplicationDocumentsDirectory();
+                final file = await File("${dir.path}/cph_upi_qr_image.jpeg").writeAsBytes(controller.upiQrImage!);
+                Utils.getDashboardController.printPdf(pdfFile: file, isLandscape: false);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.ORANGE_COLOR,
+                fixedSize: Size(30.w, 5.h),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Icon(
+                Icons.print_rounded,
+                color: AppColors.PRIMARY_COLOR,
+                size: 6.w,
+              ),
+            ),
+
+            ///Share
+            ElevatedButton(
+              onPressed: () async {
+                final dir = await getApplicationDocumentsDirectory();
+                final file = await File("${dir.path}/cph_upi_qr_image.jpeg").writeAsBytes(controller.upiQrImage!);
+                Utils.getDashboardController.sharePdf(
+                  pdfFiles: [file],
+                  shareText: AppStrings.shareQr.tr,
                 );
               },
               style: ElevatedButton.styleFrom(

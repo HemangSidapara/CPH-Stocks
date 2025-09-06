@@ -81,9 +81,60 @@ class PendingPaymentView extends GetView<PendingPaymentController> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
                   child: Obx(() {
-                    return Text(
-                      "${AppStrings.totalPayment.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalPendingAmount.value)}",
-                      style: AppStyles.size16w600,
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "${AppStrings.totalPayment.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.totalPendingAmount.value)}",
+                            style: AppStyles.size16w600,
+                          ),
+                        ),
+                        SizedBox(width: 2.w),
+
+                        if (controller.filterDateRange.value != null) ...[
+                          IconButton(
+                            onPressed: () {
+                              controller.filterDateRange.value = null;
+                              controller.getPendingPaymentApiCall(isRefresh: true);
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.5),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              minimumSize: Size.square(8.w),
+                              maximumSize: Size.square(8.w),
+                              padding: EdgeInsets.zero,
+                            ),
+                            icon: Icon(
+                              Icons.close_rounded,
+                              color: AppColors.PRIMARY_COLOR,
+                              size: 5.w,
+                            ),
+                          ),
+                          SizedBox(width: 2.w),
+                        ],
+                        ElevatedButton(
+                          onPressed: () async {
+                            await showDialogDateRangePicker(ctx: context);
+                            controller.getPendingPaymentApiCall(isRefresh: true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
+                            elevation: 4,
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            minimumSize: Size.square(8.w),
+                            maximumSize: Size.square(8.w),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.calendar_month_rounded,
+                            color: AppColors.WHITE_COLOR,
+                            size: 5.w,
+                          ),
+                        ),
+                      ],
                     );
                   }),
                 ),
@@ -188,5 +239,36 @@ class PendingPaymentView extends GetView<PendingPaymentController> {
         ),
       ),
     );
+  }
+
+  Future<DateTimeRange<DateTime>?> showDialogDateRangePicker({
+    required BuildContext ctx,
+  }) async {
+    final range = await showDateRangePicker(
+      context: ctx,
+      firstDate: DateTime(2023, 1, 1),
+      lastDate: DateTime(DateTime.now().year + 2, 12, 31),
+      initialDateRange: controller.filterDateRange.value,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            scaffoldBackgroundColor: AppColors.PRIMARY_COLOR,
+            colorScheme: ColorScheme.of(context).copyWith(
+              primary: AppColors.TERTIARY_COLOR,
+            ),
+            datePickerTheme: DatePickerThemeData(
+              rangeSelectionBackgroundColor: AppColors.TERTIARY_COLOR.withValues(alpha: 0.3),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (range != null) {
+      controller.filterDateRange.value = range;
+      return range;
+    }
+    return null;
   }
 }

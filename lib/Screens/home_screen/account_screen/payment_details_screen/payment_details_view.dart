@@ -4,6 +4,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/account_models/get_party_payment_model.dart' as get_payments;
+import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_view.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/payment_details_screen/payment_details_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -432,6 +433,31 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                               );
                                             },
                                           ),
+                                          SizedBox(height: 2.h),
+
+                                          ///Payment Date
+                                          TextFieldWidget(
+                                            controller: controller.paymentDateController,
+                                            readOnly: true,
+                                            title: AppStrings.paymentDate.tr,
+                                            hintText: AppStrings.selectDate.tr,
+                                            validator: controller.validatePaymentDate,
+                                            onTap: () async {
+                                              await showDatePicker(
+                                                context: context,
+                                                initialDate: controller.paymentDateController.text.trim().isNotEmpty ? DateFormat("dd/MM/yyyy").parse(controller.paymentDateController.text.trim()) : DateTime.now(),
+                                                firstDate: DateTime(DateTime.now().year - 50),
+                                                lastDate: DateTime(DateTime.now().year + 50),
+                                                builder: (context, child) {
+                                                  return LedgerView().themeData(context: context, child: child!);
+                                                },
+                                              ).then((value) {
+                                                if (value != null) {
+                                                  controller.paymentDateController.text = DateFormat("dd/MM/yyyy").format(value);
+                                                }
+                                              });
+                                            },
+                                          ),
                                         ],
                                       );
                                     } else {
@@ -638,6 +664,7 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
     TextEditingController amountController = TextEditingController(text: paymentData.amount);
     TextEditingController paymentModeController = TextEditingController(text: paymentData.paymentMode);
+    TextEditingController paymentDateController = TextEditingController(text: paymentData.createdDate != null && paymentData.createdDate?.isNotEmpty == true ? DateFormat("dd/MM/yyyy").format(DateFormat("yyyy-MM-dd").tryParse(paymentData.createdDate ?? "") ?? DateTime.now()) : null);
     RxInt selectedPaymentMode = (controller.paymentModeList.indexOf(paymentData.paymentMode ?? "")).obs;
 
     RxBool isEditLoading = false.obs;
@@ -712,6 +739,31 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                 );
                               },
                             ),
+                            SizedBox(height: 2.h),
+
+                            ///Payment Date
+                            TextFieldWidget(
+                              controller: paymentDateController,
+                              readOnly: true,
+                              title: AppStrings.paymentDate.tr,
+                              hintText: AppStrings.selectDate.tr,
+                              validator: controller.validatePaymentDate,
+                              onTap: () async {
+                                await showDatePicker(
+                                  context: context,
+                                  initialDate: paymentDateController.text.trim().isNotEmpty ? DateFormat("dd/MM/yyyy").parse(paymentDateController.text.trim()) : DateTime.now(),
+                                  firstDate: DateTime(DateTime.now().year - 50),
+                                  lastDate: DateTime(DateTime.now().year + 50),
+                                  builder: (context, child) {
+                                    return LedgerView().themeData(context: context, child: child!);
+                                  },
+                                ).then((value) {
+                                  if (value != null) {
+                                    paymentDateController.text = DateFormat("dd/MM/yyyy").format(value);
+                                  }
+                                });
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -733,6 +785,7 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                 partyPaymentMetaId: paymentData.partyPaymentMetaId ?? "",
                                 amount: amountController.text.trim(),
                                 paymentMode: controller.paymentModeList[selectedPaymentMode.value],
+                                paymentDate: DateFormat("yyyy-MM-dd").format(DateFormat("dd/MM/yyyy").parse(paymentDateController.text.trim())),
                               );
                             }
                           } finally {

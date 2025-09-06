@@ -259,4 +259,11 @@ class AppStrings {
   static const String sharePaymentLedger = "Share Payment Ledger";
   static const String shareLedgerInvoice = "Share Ledger Invoice";
   static const String shareInvoice = "Share Invoice";
+  static const String paymentDate = "Payment Date";
+  static const String selectDate = "Select Date";
+  static const String pleaseSelectDate = "Please select date";
+  static const String viewPendingPayment = "View Pending Payment";
+  static const String sharePendingPayment = "Share Pending Payment";
+  static const String qr = "QR";
+  static const String shareQr = "Share QR";
 }

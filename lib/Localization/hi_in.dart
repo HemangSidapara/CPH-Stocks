@@ -253,4 +253,11 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.sharePaymentLedger: "भुगतान लेज़र साझा करें",
   AppStrings.shareLedgerInvoice: "लेज़र इनवॉइस साझा करें",
   AppStrings.shareInvoice: "इनवॉइस साझा करें",
+  AppStrings.paymentDate: "भुगतान तिथि",
+  AppStrings.selectDate: "तिथि चुनें",
+  AppStrings.pleaseSelectDate: "कृपया तिथि चुनें",
+  AppStrings.viewPendingPayment: "लंबित भुगतान देखें",
+  AppStrings.sharePendingPayment: "लंबित भुगतान साझा करें",
+  AppStrings.qr: "QR",
+  AppStrings.shareQr: "QR साझा करें",
 };

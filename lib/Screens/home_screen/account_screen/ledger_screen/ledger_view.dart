@@ -158,7 +158,28 @@ class LedgerView extends GetView<LedgerController> {
                                   if (Get.arguments == true) ...[
                                     SizedBox(width: 2.w),
 
-                                    ///Filter
+                                    ///Pending Payments Pdf
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        controller.showPendingPdfBottomSheet(ctx: context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.BRONZE_COLOR,
+                                        elevation: 4,
+                                        maximumSize: Size.square(8.w),
+                                        minimumSize: Size.square(8.w),
+                                        padding: EdgeInsets.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: Image.asset(
+                                        AppAssets.pendingPaymentIcon,
+                                        width: 5.w,
+                                        height: 5.w,
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+
+                                    ///GST Filter
                                     Obx(() {
                                       return ElevatedButton(
                                         onPressed: () {
