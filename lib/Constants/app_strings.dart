@@ -266,4 +266,5 @@ class AppStrings {
   static const String sharePendingPayment = "Share Pending Payment";
   static const String qr = "QR";
   static const String shareQr = "Share QR";
+  static const String remark = "Remark";
 }

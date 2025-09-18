@@ -262,4 +262,5 @@ Map<String, String> enIN = <String, String>{
   AppStrings.sharePendingPayment: "Share Pending Payment",
   AppStrings.qr: "QR",
   AppStrings.shareQr: "Share QR",
+  AppStrings.remark: "Remark",
 };

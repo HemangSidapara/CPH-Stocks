@@ -1317,7 +1317,9 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     return null;
   }
 
-  Future<File?> generatePendingPaymentsPdf() async {
+  Future<File?> generatePendingPaymentsPdf({
+    required String mode,
+  }) async {
     final pdfDoc = pw.Document();
 
     final ttfRegular = pw.Font.ttf(await rootBundle.load(AppAssets.robotoRegular));
@@ -1329,15 +1331,6 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     pw.TextStyle size20Font = pw.TextStyle(
       color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
       fontSize: 20,
-      fontWeight: pw.FontWeight.bold,
-      fontFallback: [
-        ttfNotoSansSymbols,
-      ],
-    );
-
-    pw.TextStyle size16Font = pw.TextStyle(
-      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
-      fontSize: 16,
       fontWeight: pw.FontWeight.bold,
       fontFallback: [
         ttfNotoSansSymbols,
@@ -1385,9 +1378,10 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
 
             pw.Table(
               columnWidths: {
-                0: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3) - 10),
-                1: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3) - 10),
-                2: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3) - 10),
+                0: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3.5) - 10),
+                1: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3.5) - 10),
+                2: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 3.5) - 10),
+                3: pw.FixedColumnWidth((pdfPageTheme.pageFormat.width / 6) - 10),
               },
               border: pw.TableBorder.all(
                 width: 1,
@@ -1422,6 +1416,16 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                       padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                       child: pw.Text(
                         AppStrings.pendingAmount.tr,
+                        textAlign: pw.TextAlign.center,
+                        style: size14Font,
+                      ),
+                    ),
+
+                    /// Remark
+                    pw.Padding(
+                      padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      child: pw.Text(
+                        AppStrings.remark.tr,
                         textAlign: pw.TextAlign.center,
                         style: size14Font,
                       ),
@@ -1461,6 +1465,12 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                           textAlign: pw.TextAlign.start,
                           style: size14Font,
                         ),
+                      ),
+
+                      /// Remark
+                      pw.Padding(
+                        padding: pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        child: pw.SizedBox(),
                       ),
                     ],
                   ),

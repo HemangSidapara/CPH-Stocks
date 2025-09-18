@@ -260,4 +260,5 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.sharePendingPayment: "लंबित भुगतान साझा करें",
   AppStrings.qr: "QR",
   AppStrings.shareQr: "QR साझा करें",
+  AppStrings.remark: "टिप्पणी",
 };

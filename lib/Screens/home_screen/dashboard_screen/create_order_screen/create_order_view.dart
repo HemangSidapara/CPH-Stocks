@@ -190,86 +190,88 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             ),
                             DividerWidget(),
                             SizedBox(height: 0.7.h),
-                            IgnorePointer(
-                              ignoring: controller.selectedParty.isNotEmpty && controller.partyNameController.text.isNotEmpty,
-                              child: GestureDetector(
-                                onTap: () {
-                                  controller.withGST.toggle();
-                                },
-                                behavior: HitTestBehavior.opaque,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ///With GST
-                                    Flexible(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Obx(() {
-                                            return AnimatedContainer(
-                                              duration: 375.milliseconds,
-                                              padding: EdgeInsets.all(0.7.w),
-                                              decoration: BoxDecoration(
-                                                color: controller.withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: AppColors.PRIMARY_COLOR,
-                                                  width: 1.2,
+                            Obx(() {
+                              return IgnorePointer(
+                                ignoring: controller.selectedParty.isNotEmpty && controller.partyNameController.text.isNotEmpty,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    controller.withGST.toggle();
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ///With GST
+                                      Flexible(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Obx(() {
+                                              return AnimatedContainer(
+                                                duration: 375.milliseconds,
+                                                padding: EdgeInsets.all(0.7.w),
+                                                decoration: BoxDecoration(
+                                                  color: controller.withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: AppColors.PRIMARY_COLOR,
+                                                    width: 1.2,
+                                                  ),
                                                 ),
-                                              ),
-                                              child: Icon(
-                                                Icons.check_rounded,
-                                                color: AppColors.SECONDARY_COLOR,
-                                                size: 4.w,
-                                              ),
-                                            );
-                                          }),
-                                          SizedBox(width: 2.w),
-                                          Text(
-                                            AppStrings.withKey.tr,
-                                            style: AppStyles.size16w600,
-                                          ),
-                                        ],
+                                                child: Icon(
+                                                  Icons.check_rounded,
+                                                  color: AppColors.SECONDARY_COLOR,
+                                                  size: 4.w,
+                                                ),
+                                              );
+                                            }),
+                                            SizedBox(width: 2.w),
+                                            Text(
+                                              AppStrings.withKey.tr,
+                                              style: AppStyles.size16w600,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 2.w),
+                                      SizedBox(width: 2.w),
 
-                                    ///Without GST
-                                    Flexible(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Obx(() {
-                                            return AnimatedContainer(
-                                              duration: 375.milliseconds,
-                                              padding: EdgeInsets.all(0.7.w),
-                                              decoration: BoxDecoration(
-                                                color: controller.withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: AppColors.PRIMARY_COLOR,
-                                                  width: 1.2,
+                                      ///Without GST
+                                      Flexible(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Obx(() {
+                                              return AnimatedContainer(
+                                                duration: 375.milliseconds,
+                                                padding: EdgeInsets.all(0.7.w),
+                                                decoration: BoxDecoration(
+                                                  color: controller.withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: AppColors.PRIMARY_COLOR,
+                                                    width: 1.2,
+                                                  ),
                                                 ),
-                                              ),
-                                              child: Icon(
-                                                Icons.check_rounded,
-                                                color: AppColors.SECONDARY_COLOR,
-                                                size: 4.w,
-                                              ),
-                                            );
-                                          }),
-                                          SizedBox(width: 2.w),
-                                          Text(
-                                            AppStrings.without.tr,
-                                            style: AppStyles.size16w600,
-                                          ),
-                                        ],
+                                                child: Icon(
+                                                  Icons.check_rounded,
+                                                  color: AppColors.SECONDARY_COLOR,
+                                                  size: 4.w,
+                                                ),
+                                              );
+                                            }),
+                                            SizedBox(width: 2.w),
+                                            Text(
+                                              AppStrings.without.tr,
+                                              style: AppStyles.size16w600,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }),
                             SizedBox(height: 2.h),
 
                             ///Description

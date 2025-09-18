@@ -29,20 +29,36 @@ class PendingPaymentsPdfView extends StatefulWidget {
 class _PendingPaymentsPdfViewState extends State<PendingPaymentsPdfView> with SingleTickerProviderStateMixin {
   LedgerController controller = Get.isRegistered<LedgerController>() ? Get.find<LedgerController>() : Get.put(LedgerController());
   RxBool generatingPdf = false.obs;
-  Rx<File> pendingPaymentsPdfFile = File("").obs;
+  RxList<File> pendingPaymentsPdfFile = RxList();
+
+  late TabController tabController;
+
+  List<String> paymentMode = [
+    AppStrings.without,
+    AppStrings.withKey,
+    AppStrings.cash,
+  ];
 
   @override
   void initState() {
     super.initState();
-    setGenerateInvoice();
+    tabController = TabController(length: 3, vsync: this);
+    Future.wait(
+      paymentMode.indexed.map((e) async {
+        pendingPaymentsPdfFile.add(File(""));
+        await setGenerateInvoice(modeIndex: e.$1);
+      }),
+    );
   }
 
-  Future<void> setGenerateInvoice() async {
+  Future<void> setGenerateInvoice({required int modeIndex}) async {
     try {
       generatingPdf(true);
-      final pdfFile = await controller.generatePendingPaymentsPdf();
+      final pdfFile = await controller.generatePendingPaymentsPdf(
+        mode: paymentMode[modeIndex],
+      );
       if (pdfFile != null) {
-        pendingPaymentsPdfFile.value = pdfFile;
+        pendingPaymentsPdfFile[modeIndex] = pdfFile;
       }
     } finally {
       generatingPdf(false);
@@ -76,10 +92,44 @@ class _PendingPaymentsPdfViewState extends State<PendingPaymentsPdfView> with Si
         ),
         DividerWidget(color: AppColors.HINT_GREY_COLOR),
 
+        TabBar(
+          controller: tabController,
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
+          tabAlignment: TabAlignment.fill,
+          labelPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+          indicatorPadding: EdgeInsets.zero,
+          indicatorColor: AppColors.TERTIARY_COLOR,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorWeight: 2.5,
+          indicator: UnderlineTabIndicator(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: AppColors.TERTIARY_COLOR,
+              width: 2.5,
+            ),
+          ),
+          dividerColor: AppColors.TRANSPARENT,
+          tabs: paymentMode
+              .map(
+                (e) => Text(
+                  e.tr,
+                  style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w700),
+                ),
+              )
+              .toList(),
+        ),
+
         Expanded(
-          child: Obx(() {
-            return PdfViewWidget(pdfFile: pendingPaymentsPdfFile.value);
-          }),
+          child: TabBarView(
+            controller: tabController,
+            children: paymentMode.indexed
+                .map(
+                  (e) => Obx(() {
+                    return PdfViewWidget(pdfFile: pendingPaymentsPdfFile[e.$1]);
+                  }),
+                )
+                .toList(),
+          ),
         ),
       ],
     );

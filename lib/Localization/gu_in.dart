@@ -262,4 +262,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.sharePendingPayment: "બાકી ચુકવણી શેર કરો",
   AppStrings.qr: "QR",
   AppStrings.shareQr: "QR શેર કરો",
+  AppStrings.remark: "ટિપ્પણી",
 };

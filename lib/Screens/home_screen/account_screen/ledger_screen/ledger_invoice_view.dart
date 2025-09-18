@@ -174,29 +174,16 @@ class _LedgerInvoiceViewState extends State<LedgerInvoiceView> with SingleTicker
             tabs: [
               Text(
                 AppStrings.ledger.tr,
-                style: TextStyle(
-                  color: AppColors.WHITE_COLOR,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16.sp,
-                ),
+                style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w700),
               ),
               Text(
                 AppStrings.paymentLedger.tr,
-                style: TextStyle(
-                  color: AppColors.WHITE_COLOR,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16.sp,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w700, overflow: TextOverflow.ellipsis),
               ),
               if (controller.upiQrImage != null)
                 Text(
                   AppStrings.qr.tr,
-                  style: TextStyle(
-                    color: AppColors.WHITE_COLOR,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16.sp,
-                  ),
+                  style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w700),
                 ),
             ],
           ),
