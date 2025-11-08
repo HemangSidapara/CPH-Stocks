@@ -9,11 +9,14 @@ class AppAssets {
   static const String customLoaderAnim = "assets/animations/custom_loader_animation.json";
   static const String cloudAnim = "assets/animations/cloud_animation.json";
   static const String accountAnim = "assets/animations/account_animation.gif";
+  static const String cashFlowAnim = "assets/animations/cash_flow_animation.gif";
 
   ///Images
   static const String splashImage = "assets/images/splash_image.png";
   static const String loginImage = "assets/images/login_image.png";
   static const String createOrderImage = "assets/images/create_order_image.png";
+  static const String nativeSplashImage = "assets/images/native_splash_image.png";
+  static const String nativeSplash2Image = "assets/images/native_splash_2_image.webp";
 
   ///Icons
   static const String backIcon = "assets/icons/back_icon.png";
@@ -39,6 +42,7 @@ class AppAssets {
   static const String employeeIcon = "assets/icons/employee_icon.png";
   static const String categoriesIcon = "assets/icons/categories_icon.png";
   static const String gstIcon = "assets/icons/gst_icon.png";
+  static const String cashFlowIcon = "assets/icons/cash_flow_icon.png";
 
   ///Fonts
   static const String robotoRegular = "assets/fonts/Roboto/Roboto-Regular.ttf";

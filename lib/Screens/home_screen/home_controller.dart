@@ -1,11 +1,13 @@
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
+import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/account_view.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_view.dart';
@@ -20,17 +22,56 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class HomeController extends GetxController {
-  RxInt bottomIndex = 0.obs;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  RxInt drawerIndex = 0.obs;
   PageController pageController = PageController(initialPage: 0);
   RxBool isLatestVersionAvailable = false.obs;
   RxString newAPKUrl = ''.obs;
   RxString newAPKVersion = ''.obs;
+
+  RxList<String> listOfTitleAnim = [
+    "",
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) AppAssets.accountAnim,
+    AppAssets.recycleBinAnim,
+    if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesAnim,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) AppAssets.cashFlowAnim,
+    AppAssets.settingsAnim,
+  ].obs;
+
+  RxList<double?> listOfTitleAnimSize = [
+    null,
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) 10.5.w,
+    8.5.w,
+    if (getData(AppConstance.role) != AppConstance.customer) 8.5.w,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
+    7.w,
+  ].obs;
+
+  RxList<Color?> listOfTitleColor = [
+    null,
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) null,
+    AppColors.SECONDARY_COLOR,
+    if (getData(AppConstance.role) != AppConstance.customer) null,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
+    null,
+  ].obs;
+
+  RxList<String> listOfPages = [
+    AppStrings.home,
+    if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) AppStrings.account,
+    AppStrings.recycleBin,
+    if (getData(AppConstance.role) != AppConstance.customer) AppStrings.notes,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) AppStrings.cashFlow,
+    AppStrings.settings,
+  ].obs;
 
   RxList<String> listOfImages = [
     AppAssets.homeIcon,
     if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) AppAssets.calculatorIcon,
     AppAssets.recycleBinIcon,
     if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesIcon,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) AppAssets.cashFlowIcon,
     AppAssets.settingsIcon,
   ].obs;
 
@@ -39,14 +80,16 @@ class HomeController extends GetxController {
     if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) 4.3.w,
     6.w,
     if (getData(AppConstance.role) != AppConstance.customer) 6.w,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
     null,
   ].obs;
 
-  RxList<Widget> bottomItemWidgetList = [
+  RxList<Widget> drawerItemWidgetList = [
     const DashboardView(),
     if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) const AccountView(),
     const RecycleBinView(),
     if (getData(AppConstance.role) != AppConstance.customer) const NotesView(),
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) const CashFlowView(),
     const SettingsView(),
   ].obs;
 
@@ -66,15 +109,22 @@ class HomeController extends GetxController {
     await checkTokenApiCall();
   }
 
-  Future<void> onBottomItemChange({required int index}) async {
-    bottomIndex.value = index;
+  bool get isRecycleBinSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.recycleBinIcon);
+
+  bool get isNotesSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.notesIcon);
+
+  bool get isSettingsSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.settingsIcon);
+
+  Future<void> onDrawerItemChange({required int index}) async {
+    scaffoldKey.currentState?.closeDrawer();
+    drawerIndex.value = index;
     getLatestVersionApiCall();
     if (index == listOfImages.indexOf(AppAssets.recycleBinIcon)) {
       Get.find<RecycleBinController>().getOrdersApi(isLoading: Get.find<RecycleBinController>().isGetOrdersLoading.isTrue);
     } else if (index == listOfImages.indexOf(AppAssets.notesIcon)) {
       Get.find<NotesController>().getNotesApi(isLoading: false);
     }
-    pageController.jumpToPage(bottomIndex.value);
+    pageController.jumpToPage(drawerIndex.value);
   }
 
   Future<void> getLatestVersionApiCall() async {

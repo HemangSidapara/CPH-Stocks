@@ -263,4 +263,5 @@ Map<String, String> guIN = <String, String>{
   AppStrings.qr: "QR",
   AppStrings.shareQr: "QR શેર કરો",
   AppStrings.remark: "ટિપ્પણી",
+  AppStrings.home: "ઘર",
 };

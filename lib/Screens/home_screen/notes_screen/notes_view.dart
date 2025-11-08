@@ -1,9 +1,7 @@
-import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
-import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -26,57 +24,6 @@ class NotesView extends GetView<NotesController> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ///Header
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                CustomHeaderWidget(
-                  title: AppStrings.notes.tr,
-                  titleIcon: AppAssets.notesAnim,
-                  titleIconSize: 8.5.w,
-                ),
-                Obx(() {
-                  return IconButton(
-                    onPressed: controller.isRefreshing.value
-                        ? () {}
-                        : () async {
-                            Utils.unfocus();
-                            controller.getNotesApi(isLoading: false);
-                          },
-                    style: IconButton.styleFrom(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: EdgeInsets.zero,
-                    ),
-                    icon: Obx(() {
-                      return TweenAnimationBuilder(
-                        duration: Duration(seconds: controller.isRefreshing.value ? 45 : 1),
-                        tween: Tween(begin: 0.0, end: controller.isRefreshing.value ? 45.0 : controller.ceilValueForRefresh.value),
-                        onEnd: () {
-                          controller.isRefreshing.value = false;
-                        },
-                        builder: (context, value, child) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            controller.ceilValueForRefresh(value.toDouble().ceilToDouble());
-                          });
-                          return Transform.rotate(
-                            angle: value * 2 * 3.141592653589793,
-                            child: Icon(
-                              Icons.refresh_rounded,
-                              color: AppColors.PRIMARY_COLOR,
-                              size: context.isPortrait ? 6.w : 6.h,
-                            ),
-                          );
-                        },
-                      );
-                    }),
-                  );
-                }),
-              ],
-            ),
-          ),
           SizedBox(height: 2.h),
 
           ///Notes

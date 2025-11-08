@@ -5,7 +5,6 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/account_controller.dart';
-import 'package:cph_stocks/Widgets/custom_header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -17,20 +16,6 @@ class AccountView extends GetView<AccountController> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ///Header
-        Padding(
-          padding: EdgeInsets.only(left: 5.w, right: 5.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomHeaderWidget(
-                title: AppStrings.account.tr,
-                titleIcon: AppAssets.accountAnim,
-                titleIconSize: 10.5.w,
-              ),
-            ],
-          ),
-        ),
         SizedBox(height: 2.h),
 
         ///Features

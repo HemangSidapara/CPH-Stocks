@@ -267,4 +267,6 @@ class AppStrings {
   static const String qr = "QR";
   static const String shareQr = "Share QR";
   static const String remark = "Remark";
+  static const String home = "Home";
+  static const String cashFlow = "Cash Flow";
 }

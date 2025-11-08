@@ -263,4 +263,5 @@ Map<String, String> enIN = <String, String>{
   AppStrings.qr: "QR",
   AppStrings.shareQr: "Share QR",
   AppStrings.remark: "Remark",
+  AppStrings.home: "Home",
 };

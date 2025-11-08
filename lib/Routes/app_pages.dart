@@ -11,6 +11,7 @@ import 'package:cph_stocks/Screens/home_screen/account_screen/pending_payment_sc
 import 'package:cph_stocks/Screens/home_screen/account_screen/pending_payment_screen/pending_payment_view.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/reports_screen/reports_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/reports_screen/reports_view.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/challan_screen/challan_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_bindings.dart';
@@ -64,12 +65,13 @@ class AppPages {
     GetPage(
       name: Routes.homeScreen,
       page: () => const HomeView(),
-      binding: HomeBindings(),
       bindings: [
+        HomeBindings(),
         DashboardBindings(),
         AccountBindings(),
         RecycleBinBindings(),
         NotesBindings(),
+        CashFlowBindings(),
         SettingsBindings(),
       ],
       transition: Transition.rightToLeftWithFade,

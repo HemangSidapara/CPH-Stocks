@@ -4,7 +4,7 @@ Stocks handle of CPH.
 
 ## Flutter Version:
 
-- v3.32.8 (Stable)
+- v3.35.7 (Stable)
 
 ## Notes:
 

@@ -2,11 +2,9 @@ import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
-import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_controller.dart';
-import 'package:cph_stocks/Screens/home_screen/dashboard_screen/hand_shaken_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -20,27 +18,6 @@ class DashboardView extends GetView<DashboardController> {
       padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Column(
         children: [
-          ///Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        "${AppStrings.hello.tr}${getData(AppConstance.userName) ?? ""} ",
-                        style: AppStyles.size22w900.copyWith(color: AppColors.WHITE_COLOR.withValues(alpha: 0.8)),
-                      ),
-                    ),
-                    const HandShakenAnimation(),
-                  ],
-                ),
-              ),
-              SizedBox(width: 2.w),
-            ],
-          ),
           SizedBox(height: 2.h),
 
           ///Features
