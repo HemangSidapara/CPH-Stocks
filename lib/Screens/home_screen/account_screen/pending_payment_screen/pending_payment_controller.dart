@@ -26,7 +26,7 @@ class PendingPaymentController extends GetxController {
       isLoading(!isRefresh);
       final response = await AccountServices.getPendingPaymentsService(
         startDate: filterDateRange.value?.start.toLocal().toIso8601String(),
-        endDate: filterDateRange.value?.start.toLocal().toIso8601String(),
+        endDate: filterDateRange.value?.end.toLocal().toIso8601String(),
       );
 
       if (response.isSuccess) {

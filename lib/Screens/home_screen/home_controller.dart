@@ -113,6 +113,8 @@ class HomeController extends GetxController {
 
   bool get isNotesSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.notesIcon);
 
+  bool get isCashFlowSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.cashFlowIcon);
+
   bool get isSettingsSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.settingsIcon);
 
   Future<void> onDrawerItemChange({required int index}) async {

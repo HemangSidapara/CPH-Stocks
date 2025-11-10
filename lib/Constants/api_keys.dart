@@ -44,4 +44,7 @@ class ApiKeys {
   static const inch = "inch";
   static const isGst = "isGst";
   static const paymentDate = "paymentDate";
+  static const cashType = "cashType";
+  static const note = "note";
+  static const modeOfPayment = "modeOfPayment";
 }

@@ -269,4 +269,13 @@ class AppStrings {
   static const String remark = "Remark";
   static const String home = "Home";
   static const String cashFlow = "Cash Flow";
+  static const String noCashFlowFound = "No Cash Flow Found";
+  static const String inFlow = "In ↑";
+  static const String outFlow = "Out ↓";
+  static const String net = "Net";
+  static const String areYouSureYouWantToDeleteThisCashFlowEntry = "Are you sure? You want to delete this cash flow entry?";
+  static const String addCashFlow = "Add Cash Flow";
+  static const String editCashFlow = "Edit Cash Flow";
+  static const String cashType = "Cash Type";
+  static const String enterNotes = "Enter notes";
 }

@@ -65,4 +65,10 @@ class ApiUrls {
   static const String addNoOfEmployeesApi = '${_apiPath}addNoOfEmployees';
   static const String editNoOfEmployeesApi = '${_apiPath}editNoOfEmployees';
   static const String getReportApi = '${_apiPath}getReport';
+
+  /// Cash Flow APIs
+  static const String getCashFlowApi = '${_apiPath}getCashFlow';
+  static const String addCashFlowApi = '${_apiPath}addCashFlow';
+  static const String editCashFlowApi = '${_apiPath}editCashFlow';
+  static const String deleteCashFlowApi = '${_apiPath}deleteCashFlow';
 }
