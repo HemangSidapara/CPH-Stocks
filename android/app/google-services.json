@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "254989888819",
+    "project_id": "cph-stocks",
+    "storage_bucket": "cph-stocks.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254989888819:android:b6392fe0ef527c6de8a246",
+        "android_client_info": {
+          "package_name": "com.stocks.cph"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUz62LbwVjm06-ywy9th78PP3FYIagyxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

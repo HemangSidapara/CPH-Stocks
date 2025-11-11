@@ -7,12 +7,23 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_contro
 import 'package:cph_stocks/Utils/app_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class Utils {
+  static String _appVersion = "";
+
   static const double kMobileHeight = 997.3333333333335;
 
   static DashboardController get getDashboardController => Get.isRegistered<DashboardController>() ? Get.find<DashboardController>() : Get.put(DashboardController());
+
+  static Future<String> setAppVersion() async {
+    final pkgInfo = await PackageInfo.fromPlatform();
+    _appVersion = "v${pkgInfo.version}.${pkgInfo.buildNumber}";
+    return _appVersion;
+  }
+
+  static String get appVersion => _appVersion;
 
   ///Unfocus
   static void unfocus() {
@@ -72,22 +83,23 @@ class Utils {
       Get.rawSnackbar(
         margin: Get.context != null
             ? Get.context!.isPortrait
-                ? EdgeInsets.only(bottom: 12.w + 1.h, left: 7.w, right: 7.w)
-                : EdgeInsets.only(bottom: 12.h + 1.w, left: 20.w, right: 20.w)
+                  ? EdgeInsets.only(bottom: 12.w + 1.h, left: 7.w, right: 7.w)
+                  : EdgeInsets.only(bottom: 12.h + 1.w, left: 20.w, right: 20.w)
             : EdgeInsets.only(bottom: 12.w + 1.h, left: 7.w, right: 7.w),
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(milliseconds: 3500),
-        backgroundColor: barColor ??
+        backgroundColor:
+            barColor ??
             (isError
                 ? AppColors.ERROR_COLOR
                 : isWarning
-                    ? AppColors.WARNING_COLOR
-                    : AppColors.SUCCESS_COLOR),
+                ? AppColors.WARNING_COLOR
+                : AppColors.SUCCESS_COLOR),
         borderRadius: 12,
         padding: Get.context != null
             ? Get.context!.isPortrait
-                ? EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h)
-                : EdgeInsets.symmetric(horizontal: 3.h, vertical: 1.w)
+                  ? EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h)
+                  : EdgeInsets.symmetric(horizontal: 3.h, vertical: 1.w)
             : EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
         messageText: Row(
           children: [
@@ -98,24 +110,25 @@ class Utils {
                     isError
                         ? Icons.error_rounded
                         : isWarning
-                            ? Icons.warning_rounded
-                            : Icons.check_circle_rounded,
+                        ? Icons.warning_rounded
+                        : Icons.check_circle_rounded,
                     color: iconColor ?? AppColors.WHITE_COLOR,
                   ),
                   SizedBox(
-                      width: Get.context != null
-                          ? Get.context!.isPortrait
+                    width: Get.context != null
+                        ? Get.context!.isPortrait
                               ? 3.w
                               : 3.h
-                          : 3.w),
+                        : 3.w,
+                  ),
                   Expanded(
                     child: Text(
                       message ?? 'Empty message',
                       style: TextStyle(
                         fontSize: Get.context != null
                             ? Get.context!.isPortrait
-                                ? 15.sp
-                                : 12.sp
+                                  ? 15.sp
+                                  : 12.sp
                             : 15.sp,
                         color: textColor ?? AppColors.WHITE_COLOR,
                         fontWeight: FontWeight.w600,
@@ -127,11 +140,12 @@ class Utils {
             ),
             if (onTap != null) ...[
               SizedBox(
-                  width: Get.context != null
-                      ? Get.context!.isPortrait
+                width: Get.context != null
+                    ? Get.context!.isPortrait
                           ? 2.w
                           : 2.h
-                      : 2.w),
+                    : 2.w,
+              ),
               InkWell(
                 onTap: onTap,
                 child: DecoratedBox(

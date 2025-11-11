@@ -6,8 +6,10 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/api_base_helper.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
+import 'package:cph_stocks/Network/models/auth_models/get_user_details_model.dart';
 import 'package:cph_stocks/Network/models/auth_models/login_model.dart';
 import 'package:cph_stocks/Network/response_model.dart';
+import 'package:cph_stocks/Network/services/utils_services/firebase_service.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -41,9 +43,11 @@ class AuthServices {
     required String phone,
     required String password,
   }) async {
+    final fcmToken = await FirebaseService.getFcmToken();
     final params = {
       ApiKeys.phone: phone,
       ApiKeys.password: password,
+      ApiKeys.fcmToken: fcmToken,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.loginApi,
@@ -54,11 +58,12 @@ class AuthServices {
       },
       onSuccess: (res) async {
         if (res.isSuccess) {
-          LoginModel loginModel = LoginModel.fromJson(res.response?.data);
+          LoginModel loginModel = LoginModel.fromJson(res.response?.data ?? {});
           await setData(AppConstance.authorizationToken, loginModel.token);
           await setData(AppConstance.role, loginModel.role);
           await setData(AppConstance.userName, loginModel.name);
           await setData(AppConstance.phone, phone);
+          await setData(AppConstance.userId, loginModel.userId);
           if (kDebugMode) {
             print("loginApi success :: ${loginModel.msg}");
           }
@@ -76,8 +81,9 @@ class AuthServices {
   }
 
   static Future<ResponseModel> checkTokenService() async {
+    final fcmToken = await FirebaseService.getFcmToken();
     final response = await ApiBaseHelper.getHTTP(
-      ApiUrls.checkTokenApi,
+      ApiUrls.checkTokenApi + (fcmToken ?? ""),
       onError: (dioExceptions) {
         Utils.handleMessage(message: dioExceptions.message, isError: true);
       },
@@ -86,6 +92,13 @@ class AuthServices {
         if (res.isSuccess) {
           if (kDebugMode) {
             print("checkTokenApi success :: ${res.message}");
+          }
+          GetUserDetailsModel userDetailsModel = GetUserDetailsModel.fromJson(res.response?.data ?? {});
+          await setData(AppConstance.role, userDetailsModel.role);
+          await setData(AppConstance.userName, userDetailsModel.name);
+          await setData(AppConstance.userId, userDetailsModel.userId);
+          if (kDebugMode) {
+            print("checkTokenApi success :: ${userDetailsModel.code}");
           }
         } else if (res.statusCode == 498) {
           if (kDebugMode) {

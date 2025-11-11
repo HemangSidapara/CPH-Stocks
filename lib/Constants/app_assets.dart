@@ -46,4 +46,7 @@ class AppAssets {
   static const String robotoItalic = "assets/fonts/Roboto/Roboto-Italic.ttf";
   static const String robotoBoldItalic = "assets/fonts/Roboto/Roboto-BoldItalic.ttf";
   static const String notoSansSymbols = "assets/fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf";
+
+  ///Android Drawable
+  static const String notificationDrawableIcon = "resource://drawable/notification_app_icon";
 }

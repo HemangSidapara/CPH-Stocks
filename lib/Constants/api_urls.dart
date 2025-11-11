@@ -6,7 +6,7 @@ class ApiUrls {
 
   /// Auth APIs
   static const String loginApi = '${_apiPath}Login';
-  static const String checkTokenApi = '${_apiPath}checkToken';
+  static const String checkTokenApi = '${_apiPath}checkToken&fcmToken=';
   static const String inAppUpdateApi = '${_apiPath}inAppUpdate';
   static const String downloadBackupApi = '${_apiPath}downloadBackup';
 
@@ -71,4 +71,5 @@ class ApiUrls {
   static const String addCashFlowApi = '${_apiPath}addCashFlow';
   static const String editCashFlowApi = '${_apiPath}editCashFlow';
   static const String deleteCashFlowApi = '${_apiPath}deleteCashFlow';
+  static const String acceptRejectDeleteCashFlowApi = '${_apiPath}acceptRejectDeleteCashFlow';
 }

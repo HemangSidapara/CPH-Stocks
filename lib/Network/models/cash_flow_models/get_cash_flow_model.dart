@@ -74,6 +74,8 @@ class CashFlowData {
   String? createdDate;
   String? createdTime;
   String? createdBy;
+  bool? requestDeletion;
+  String? requestDeletionBy;
 
   CashFlowData({
     this.cashFlowId,
@@ -84,6 +86,8 @@ class CashFlowData {
     this.createdDate,
     this.createdTime,
     this.createdBy,
+    this.requestDeletion,
+    this.requestDeletionBy,
   });
 
   factory CashFlowData.fromJson(Map<String, dynamic> json) => _$CashFlowDataFromJson(json);
@@ -99,6 +103,8 @@ class CashFlowData {
     String? createdDate,
     String? createdTime,
     String? createdBy,
+    bool? requestDeletion,
+    String? requestDeletionBy,
   }) {
     return CashFlowData(
       cashFlowId: cashFlowId ?? this.cashFlowId,
@@ -109,6 +115,8 @@ class CashFlowData {
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,
       createdBy: createdBy ?? this.createdBy,
+      requestDeletion: requestDeletion ?? this.requestDeletion,
+      requestDeletionBy: requestDeletionBy ?? this.requestDeletionBy,
     );
   }
 }

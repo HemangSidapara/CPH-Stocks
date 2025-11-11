@@ -278,4 +278,7 @@ class AppStrings {
   static const String editCashFlow = "Edit Cash Flow";
   static const String cashType = "Cash Type";
   static const String enterNotes = "Enter notes";
+  static const String wantsToDeleteThisEntry = "{ABC} wants to delete this entry.";
+  static const String areYouSureYouWantToAcceptThisDeletionRequest = "Are you sure? You want to accept this deletion request?";
+  static const String areYouSureYouWantToRejectThisDeletionRequest = "Are you sure? You want to reject this deletion request?";
 }

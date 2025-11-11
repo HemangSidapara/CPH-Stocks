@@ -160,4 +160,39 @@ class CashFlowServices {
 
     return response;
   }
+
+  /// Accept/Reject Delete Cash Flow Service
+  static Future<ResponseModel> acceptRejectDeleteCashFlowService({
+    required String cashFlowId,
+    required bool isAccept,
+  }) async {
+    final response = await ApiBaseHelper.deleteHTTP(
+      "${ApiUrls.acceptRejectDeleteCashFlowApi}&cashFlowId=$cashFlowId&isAccept=$isAccept",
+      onError: (dioExceptions) {
+        Utils.handleMessage(message: dioExceptions.message, isError: true);
+      },
+      showProgress: false,
+      onSuccess: (res) async {
+        if (res.isSuccess) {
+          if (kDebugMode) {
+            print("acceptRejectDeleteCashFlowApi success :: ${res.message}");
+          }
+        } else if (res.statusCode == 498) {
+          if (kDebugMode) {
+            print("acceptRejectDeleteCashFlowApi error :: ${res.message}");
+          }
+          Get.offAllNamed(Routes.signInScreen);
+          Utils.handleMessage(message: AppStrings.sessionExpire.tr, isError: true);
+          clearData();
+        } else {
+          if (kDebugMode) {
+            print("acceptRejectDeleteCashFlowApi error :: ${res.message}");
+          }
+          Utils.handleMessage(message: res.message, isError: true);
+        }
+      },
+    );
+
+    return response;
+  }
 }

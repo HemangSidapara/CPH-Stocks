@@ -14,6 +14,7 @@ import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,6 +29,7 @@ class SplashController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    FlutterNativeSplash.remove();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         systemNavigationBarColor: AppColors.SECONDARY_COLOR,

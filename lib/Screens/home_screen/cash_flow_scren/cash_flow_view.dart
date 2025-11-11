@@ -23,6 +23,7 @@ class CashFlowView extends GetView<CashFlowController> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        ///Filter by Date
         Align(
           alignment: Alignment.centerLeft,
           child: Padding(
@@ -30,29 +31,55 @@ class CashFlowView extends GetView<CashFlowController> {
             child: Obx(() {
               return Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  ElevatedButton(
+                    onPressed: () async {
+                      await showDialogDateRangePicker(ctx: context);
+                      controller.getCashFlowApiCall(isRefresh: true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
+                      elevation: 4,
+                      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      maximumSize: Size(50.w, 8.w),
+                      minimumSize: Size.square(8.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          "${AppStrings.inFlow.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.summeryData.value.totalIn?.toDouble() ?? 0.0)}",
-                          style: AppStyles.size16w600.copyWith(color: AppColors.DARK_GREEN_COLOR),
+                        Icon(
+                          Icons.calendar_month_rounded,
+                          color: AppColors.WHITE_COLOR,
+                          size: 5.w,
                         ),
-                        SizedBox(height: 0.7.h),
+                        SizedBox(width: 1.w),
                         Text(
-                          "${AppStrings.outFlow.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.summeryData.value.totalOut?.toDouble() ?? 0.0)}",
-                          style: AppStyles.size16w600.copyWith(color: AppColors.DARK_RED_COLOR),
+                          controller.filterDateRange.value?.start != null ? DateFormat("dd/MM/yyyy").format(controller.filterDateRange.value!.start) : "-",
+                          style: AppStyles.size14w600.copyWith(
+                            color: AppColors.PRIMARY_COLOR,
+                          ),
                         ),
-                        SizedBox(height: 0.7.h),
+                        SizedBox(width: 1.w),
                         Text(
-                          "${AppStrings.net.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.summeryData.value.netBalance?.toDouble() ?? 0.0)}",
-                          style: AppStyles.size16w600,
+                          "•",
+                          style: AppStyles.size14w600.copyWith(
+                            color: AppColors.PRIMARY_COLOR,
+                          ),
+                        ),
+                        SizedBox(width: 1.w),
+                        Text(
+                          controller.filterDateRange.value?.end != null ? DateFormat("dd/MM/yyyy").format(controller.filterDateRange.value!.end) : "-",
+                          style: AppStyles.size14w600.copyWith(
+                            color: AppColors.PRIMARY_COLOR,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(width: 2.w),
-
                   if (controller.filterDateRange.value != null) ...[
                     IconButton(
                       onPressed: () {
@@ -74,288 +101,528 @@ class CashFlowView extends GetView<CashFlowController> {
                     ),
                     SizedBox(width: 2.w),
                   ],
-                  ElevatedButton(
-                    onPressed: () async {
-                      await showDialogDateRangePicker(ctx: context);
-                      controller.getCashFlowApiCall(isRefresh: true);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.FACEBOOK_BLUE_COLOR,
-                      elevation: 4,
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minimumSize: Size.square(8.w),
-                      maximumSize: Size.square(8.w),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.calendar_month_rounded,
-                      color: AppColors.WHITE_COLOR,
-                      size: 5.w,
-                    ),
-                  ),
                 ],
+              );
+            }),
+          ),
+        ),
+        SizedBox(height: 1.h),
+
+        ///Cash flow summary
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5.w),
+            child: Obx(() {
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppColors.PRIMARY_COLOR,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.7.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppStrings.inFlow.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.summeryData.value.totalIn?.toDouble() ?? 0.0)}",
+                            style: AppStyles.size16w600.copyWith(color: AppColors.DARK_GREEN_COLOR),
+                          ),
+                          SizedBox(width: 2.w),
+                          Text(
+                            "${AppStrings.outFlow.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.summeryData.value.totalOut?.toDouble() ?? 0.0)}",
+                            style: AppStyles.size16w600.copyWith(color: AppColors.DARK_RED_COLOR),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 0.7.h),
+                      Text(
+                        "${AppStrings.net.tr}:  ${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(controller.summeryData.value.netBalance?.toDouble() ?? 0.0)}",
+                        style: AppStyles.size16w600,
+                      ),
+                    ],
+                  ),
+                ),
               );
             }),
           ),
         ),
         SizedBox(height: 0.5.h),
 
+        TabBar(
+          controller: controller.tabController,
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
+          tabAlignment: TabAlignment.fill,
+          labelPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+          indicatorPadding: EdgeInsets.zero,
+          indicatorColor: AppColors.TERTIARY_COLOR,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorWeight: 2.5,
+          indicator: UnderlineTabIndicator(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: AppColors.TERTIARY_COLOR,
+              width: 2.5,
+            ),
+          ),
+          dividerColor: AppColors.TRANSPARENT,
+          onTap: (value) {
+            Utils.unfocus();
+            controller.tabIndex(value);
+          },
+          tabs: [
+            for (int i = 0; i < controller.tabTypes.length; i++) ...[
+              Text(
+                controller.tabTypes[i].tr,
+                style: TextStyle(
+                  color: AppColors.WHITE_COLOR,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ],
+        ),
+
         Expanded(
-          child: RefreshIndicatorWidget(
-            onRefresh: () async {
-              await controller.getCashFlowApiCall(isRefresh: true);
-            },
-            child: Obx(() {
-              if (controller.isLoading.isTrue) {
-                return Center(
-                  child: LoadingWidget(),
-                );
-              } else if (controller.searchCashFlowList.isEmpty) {
-                return Center(
-                  child: SingleChildScrollView(
-                    child: NoDataFoundWidget(
-                      subtitle: AppStrings.noCashFlowFound.tr,
-                      onPressed: () {
-                        Utils.unfocus();
-                        controller.searchCashFlowController.clear();
-                        controller.getCashFlowApiCall();
-                      },
-                    ),
-                  ),
-                );
-              } else {
-                return AnimationLimiter(
-                  child: ListView.separated(
-                    itemCount: controller.searchCashFlowList.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h).copyWith(bottom: 2.h),
-                    itemBuilder: (context, index) {
-                      final data = controller.searchCashFlowList[index];
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 375),
-                        child: SlideAnimation(
-                          verticalOffset: 50.0,
-                          child: FadeInAnimation(
-                            child: Card(
-                              color: (data.cashType == "OUT" ? AppColors.DARK_RED_COLOR : AppColors.DARK_GREEN_COLOR).withValues(alpha: 0.7),
-                              clipBehavior: Clip.antiAlias,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ExpansionTile(
-                                title: Row(
-                                  children: [
-                                    ///Note
-                                    Expanded(
-                                      child: Text(
-                                        data.note ?? "",
-                                        style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                      ),
-                                    ),
-                                    SizedBox(width: 2.w),
-
-                                    ///Pending Amount
-                                    Text(
-                                      data.amount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toTryDouble() ?? 0.0) : "",
-                                      style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                    ),
-                                    SizedBox(width: 2.w),
-
-                                    ///Edit
-                                    IconButton(
-                                      onPressed: () {
-                                        showBottomSheetAddEditCashFlow(
-                                          ctx: context,
-                                          cashFlowId: data.cashFlowId,
-                                        );
-                                      },
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: AppColors.WARNING_COLOR,
-                                        maximumSize: Size.square(8.w),
-                                        minimumSize: Size.square(8.w),
-                                        padding: EdgeInsets.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      icon: Icon(
-                                        Icons.edit_rounded,
-                                        color: AppColors.PRIMARY_COLOR,
-                                        size: 5.w,
-                                      ),
-                                    ),
-                                    SizedBox(width: 1.w),
-
-                                    ///Delete
-                                    IconButton(
-                                      onPressed: () {
-                                        showDeleteDialog(
-                                          ctx: context,
-                                          title: AppStrings.areYouSureYouWantToDeleteThisCashFlowEntry.tr,
-                                          onPressed: () {
-                                            Get.back();
-                                            controller.deleteCashFlowApiCall(cashFlowId: data.cashFlowId ?? "");
-                                          },
-                                        );
-                                      },
-                                      style: IconButton.styleFrom(
-                                        backgroundColor: AppColors.DARK_RED_COLOR,
-                                        maximumSize: Size.square(8.w),
-                                        minimumSize: Size.square(8.w),
-                                        padding: EdgeInsets.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      icon: Obx(() {
-                                        if (controller.deletingId.value == data.cashFlowId) {
-                                          return SizedBox.square(
-                                            dimension: 3.5.w,
-                                            child: CircularProgressIndicator(
-                                              color: AppColors.PRIMARY_COLOR,
-                                              strokeWidth: 1.5,
-                                            ),
-                                          );
-                                        } else {
-                                          return Icon(
-                                            Icons.delete_rounded,
-                                            color: AppColors.WHITE_COLOR,
-                                            size: 5.w,
-                                          );
-                                        }
-                                      }),
-                                    ),
-                                  ],
-                                ),
-                                tilePadding: EdgeInsets.only(left: 3.w, right: 1.5.w),
-                                dense: true,
-                                showTrailingIcon: false,
-                                collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                iconColor: AppColors.SECONDARY_COLOR,
-                                collapsedShape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide.none,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide.none,
-                                ),
-                                childrenPadding: EdgeInsets.symmetric(horizontal: 2.w).copyWith(bottom: 2.h),
-                                expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      ///Type
-                                      Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            WidgetSpan(
-                                              child: Padding(
-                                                padding: EdgeInsets.only(right: 1.w),
-                                                child: Icon(
-                                                  Icons.calculate_sharp,
-                                                  color: AppColors.SECONDARY_COLOR,
-                                                  size: 5.w,
-                                                ),
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: data.cashType ?? "",
-                                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 3.w),
-
-                                      ///Mode
-                                      Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            WidgetSpan(
-                                              child: Padding(
-                                                padding: EdgeInsets.only(right: 1.w),
-                                                child: Icon(
-                                                  Icons.payments_rounded,
-                                                  color: AppColors.SECONDARY_COLOR,
-                                                  size: 5.w,
-                                                ),
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: data.modeOfPayment ?? "",
-                                              style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w500, color: AppColors.SECONDARY_COLOR),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      ///Date
-                                      if (data.createdDate != null && data.createdTime != null) ...[
-                                        SizedBox(width: 3.w),
-                                        Flexible(
-                                          child: Text.rich(
-                                            TextSpan(
-                                              children: [
-                                                WidgetSpan(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(right: 1.w),
-                                                    child: Icon(
-                                                      Icons.calendar_month_rounded,
-                                                      color: AppColors.SECONDARY_COLOR,
-                                                      size: 5.w,
-                                                    ),
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: DateFormat("dd/MM/yyyy, hh:mm a").format(DateTime.parse("${data.createdDate} ${data.createdTime}")),
-                                                  style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w500, color: AppColors.SECONDARY_COLOR),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                  SizedBox(height: 0.7.h),
-
-                                  ///Created By
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        WidgetSpan(
-                                          child: Padding(
-                                            padding: EdgeInsets.only(right: 1.w),
-                                            child: Icon(
-                                              Icons.person_2_rounded,
-                                              color: AppColors.SECONDARY_COLOR,
-                                              size: 5.w,
-                                            ),
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: data.createdBy ?? "",
-                                          style: AppStyles.size16w600.copyWith(fontWeight: FontWeight.w500, color: AppColors.SECONDARY_COLOR),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+          child: TabBarView(
+            controller: controller.tabController,
+            children: [
+              for (int i = 0; i < controller.tabTypes.length; i++) ...[
+                RefreshIndicatorWidget(
+                  onRefresh: () async {
+                    await controller.getCashFlowApiCall(isRefresh: true);
+                  },
+                  child: Obx(() {
+                    if (controller.isLoading.isTrue) {
+                      return Center(
+                        child: LoadingWidget(),
+                      );
+                    } else if ((i == 0 ? controller.searchCashCashFlowList : controller.searchOnlineCashFlowList).isEmpty) {
+                      return Center(
+                        child: SingleChildScrollView(
+                          child: NoDataFoundWidget(
+                            subtitle: AppStrings.noCashFlowFound.tr,
+                            onPressed: () {
+                              Utils.unfocus();
+                              controller.searchCashFlowController.clear();
+                              controller.getCashFlowApiCall();
+                            },
                           ),
                         ),
                       );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: 1.5.h);
-                    },
+                    } else {
+                      return AnimationLimiter(
+                        child: ListView.separated(
+                          itemCount: (i == 0 ? controller.searchCashCashFlowList : controller.searchOnlineCashFlowList).length,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h).copyWith(bottom: 2.h),
+                          itemBuilder: (context, index) {
+                            final data = (i == 0 ? controller.searchCashCashFlowList : controller.searchOnlineCashFlowList)[index];
+                            return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: Card(
+                                    color: (data.cashType == "OUT" ? AppColors.DARK_RED_COLOR : AppColors.DARK_GREEN_COLOR).withValues(alpha: 0.7),
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: ExpansionTile(
+                                      title: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              ///Note
+                                              Expanded(
+                                                child: Text(
+                                                  data.note ?? "",
+                                                  style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                ),
+                                              ),
+                                              SizedBox(width: 2.w),
+
+                                              ///Pending Amount
+                                              Text(
+                                                data.amount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toTryDouble() ?? 0.0) : "",
+                                                style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                              ),
+                                              SizedBox(width: 2.w),
+
+                                              ///Edit
+                                              IconButton(
+                                                onPressed: () {
+                                                  showBottomSheetAddEditCashFlow(
+                                                    ctx: context,
+                                                    cashFlowId: data.cashFlowId,
+                                                  );
+                                                },
+                                                style: IconButton.styleFrom(
+                                                  backgroundColor: AppColors.WARNING_COLOR,
+                                                  maximumSize: Size.square(8.w),
+                                                  minimumSize: Size.square(8.w),
+                                                  padding: EdgeInsets.zero,
+                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                ),
+                                                icon: Icon(
+                                                  Icons.edit_rounded,
+                                                  color: AppColors.PRIMARY_COLOR,
+                                                  size: 5.w,
+                                                ),
+                                              ),
+                                              SizedBox(width: 1.w),
+
+                                              ///Delete
+                                              IconButton(
+                                                onPressed: () {
+                                                  showDeleteDialog(
+                                                    ctx: context,
+                                                    title: AppStrings.areYouSureYouWantToDeleteThisCashFlowEntry.tr,
+                                                    onPressed: () {
+                                                      Get.back();
+                                                      controller.deleteCashFlowApiCall(cashFlowId: data.cashFlowId ?? "");
+                                                    },
+                                                  );
+                                                },
+                                                style: IconButton.styleFrom(
+                                                  backgroundColor: AppColors.DARK_RED_COLOR,
+                                                  maximumSize: Size.square(8.w),
+                                                  minimumSize: Size.square(8.w),
+                                                  padding: EdgeInsets.zero,
+                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                ),
+                                                icon: Obx(() {
+                                                  if (controller.deletingId.value == data.cashFlowId) {
+                                                    return SizedBox.square(
+                                                      dimension: 3.5.w,
+                                                      child: CircularProgressIndicator(
+                                                        color: AppColors.PRIMARY_COLOR,
+                                                        strokeWidth: 1.5,
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Icon(
+                                                      Icons.delete_rounded,
+                                                      color: AppColors.WHITE_COLOR,
+                                                      size: 5.w,
+                                                    );
+                                                  }
+                                                }),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 0.7.h),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              ///Type
+                                              Flexible(
+                                                child: Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      WidgetSpan(
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(right: 1.w),
+                                                          child: Icon(
+                                                            Icons.calculate_sharp,
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                            size: 4.5.w,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: data.cashType ?? "",
+                                                        style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 2.w),
+
+                                              ///Mode
+                                              Flexible(
+                                                child: Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      WidgetSpan(
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(right: 1.w),
+                                                          child: Icon(
+                                                            Icons.payments_rounded,
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                            size: 4.5.w,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: data.modeOfPayment ?? "",
+                                                        style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 0.7.h),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              ///Created By
+                                              Flexible(
+                                                child: Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      WidgetSpan(
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(right: 1.w),
+                                                          child: Icon(
+                                                            Icons.person_2_rounded,
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                            size: 4.5.w,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: data.createdBy ?? "",
+                                                        style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 2.w),
+
+                                              ///Date
+                                              Flexible(
+                                                child: Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      WidgetSpan(
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(right: 1.w),
+                                                          child: Icon(
+                                                            Icons.calendar_month_rounded,
+                                                            color: AppColors.SECONDARY_COLOR,
+                                                            size: 4.5.w,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: DateFormat("dd/MM/yyyy, hh:mm a").format(DateTime.parse("${data.createdDate} ${data.createdTime}")),
+                                                        style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          if (data.requestDeletion == true) ...[
+                                            SizedBox(height: 1.h),
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    AppStrings.wantsToDeleteThisEntry.tr.replaceAll("{ABC}", data.requestDeletionBy ?? "Someone"),
+                                                    style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2.w),
+
+                                                ///Reject
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    showDeleteDialog(
+                                                      ctx: context,
+                                                      onPressed: () {
+                                                        Get.back();
+                                                        controller.acceptRejectDeleteCashFlowApiCall(
+                                                          cashFlowId: data.cashFlowId ?? "",
+                                                          isAccept: false,
+                                                        );
+                                                      },
+                                                      agreeText: AppStrings.yesSure.tr,
+                                                      title: AppStrings.areYouSureYouWantToRejectThisDeletionRequest.tr,
+                                                    );
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: AppColors.DARK_RED_COLOR,
+                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    padding: EdgeInsets.zero,
+                                                    maximumSize: Size.square(8.w),
+                                                    minimumSize: Size.square(8.w),
+                                                    elevation: 4,
+                                                  ),
+                                                  child: Obx(() {
+                                                    if (controller.rejectDeletingId.value == data.cashFlowId) {
+                                                      return SizedBox.square(
+                                                        dimension: 3.5.w,
+                                                        child: CircularProgressIndicator(
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                          strokeWidth: 1.5,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Icon(
+                                                        Icons.close_rounded,
+                                                        color: AppColors.PRIMARY_COLOR,
+                                                        size: 5.w,
+                                                      );
+                                                    }
+                                                  }),
+                                                ),
+                                                SizedBox(width: 2.w),
+
+                                                ///Accept
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    showDeleteDialog(
+                                                      ctx: context,
+                                                      onPressed: () {
+                                                        Get.back();
+                                                        controller.acceptRejectDeleteCashFlowApiCall(
+                                                          cashFlowId: data.cashFlowId ?? "",
+                                                          isAccept: true,
+                                                        );
+                                                      },
+                                                      agreeText: AppStrings.yesSure.tr,
+                                                      title: AppStrings.areYouSureYouWantToAcceptThisDeletionRequest.tr,
+                                                    );
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: AppColors.DARK_GREEN_COLOR,
+                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    padding: EdgeInsets.zero,
+                                                    maximumSize: Size.square(8.w),
+                                                    minimumSize: Size.square(8.w),
+                                                    elevation: 4,
+                                                  ),
+                                                  child: Obx(() {
+                                                    if (controller.acceptDeletingId.value == data.cashFlowId) {
+                                                      return SizedBox.square(
+                                                        dimension: 3.5.w,
+                                                        child: CircularProgressIndicator(
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                          strokeWidth: 1.5,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Icon(
+                                                        Icons.check_rounded,
+                                                        color: AppColors.PRIMARY_COLOR,
+                                                        size: 5.w,
+                                                      );
+                                                    }
+                                                  }),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                      tilePadding: EdgeInsets.only(left: 3.w, right: 1.5.w),
+                                      enabled: false,
+                                      dense: true,
+                                      showTrailingIcon: false,
+                                      collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                      backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                      iconColor: AppColors.SECONDARY_COLOR,
+                                      collapsedShape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide.none,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: BorderSide.none,
+                                      ),
+                                      childrenPadding: EdgeInsets.symmetric(horizontal: 2.w).copyWith(bottom: 2.h),
+                                      expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(height: 1.5.h);
+                          },
+                        ),
+                      );
+                    }
+                  }),
+                ),
+              ],
+            ],
+          ),
+        ),
+        SizedBox(height: 2.h),
+
+        ///Add Cash Flow
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  showBottomSheetAddEditCashFlow(ctx: context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.DARK_GREEN_COLOR,
+                  elevation: 4,
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  maximumSize: Size(43.w, 5.h),
+                  minimumSize: Size(43.w, 5.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              }
-            }),
+                ),
+                child: Text(
+                  AppStrings.inFlow,
+                  style: AppStyles.size16w600.copyWith(
+                    color: AppColors.PRIMARY_COLOR,
+                  ),
+                ),
+              ),
+              SizedBox(width: 2.w),
+              ElevatedButton(
+                onPressed: () {
+                  showBottomSheetAddEditCashFlow(
+                    ctx: context,
+                    isOut: true,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.DARK_RED_COLOR,
+                  elevation: 4,
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  maximumSize: Size(43.w, 5.h),
+                  minimumSize: Size(43.w, 5.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  AppStrings.outFlow,
+                  style: AppStyles.size16w600.copyWith(
+                    color: AppColors.PRIMARY_COLOR,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -396,6 +663,7 @@ class CashFlowView extends GetView<CashFlowController> {
   Future<void> showBottomSheetAddEditCashFlow({
     required BuildContext ctx,
     String? cashFlowId,
+    bool isOut = false,
   }) async {
     await showBottomSheetWidget(
       context: ctx,
@@ -403,6 +671,7 @@ class CashFlowView extends GetView<CashFlowController> {
         return AddEditCashFlowWidget(
           cashFlowId: cashFlowId,
           controller: controller,
+          isOut: isOut,
         );
       },
     );
