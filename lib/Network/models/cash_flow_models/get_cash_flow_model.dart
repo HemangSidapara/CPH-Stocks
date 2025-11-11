@@ -7,12 +7,16 @@ class GetCashFlowModel {
   String? code;
   String? msg;
   Summary? summary;
+  Summary? cashSummary;
+  Summary? onlineSummary;
   List<CashFlowData>? data;
 
   GetCashFlowModel({
     this.code,
     this.msg,
     this.summary,
+    this.cashSummary,
+    this.onlineSummary,
     this.data,
   });
 
@@ -24,12 +28,16 @@ class GetCashFlowModel {
     String? code,
     String? msg,
     Summary? summary,
+    Summary? cashSummary,
+    Summary? onlineSummary,
     List<CashFlowData>? data,
   }) {
     return GetCashFlowModel(
       code: code ?? this.code,
       msg: msg ?? this.msg,
       summary: summary ?? this.summary,
+      cashSummary: cashSummary ?? this.cashSummary,
+      onlineSummary: onlineSummary ?? this.onlineSummary,
       data: data ?? this.data,
     );
   }

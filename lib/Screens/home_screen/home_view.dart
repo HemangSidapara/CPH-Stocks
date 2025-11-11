@@ -5,6 +5,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/hand_shaken_animation.dart';
 import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
@@ -123,6 +124,46 @@ class HomeView extends GetView<HomeController> {
                               builder: (context, value, child) {
                                 WidgetsBinding.instance.addPostFrameCallback((_) {
                                   Get.find<RecycleBinController>().ceilValueForRefresh(value.toDouble().ceilToDouble());
+                                });
+                                return Transform.rotate(
+                                  angle: value * 2 * 3.141592653589793,
+                                  child: Icon(
+                                    Icons.refresh_rounded,
+                                    color: AppColors.SECONDARY_COLOR,
+                                    size: context.isPortrait ? 6.w : 6.h,
+                                  ),
+                                );
+                              },
+                            );
+                          }),
+                        );
+                      }),
+                    ),
+                  ],
+                  if (controller.isCashFlowSelected) ...[
+                    Padding(
+                      padding: EdgeInsets.only(right: 5.w),
+                      child: Obx(() {
+                        return IconButton(
+                          onPressed: Get.find<CashFlowController>().isRefreshing.value
+                              ? () {}
+                              : () async {
+                                  await Get.find<CashFlowController>().getCashFlowApiCall(isRefresh: true);
+                                },
+                          style: IconButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,
+                          ),
+                          icon: Obx(() {
+                            return TweenAnimationBuilder(
+                              duration: Duration(seconds: Get.find<CashFlowController>().isRefreshing.value ? 45 : 1),
+                              tween: Tween(begin: 0.0, end: Get.find<CashFlowController>().isRefreshing.value ? 45.0 : Get.find<CashFlowController>().ceilValueForRefresh.value),
+                              onEnd: () {
+                                Get.find<CashFlowController>().isRefreshing.value = false;
+                              },
+                              builder: (context, value, child) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  Get.find<CashFlowController>().ceilValueForRefresh(value.toDouble().ceilToDouble());
                                 });
                                 return Transform.rotate(
                                   angle: value * 2 * 3.141592653589793,

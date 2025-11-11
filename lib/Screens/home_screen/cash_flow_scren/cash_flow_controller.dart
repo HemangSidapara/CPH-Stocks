@@ -17,6 +17,8 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
   RxList<get_cash_flow.CashFlowData> searchOnlineCashFlowList = RxList();
 
   Rx<get_cash_flow.Summary> summeryData = Rx(get_cash_flow.Summary());
+  Rx<get_cash_flow.Summary> cashSummeryData = Rx(get_cash_flow.Summary());
+  Rx<get_cash_flow.Summary> onlineSummeryData = Rx(get_cash_flow.Summary());
 
   Rx<DateTimeRange<DateTime>?> filterDateRange = Rx(DateTimeRange<DateTime>(start: DateTime.now().subtract(7.days), end: DateTime.now()));
 
@@ -31,6 +33,9 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
     AppStrings.cash,
     AppStrings.online,
   ];
+
+  RxBool isRefreshing = false.obs;
+  RxDouble ceilValueForRefresh = 0.0.obs;
 
   @override
   void onInit() {
@@ -53,6 +58,8 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
         get_cash_flow.GetCashFlowModel cashFlowModel = get_cash_flow.GetCashFlowModel.fromJson(response.response?.data ?? {});
 
         summeryData.value = cashFlowModel.summary ?? summeryData.value;
+        cashSummeryData.value = cashFlowModel.cashSummary ?? cashSummeryData.value;
+        onlineSummeryData.value = cashFlowModel.onlineSummary ?? onlineSummeryData.value;
 
         cashCashFlowList.clear();
         onlineCashFlowList.clear();
