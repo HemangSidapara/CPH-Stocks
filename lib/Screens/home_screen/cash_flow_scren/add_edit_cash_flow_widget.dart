@@ -3,6 +3,7 @@ import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/response_model.dart';
+import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_view.dart';
 import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Widgets/close_button_widget.dart';
@@ -11,6 +12,7 @@ import 'package:cph_stocks/Widgets/textfield_widget.dart';
 import 'package:cph_stocks/Widgets/unfocus_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class AddEditCashFlowWidget extends StatefulWidget {
@@ -44,8 +46,11 @@ class _AddEditCashFlowWidgetState extends State<AddEditCashFlowWidget> {
   TextEditingController modeOfPaymentController = TextEditingController();
   int selectedPaymentMode = -1;
   TextEditingController amountController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
   RxBool isSaving = false.obs;
+
+  String formatedDate(String? date) => date != null ? DateFormat("dd/MM/yyyy").format(DateTime.parse(date)) : "";
 
   @override
   void initState() {
@@ -55,11 +60,14 @@ class _AddEditCashFlowWidgetState extends State<AddEditCashFlowWidget> {
       isCashIn.value = cashObject.cashType == "IN";
       noteController.text = cashObject.note ?? "";
       modeOfPaymentController.text = cashObject.modeOfPayment ?? "";
+      selectedPaymentMode = paymentModeList.indexOf(cashObject.modeOfPayment ?? "");
       amountController.text = cashObject.amount ?? "";
+      dateController.text = formatedDate(cashObject.createdDate);
     } else {
       isCashIn.value = !widget.isOut;
       selectedPaymentMode = widget.controller.tabIndex.value == 0 ? 0 : 3;
       modeOfPaymentController.text = paymentModeList[selectedPaymentMode];
+      dateController.text = formatedDate(DateTime.now().toString());
     }
   }
 
@@ -101,6 +109,7 @@ class _AddEditCashFlowWidgetState extends State<AddEditCashFlowWidget> {
                               note: noteController.text.trim(),
                               modeOfPayment: paymentModeList[selectedPaymentMode],
                               amount: amountController.text,
+                              createdDate: DateFormat("yyyy-MM-dd").format(DateFormat("dd/MM/yyyy").parse(dateController.text.trim())),
                             );
                           } else {
                             response = await widget.controller.editCashFlowApiCall(
@@ -109,6 +118,7 @@ class _AddEditCashFlowWidgetState extends State<AddEditCashFlowWidget> {
                               note: noteController.text.trim(),
                               modeOfPayment: paymentModeList[selectedPaymentMode],
                               amount: amountController.text,
+                              createdDate: DateFormat("yyyy-MM-dd").format(DateFormat("dd/MM/yyyy").parse(dateController.text.trim())),
                             );
                           }
                           if (response.isSuccess) {
@@ -218,6 +228,36 @@ class _AddEditCashFlowWidgetState extends State<AddEditCashFlowWidget> {
                             return AppStrings.pleaseEnterAmount.tr;
                           } else if (!value.isNum) {
                             return AppStrings.pleaseEnterValidaAmount.tr;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 2.h),
+
+                      ///Date
+                      TextFieldWidget(
+                        controller: dateController,
+                        title: AppStrings.date.tr,
+                        hintText: AppStrings.selectDate.tr,
+                        readOnly: true,
+                        onTap: () async {
+                          await showDatePicker(
+                            context: context,
+                            initialDate: dateController.text.trim().isNotEmpty ? DateFormat("dd/MM/yyyy").parse(dateController.text.trim()) : DateTime.now(),
+                            firstDate: DateTime(DateTime.now().year - 50),
+                            lastDate: DateTime(DateTime.now().year + 50),
+                            builder: (context, child) {
+                              return LedgerView().themeData(context: context, child: child!);
+                            },
+                          ).then((value) {
+                            if (value != null) {
+                              dateController.text = DateFormat("dd/MM/yyyy").format(value);
+                            }
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppStrings.pleaseSelectDate.tr;
                           }
                           return null;
                         },

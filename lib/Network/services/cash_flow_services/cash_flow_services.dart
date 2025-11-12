@@ -51,12 +51,14 @@ class CashFlowServices {
     required String note,
     required String modeOfPayment,
     required String amount,
+    required String createdDate,
   }) async {
     final params = {
       ApiKeys.cashType: cashType,
       ApiKeys.note: note,
       ApiKeys.modeOfPayment: modeOfPayment,
       ApiKeys.amount: amount,
+      ApiKeys.createdDate: createdDate,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.addCashFlowApi,
@@ -96,9 +98,19 @@ class CashFlowServices {
     required String note,
     required String modeOfPayment,
     required String amount,
+    required String createdDate,
   }) async {
+    final params = {
+      ApiKeys.cashFlowId: cashFlowId,
+      ApiKeys.cashType: cashType,
+      ApiKeys.note: note,
+      ApiKeys.modeOfPayment: modeOfPayment,
+      ApiKeys.amount: amount,
+      ApiKeys.createdDate: createdDate,
+    };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.editCashFlowApi,
+      params: params,
       onError: (dioExceptions) {
         Utils.handleMessage(message: dioExceptions.message, isError: true);
       },

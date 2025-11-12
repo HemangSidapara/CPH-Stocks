@@ -48,11 +48,15 @@ class Summary {
   num? totalIn;
   num? totalOut;
   num? netBalance;
+  String? startDate;
+  String? endDate;
 
   Summary({
     this.totalIn,
     this.totalOut,
     this.netBalance,
+    this.startDate,
+    this.endDate,
   });
 
   factory Summary.fromJson(Map<String, dynamic> json) => _$SummaryFromJson(json);
@@ -63,11 +67,15 @@ class Summary {
     num? totalIn,
     num? totalOut,
     num? netBalance,
+    String? startDate,
+    String? endDate,
   }) {
     return Summary(
       totalIn: totalIn ?? this.totalIn,
       totalOut: totalOut ?? this.totalOut,
       netBalance: netBalance ?? this.netBalance,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
     );
   }
 }
@@ -79,6 +87,7 @@ class CashFlowData {
   String? note;
   String? modeOfPayment;
   String? amount;
+  String? balance;
   String? createdDate;
   String? createdTime;
   String? createdBy;
@@ -91,6 +100,7 @@ class CashFlowData {
     this.note,
     this.modeOfPayment,
     this.amount,
+    this.balance,
     this.createdDate,
     this.createdTime,
     this.createdBy,
@@ -108,6 +118,7 @@ class CashFlowData {
     String? note,
     String? modeOfPayment,
     String? amount,
+    String? balance,
     String? createdDate,
     String? createdTime,
     String? createdBy,
@@ -120,6 +131,7 @@ class CashFlowData {
       note: note ?? this.note,
       modeOfPayment: modeOfPayment ?? this.modeOfPayment,
       amount: amount ?? this.amount,
+      balance: balance ?? this.balance,
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,
       createdBy: createdBy ?? this.createdBy,
