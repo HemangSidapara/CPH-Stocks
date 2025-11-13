@@ -298,4 +298,12 @@ class AppStrings {
   static const String totalEntries = "Total Entries";
   static const String inWord = "In 🠕";
   static const String out = "Out 🠗";
+  static const String searchCashType = "Search Cash Type";
+  static const String filterByCashType = "Filter by cash type";
+  static const String clearAllFilters = "Clear all filters";
+  static const String exportCashFlowReportInPdf = "Export cash flow report in PDF";
+  static const String filterASummeryByPaymentMode = "Filter a summery by payment mode";
+  static const String partyPayment = "Party Payment";
+  static const String monthlyCashbook = "Monthly cashbook";
+  static const String accepted = "Accepted";
 }

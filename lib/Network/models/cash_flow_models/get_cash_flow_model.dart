@@ -91,8 +91,10 @@ class CashFlowData {
   String? createdDate;
   String? createdTime;
   String? createdBy;
+  bool? isPartyPayment;
   bool? requestDeletion;
   String? requestDeletionBy;
+  List<String>? acceptedRequestDeletion;
 
   CashFlowData({
     this.cashFlowId,
@@ -104,8 +106,10 @@ class CashFlowData {
     this.createdDate,
     this.createdTime,
     this.createdBy,
+    this.isPartyPayment,
     this.requestDeletion,
     this.requestDeletionBy,
+    this.acceptedRequestDeletion,
   });
 
   factory CashFlowData.fromJson(Map<String, dynamic> json) => _$CashFlowDataFromJson(json);
@@ -122,8 +126,10 @@ class CashFlowData {
     String? createdDate,
     String? createdTime,
     String? createdBy,
+    bool? isPartyPayment,
     bool? requestDeletion,
     String? requestDeletionBy,
+    List<String>? acceptedRequestDeletion,
   }) {
     return CashFlowData(
       cashFlowId: cashFlowId ?? this.cashFlowId,
@@ -135,8 +141,10 @@ class CashFlowData {
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,
       createdBy: createdBy ?? this.createdBy,
+      isPartyPayment: isPartyPayment ?? this.isPartyPayment,
       requestDeletion: requestDeletion ?? this.requestDeletion,
       requestDeletionBy: requestDeletionBy ?? this.requestDeletionBy,
+      acceptedRequestDeletion: acceptedRequestDeletion ?? this.acceptedRequestDeletion,
     );
   }
 }

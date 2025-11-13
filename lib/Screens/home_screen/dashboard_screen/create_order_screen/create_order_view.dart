@@ -839,14 +839,14 @@ class CreateOrderView extends GetView<CreateOrderController> {
     required String searchHint,
     required int selectedId,
     bool selectOnly = false,
-    required TextEditingController controller,
+    TextEditingController? controller,
     required Function(int id) onSelect,
   }) async {
     RxBool isSearch = true.obs;
     RxList itemsList = items.obs;
     RxList searchItemsList = items.obs;
     RxInt selectedIndex = selectedId.obs;
-    TextEditingController newController = TextEditingController(text: selectedId == -1 ? controller.text : null);
+    TextEditingController newController = TextEditingController(text: selectedId == -1 ? controller?.text : null);
     if (selectedId == -1 && newController.text.trim().isNotEmpty) {
       isSearch(false);
     }
@@ -906,17 +906,17 @@ class CreateOrderView extends GetView<CreateOrderController> {
                         onPressed: () {
                           Get.back();
                           if (isSearch.isFalse && newController.text.trim().isNotEmpty && items.every((element) => element.toString().toLowerCase() != newController.text.trim().toLowerCase())) {
-                            controller.text = newController.text;
+                            controller?.text = newController.text;
                             onSelect.call(-1);
                           } else if (selectedIndex.value != -1) {
-                            controller.text = itemsList.firstOrNull is get_parties.Data
+                            controller?.text = itemsList.firstOrNull is get_parties.Data
                                 ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "")
                                 : itemsList.firstOrNull is get_categories.CategoryData
                                 ? (searchItemsList.firstWhereOrNull((element) => element.categoryId == selectedIndex.value.toString())?.categoryName ?? "")
                                 : searchItemsList[selectedIndex.value].toString();
                             onSelect.call(selectedIndex.value);
                           } else {
-                            controller.clear();
+                            controller?.clear();
                             onSelect.call(-1);
                           }
                         },

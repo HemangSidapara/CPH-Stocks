@@ -6,6 +6,7 @@ import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Localization/localization.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,8 @@ void main() async {
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
   await FirebaseService.init();
+  // Set the background messaging handler early on, as a named top-level function
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await AwesomeNotificationService.init();
   GetStorage.init();
   FlutterError.onError = (errorDetails) {

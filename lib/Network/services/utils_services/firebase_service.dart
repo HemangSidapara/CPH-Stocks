@@ -2,14 +2,17 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cph_stocks/Network/services/utils_services/awesome_notification_service.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
 import 'package:cph_stocks/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 class FirebaseService {
   static late FirebaseApp fbApp;
   static late FirebaseMessaging fbmInstance;
+  static bool _isForegroundListenerAdded = false;
 
   /// Init Firebase Plugin and Related Libs [ex. FirebaseMessaging]
   static Future<void> init({bool isBackground = false}) async {
@@ -20,10 +23,8 @@ class FirebaseService {
     fbmInstance = FirebaseMessaging.instance;
 
     if (!isBackground) {
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      await setupFlutterNotifications();
     }
-
-    await setupFlutterNotifications();
   }
 
   /// Request Permission
@@ -89,13 +90,15 @@ class FirebaseService {
     log("\x1B[34m🔔 Notification Object:\x1B[0m 📢 ${notification?.toMap()}");
 
     _handleMethodWhenNotificationReceived();
-    if (notification != null && android != null && !kIsWeb) {
+    if (notification != null && android != null) {
       await AwesomeNotificationService.createNotification(notification: notification);
     }
   }
 
   /// Interacted Message from Terminal -> Open App
   static Future<void> firebaseMessagingForegroundHandler() async {
+    if (_isForegroundListenerAdded) return; // Prevent duplicate registration
+    _isForegroundListenerAdded = true;
     FirebaseMessaging.onMessage.listen(showFlutterNotification);
   }
 
@@ -115,7 +118,7 @@ class FirebaseService {
 }
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await FirebaseService.init(isBackground: true);
   await AwesomeNotificationService.init();
 
@@ -129,4 +132,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-Future<void> _handleMethodWhenNotificationReceived() async {}
+Future<void> _handleMethodWhenNotificationReceived() async {
+  CashFlowController? cashFlowController = Get.isRegistered<CashFlowController>() ? Get.find<CashFlowController>() : null;
+
+  if (cashFlowController != null) {
+    cashFlowController.filterCashType.value = 0;
+    cashFlowController.getCashFlowApiCall(isRefresh: true);
+  }
+}

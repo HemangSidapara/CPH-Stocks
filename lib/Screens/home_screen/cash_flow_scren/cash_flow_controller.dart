@@ -9,7 +9,9 @@ import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/cash_flow_models/get_cash_flow_model.dart' as get_cash_flow;
 import 'package:cph_stocks/Network/response_model.dart';
 import 'package:cph_stocks/Network/services/cash_flow_services/cash_flow_services.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_pdf_view.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
+import 'package:cph_stocks/Widgets/show_bottom_sheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -53,6 +55,13 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
 
   RxBool switchFilteredSummary = false.obs;
 
+  List<String> cashTypes = [
+    AppStrings.all,
+    AppStrings.inFlow,
+    AppStrings.outFlow,
+  ];
+  RxInt filterCashType = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -75,6 +84,11 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
       final response = await CashFlowServices.getCashFlowService(
         startDate: filterDateRange.value?.start.toLocal().toString().split(" ").first ?? "",
         endDate: filterDateRange.value?.end.toLocal().toString().split(" ").first ?? "",
+        transactionType: filterCashType.value == 1
+            ? "IN"
+            : filterCashType.value == 2
+            ? "OUT"
+            : "",
       );
       if (response.isSuccess) {
         get_cash_flow.GetCashFlowModel cashFlowModel = get_cash_flow.GetCashFlowModel.fromJson(response.response?.data ?? {});
@@ -96,6 +110,35 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
       }
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<(List<get_cash_flow.CashFlowData>, List<get_cash_flow.CashFlowData>, List<get_cash_flow.CashFlowData>, get_cash_flow.Summary, get_cash_flow.Summary, get_cash_flow.Summary)> getCashFlowExportApiCall({required DateTimeRange<DateTime> dateRange}) async {
+    final response = await CashFlowServices.getCashFlowService(
+      startDate: dateRange.start.toLocal().toString().split(" ").first ?? "",
+      endDate: dateRange.end.toLocal().toString().split(" ").first ?? "",
+      transactionType: "",
+    );
+    if (response.isSuccess) {
+      get_cash_flow.GetCashFlowModel cashFlowModel = get_cash_flow.GetCashFlowModel.fromJson(response.response?.data ?? {});
+
+      return (
+        cashFlowModel.data?.toList() ?? <get_cash_flow.CashFlowData>[],
+        cashFlowModel.data?.where((element) => element.modeOfPayment == AppStrings.cash).toList() ?? <get_cash_flow.CashFlowData>[],
+        cashFlowModel.data?.where((element) => element.modeOfPayment != AppStrings.cash).toList() ?? <get_cash_flow.CashFlowData>[],
+        cashFlowModel.summary ?? get_cash_flow.Summary(),
+        cashFlowModel.cashSummary ?? get_cash_flow.Summary(),
+        cashFlowModel.onlineSummary ?? get_cash_flow.Summary(),
+      );
+    } else {
+      return (
+        <get_cash_flow.CashFlowData>[],
+        <get_cash_flow.CashFlowData>[],
+        <get_cash_flow.CashFlowData>[],
+        get_cash_flow.Summary(),
+        get_cash_flow.Summary(),
+        get_cash_flow.Summary(),
+      );
     }
   }
 
@@ -169,6 +212,31 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
       acceptDeletingId("");
       rejectDeletingId("");
     }
+  }
+
+  Future<void> showExportBottomSheet({
+    required BuildContext ctx,
+    List<get_cash_flow.CashFlowData>? allCashFlowList,
+    List<get_cash_flow.CashFlowData>? cashCashFlowList,
+    List<get_cash_flow.CashFlowData>? onlineCashFlowList,
+    get_cash_flow.Summary? summary,
+    get_cash_flow.Summary? cashSummary,
+    get_cash_flow.Summary? onlineSummary,
+  }) async {
+    await showBottomSheetWidget(
+      context: ctx,
+      builder: (context) {
+        return CashFlowPdfView(
+          controller: this,
+          allCashFlowList: allCashFlowList,
+          cashCashFlowList: cashCashFlowList,
+          onlineCashFlowList: onlineCashFlowList,
+          summary: summary,
+          cashSummary: cashSummary,
+          onlineSummary: onlineSummary,
+        );
+      },
+    );
   }
 
   Future<File?> exportCashFlowData({

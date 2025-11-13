@@ -14,9 +14,10 @@ class CashFlowServices {
   static Future<ResponseModel> getCashFlowService({
     required String startDate,
     required String endDate,
+    required String transactionType,
   }) async {
     final response = await ApiBaseHelper.getHTTP(
-      "${ApiUrls.getCashFlowApi}&startDate=$startDate&endDate=$endDate",
+      "${ApiUrls.getCashFlowApi}&startDate=$startDate&endDate=$endDate&transactionType=$transactionType",
       onError: (dioExceptions) {
         Utils.handleMessage(message: dioExceptions.message, isError: true);
       },

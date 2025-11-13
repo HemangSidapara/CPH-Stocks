@@ -4,6 +4,7 @@ import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Network/models/cash_flow_models/get_cash_flow_model.dart' as get_cash_flow;
 import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
 import 'package:cph_stocks/Widgets/close_button_widget.dart';
 import 'package:cph_stocks/Widgets/divider_widget.dart';
@@ -19,10 +20,22 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class CashFlowPdfView extends StatefulWidget {
   final CashFlowController controller;
+  final List<get_cash_flow.CashFlowData>? allCashFlowList;
+  final List<get_cash_flow.CashFlowData>? cashCashFlowList;
+  final List<get_cash_flow.CashFlowData>? onlineCashFlowList;
+  final get_cash_flow.Summary? summary;
+  final get_cash_flow.Summary? cashSummary;
+  final get_cash_flow.Summary? onlineSummary;
 
   const CashFlowPdfView({
     super.key,
     required this.controller,
+    this.allCashFlowList,
+    this.cashCashFlowList,
+    this.onlineCashFlowList,
+    this.summary,
+    this.cashSummary,
+    this.onlineSummary,
   });
 
   @override
@@ -58,15 +71,15 @@ class _CashFlowPdfViewState extends State<CashFlowPdfView> with SingleTickerProv
       generatingPdf(true);
       final pdfFile = await widget.controller.exportCashFlowData(
         cashFlowList: modeIndex == 0
-            ? widget.controller.allCashFlowList
+            ? (widget.allCashFlowList ?? widget.controller.allCashFlowList)
             : modeIndex == 1
-            ? widget.controller.cashCashFlowList
-            : widget.controller.onlineCashFlowList,
+            ? (widget.cashCashFlowList ?? widget.controller.cashCashFlowList)
+            : (widget.onlineCashFlowList ?? widget.controller.onlineCashFlowList),
         summary: modeIndex == 0
-            ? widget.controller.summeryData.value
+            ? (widget.summary ?? widget.controller.summeryData.value)
             : modeIndex == 1
-            ? widget.controller.cashSummeryData.value
-            : widget.controller.onlineSummeryData.value,
+            ? (widget.cashSummary ?? widget.controller.cashSummeryData.value)
+            : (widget.onlineSummary ?? widget.controller.onlineSummeryData.value),
       );
       if (pdfFile != null) {
         cashFlowPdfFile[modeIndex] = pdfFile;

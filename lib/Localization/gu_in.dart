@@ -294,4 +294,12 @@ Map<String, String> guIN = <String, String>{
   AppStrings.totalEntries: "કુલ એન્ટ્રીઓ",
   AppStrings.inWord: "આવક 🠕",
   AppStrings.out: "જાવક 🠗",
+  AppStrings.searchCashType: "કેશ પ્રકાર શોધો",
+  AppStrings.filterByCashType: "કેશ પ્રકાર દ્વારા ફિલ્ટર કરો",
+  AppStrings.clearAllFilters: "બધા ફિલ્ટર સાફ કરો",
+  AppStrings.exportCashFlowReportInPdf: "કેશ ફ્લો રિપોર્ટ PDF માં એક્સપોર્ટ કરો",
+  AppStrings.filterASummeryByPaymentMode: "ચુકવણી મોડ દ્વારા સારાંશ ફિલ્ટર કરો",
+  AppStrings.partyPayment: "પાર્ટી પેમેન્ટ",
+  AppStrings.monthlyCashbook: "માસિક કેશબુક",
+  AppStrings.accepted: "સ્વીકારેલ",
 };

@@ -1,11 +1,15 @@
 import 'package:cph_stocks/Constants/app_colors.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/add_edit_cash_flow_widget.dart';
 import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
-import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_pdf_view.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/monthly_cashbook_widget.dart';
+import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
+import 'package:cph_stocks/Widgets/divider_widget.dart';
 import 'package:cph_stocks/Widgets/loading_widget.dart';
 import 'package:cph_stocks/Widgets/no_data_found_widget.dart';
 import 'package:cph_stocks/Widgets/refresh_indicator_widget.dart';
@@ -25,14 +29,15 @@ class CashFlowView extends GetView<CashFlowController> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ///Filter by Date & Export
         Align(
           alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.w),
-            child: Obx(() {
-              return Row(
+          child: Obx(() {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              child: Row(
                 children: [
+                  ///Filter by Date
                   ElevatedButton(
                     onPressed: () async {
                       await showDialogDateRangePicker(ctx: context);
@@ -82,10 +87,44 @@ class CashFlowView extends GetView<CashFlowController> {
                     ),
                   ),
                   SizedBox(width: 2.w),
-                  if (controller.filterDateRange.value != null) ...[
+
+                  ///Filter by Cash Type
+                  IconButton(
+                    onPressed: () {
+                      CreateOrderView().showBottomSheetSelectAndAdd(
+                        ctx: context,
+                        selectOnly: true,
+                        items: controller.cashTypes,
+                        title: AppStrings.cashType.tr,
+                        fieldHint: "",
+                        searchHint: AppStrings.searchCashType.tr,
+                        selectedId: controller.filterCashType.value,
+                        onSelect: (id) {
+                          controller.filterCashType.value = id;
+                          controller.getCashFlowApiCall(isRefresh: true);
+                        },
+                      );
+                    },
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.WARNING_COLOR,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      maximumSize: Size(10.w, 8.w),
+                      minimumSize: Size.square(8.w),
+                      padding: EdgeInsets.symmetric(horizontal: 2),
+                    ),
+                    tooltip: AppStrings.filterByCashType.tr,
+                    icon: Text(
+                      controller.cashTypes[controller.filterCashType.value].tr,
+                      style: AppStyles.size14w600,
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+
+                  if (controller.filterDateRange.value != null || controller.filterCashType.value != 0) ...[
                     IconButton(
                       onPressed: () {
                         controller.filterDateRange.value = null;
+                        controller.filterCashType.value = 0;
                         controller.getCashFlowApiCall(isRefresh: true);
                       },
                       style: TextButton.styleFrom(
@@ -95,6 +134,7 @@ class CashFlowView extends GetView<CashFlowController> {
                         maximumSize: Size.square(8.w),
                         padding: EdgeInsets.zero,
                       ),
+                      tooltip: AppStrings.clearAllFilters.tr,
                       icon: Icon(
                         Icons.close_rounded,
                         color: AppColors.PRIMARY_COLOR,
@@ -103,9 +143,11 @@ class CashFlowView extends GetView<CashFlowController> {
                     ),
                     SizedBox(width: 2.w),
                   ],
+
+                  ///Export
                   IconButton(
                     onPressed: () {
-                      showExportBottomSheet(ctx: context);
+                      controller.showExportBottomSheet(ctx: context);
                     },
                     style: IconButton.styleFrom(
                       backgroundColor: AppColors.ORANGE_COLOR,
@@ -114,16 +156,39 @@ class CashFlowView extends GetView<CashFlowController> {
                       maximumSize: Size.square(8.w),
                       padding: EdgeInsets.zero,
                     ),
+                    tooltip: AppStrings.exportCashFlowReportInPdf.tr,
                     icon: FaIcon(
                       FontAwesomeIcons.solidFilePdf,
                       color: AppColors.PRIMARY_COLOR,
                       size: 4.w,
                     ),
                   ),
+                  SizedBox(width: 2.w),
+
+                  ///Cashbook
+                  IconButton(
+                    onPressed: () {
+                      showBottomSheetMonthlyCashbook(ctx: context);
+                    },
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.DARK_GREEN_COLOR,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minimumSize: Size.square(8.w),
+                      maximumSize: Size.square(8.w),
+                      padding: EdgeInsets.zero,
+                    ),
+                    tooltip: AppStrings.monthlyCashbook.tr,
+                    icon: FaIcon(
+                      FontAwesomeIcons.book,
+                      color: AppColors.PRIMARY_COLOR,
+                      size: 4.w,
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
                 ],
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
         SizedBox(height: 1.h),
 
@@ -172,7 +237,7 @@ class CashFlowView extends GetView<CashFlowController> {
                           Row(
                             children: [
                               Text(
-                                controller.switchFilteredSummary.isTrue ? AppStrings.filtered.tr : AppStrings.all.tr,
+                                controller.switchFilteredSummary.isTrue ? "${AppStrings.filtered.tr} ${controller.tabIndex.value == 0 ? AppStrings.cash.tr : AppStrings.online.tr}" : AppStrings.all.tr,
                                 style: AppStyles.size14w600,
                               ),
                               SizedBox(width: 2.w),
@@ -187,6 +252,7 @@ class CashFlowView extends GetView<CashFlowController> {
                                   maximumSize: Size.square(context.isTablet ? 8.h : 8.w),
                                   minimumSize: Size.square(context.isTablet ? 8.h : 8.w),
                                 ),
+                                tooltip: AppStrings.filterASummeryByPaymentMode.tr,
                                 icon: Obx(() {
                                   return AnimatedRotation(
                                     turns: controller.switchFilteredSummary.isTrue ? 0.5 : 0,
@@ -314,68 +380,70 @@ class CashFlowView extends GetView<CashFlowController> {
                                                 data.amount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.amount?.toTryDouble() ?? 0.0) : "",
                                                 style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                               ),
-                                              SizedBox(width: 2.w),
 
                                               ///Edit
-                                              IconButton(
-                                                onPressed: () {
-                                                  showBottomSheetAddEditCashFlow(
-                                                    ctx: context,
-                                                    cashFlowId: data.cashFlowId,
-                                                  );
-                                                },
-                                                style: IconButton.styleFrom(
-                                                  backgroundColor: AppColors.WARNING_COLOR,
-                                                  maximumSize: Size.square(8.w),
-                                                  minimumSize: Size.square(8.w),
-                                                  padding: EdgeInsets.zero,
-                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              if (data.isPartyPayment != true) ...[
+                                                SizedBox(width: 2.w),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    showBottomSheetAddEditCashFlow(
+                                                      ctx: context,
+                                                      cashFlowId: data.cashFlowId,
+                                                    );
+                                                  },
+                                                  style: IconButton.styleFrom(
+                                                    backgroundColor: AppColors.WARNING_COLOR,
+                                                    maximumSize: Size.square(8.w),
+                                                    minimumSize: Size.square(8.w),
+                                                    padding: EdgeInsets.zero,
+                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                  ),
+                                                  icon: Icon(
+                                                    Icons.edit_rounded,
+                                                    color: AppColors.PRIMARY_COLOR,
+                                                    size: 5.w,
+                                                  ),
                                                 ),
-                                                icon: Icon(
-                                                  Icons.edit_rounded,
-                                                  color: AppColors.PRIMARY_COLOR,
-                                                  size: 5.w,
-                                                ),
-                                              ),
-                                              SizedBox(width: 1.w),
+                                                SizedBox(width: 1.w),
 
-                                              ///Delete
-                                              IconButton(
-                                                onPressed: () {
-                                                  showDeleteDialog(
-                                                    ctx: context,
-                                                    title: AppStrings.areYouSureYouWantToDeleteThisCashFlowEntry.tr,
-                                                    onPressed: () {
-                                                      Get.back();
-                                                      controller.deleteCashFlowApiCall(cashFlowId: data.cashFlowId ?? "");
-                                                    },
-                                                  );
-                                                },
-                                                style: IconButton.styleFrom(
-                                                  backgroundColor: AppColors.DARK_RED_COLOR,
-                                                  maximumSize: Size.square(8.w),
-                                                  minimumSize: Size.square(8.w),
-                                                  padding: EdgeInsets.zero,
-                                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                ///Delete
+                                                IconButton(
+                                                  onPressed: () {
+                                                    showDeleteDialog(
+                                                      ctx: context,
+                                                      title: AppStrings.areYouSureYouWantToDeleteThisCashFlowEntry.tr,
+                                                      onPressed: () {
+                                                        Get.back();
+                                                        controller.deleteCashFlowApiCall(cashFlowId: data.cashFlowId ?? "");
+                                                      },
+                                                    );
+                                                  },
+                                                  style: IconButton.styleFrom(
+                                                    backgroundColor: AppColors.DARK_RED_COLOR,
+                                                    maximumSize: Size.square(8.w),
+                                                    minimumSize: Size.square(8.w),
+                                                    padding: EdgeInsets.zero,
+                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                  ),
+                                                  icon: Obx(() {
+                                                    if (controller.deletingId.value == data.cashFlowId) {
+                                                      return SizedBox.square(
+                                                        dimension: 3.5.w,
+                                                        child: CircularProgressIndicator(
+                                                          color: AppColors.PRIMARY_COLOR,
+                                                          strokeWidth: 1.5,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Icon(
+                                                        Icons.delete_rounded,
+                                                        color: AppColors.WHITE_COLOR,
+                                                        size: 5.w,
+                                                      );
+                                                    }
+                                                  }),
                                                 ),
-                                                icon: Obx(() {
-                                                  if (controller.deletingId.value == data.cashFlowId) {
-                                                    return SizedBox.square(
-                                                      dimension: 3.5.w,
-                                                      child: CircularProgressIndicator(
-                                                        color: AppColors.PRIMARY_COLOR,
-                                                        strokeWidth: 1.5,
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return Icon(
-                                                      Icons.delete_rounded,
-                                                      color: AppColors.WHITE_COLOR,
-                                                      size: 5.w,
-                                                    );
-                                                  }
-                                                }),
-                                              ),
+                                              ],
                                             ],
                                           ),
                                           SizedBox(height: 0.7.h),
@@ -406,6 +474,32 @@ class CashFlowView extends GetView<CashFlowController> {
                                                 ),
                                               ),
                                               SizedBox(width: 2.w),
+
+                                              if (data.isPartyPayment == true) ...[
+                                                Flexible(
+                                                  child: Text.rich(
+                                                    TextSpan(
+                                                      children: [
+                                                        WidgetSpan(
+                                                          child: Padding(
+                                                            padding: EdgeInsets.only(right: 1.w),
+                                                            child: Icon(
+                                                              Icons.corporate_fare_rounded,
+                                                              color: AppColors.SECONDARY_COLOR,
+                                                              size: 4.5.w,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        TextSpan(
+                                                          text: AppStrings.partyPayment.tr,
+                                                          style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 2.w),
+                                              ],
 
                                               ///Mode
                                               Flexible(
@@ -486,8 +580,11 @@ class CashFlowView extends GetView<CashFlowController> {
                                               ),
                                             ],
                                           ),
+
                                           if (data.requestDeletion == true) ...[
-                                            SizedBox(height: 1.h),
+                                            DividerWidget(
+                                              color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.5),
+                                            ),
                                             Row(
                                               children: [
                                                 Flexible(
@@ -498,92 +595,99 @@ class CashFlowView extends GetView<CashFlowController> {
                                                 ),
                                                 SizedBox(width: 2.w),
 
-                                                ///Reject
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    showDeleteDialog(
-                                                      ctx: context,
-                                                      onPressed: () {
-                                                        Get.back();
-                                                        controller.acceptRejectDeleteCashFlowApiCall(
-                                                          cashFlowId: data.cashFlowId ?? "",
-                                                          isAccept: false,
-                                                        );
-                                                      },
-                                                      agreeText: AppStrings.yesSure.tr,
-                                                      title: AppStrings.areYouSureYouWantToRejectThisDeletionRequest.tr,
-                                                    );
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: AppColors.DARK_RED_COLOR,
-                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    padding: EdgeInsets.zero,
-                                                    maximumSize: Size.square(8.w),
-                                                    minimumSize: Size.square(8.w),
-                                                    elevation: 4,
+                                                if (data.acceptedRequestDeletion?.contains(getData(AppConstance.userId)) == true) ...[
+                                                  Text(
+                                                    AppStrings.accepted.tr,
+                                                    style: AppStyles.size14w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                                   ),
-                                                  child: Obx(() {
-                                                    if (controller.rejectDeletingId.value == data.cashFlowId) {
-                                                      return SizedBox.square(
-                                                        dimension: 3.5.w,
-                                                        child: CircularProgressIndicator(
+                                                ] else ...[
+                                                  ///Reject
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      showDeleteDialog(
+                                                        ctx: context,
+                                                        onPressed: () {
+                                                          Get.back();
+                                                          controller.acceptRejectDeleteCashFlowApiCall(
+                                                            cashFlowId: data.cashFlowId ?? "",
+                                                            isAccept: false,
+                                                          );
+                                                        },
+                                                        agreeText: AppStrings.yesSure.tr,
+                                                        title: AppStrings.areYouSureYouWantToRejectThisDeletionRequest.tr,
+                                                      );
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: AppColors.DARK_RED_COLOR,
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                      padding: EdgeInsets.zero,
+                                                      maximumSize: Size.square(8.w),
+                                                      minimumSize: Size.square(8.w),
+                                                      elevation: 4,
+                                                    ),
+                                                    child: Obx(() {
+                                                      if (controller.rejectDeletingId.value == data.cashFlowId) {
+                                                        return SizedBox.square(
+                                                          dimension: 3.5.w,
+                                                          child: CircularProgressIndicator(
+                                                            color: AppColors.PRIMARY_COLOR,
+                                                            strokeWidth: 1.5,
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return Icon(
+                                                          Icons.close_rounded,
                                                           color: AppColors.PRIMARY_COLOR,
-                                                          strokeWidth: 1.5,
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return Icon(
-                                                        Icons.close_rounded,
-                                                        color: AppColors.PRIMARY_COLOR,
-                                                        size: 5.w,
-                                                      );
-                                                    }
-                                                  }),
-                                                ),
-                                                SizedBox(width: 2.w),
+                                                          size: 5.w,
+                                                        );
+                                                      }
+                                                    }),
+                                                  ),
+                                                  SizedBox(width: 2.w),
 
-                                                ///Accept
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    showDeleteDialog(
-                                                      ctx: context,
-                                                      onPressed: () {
-                                                        Get.back();
-                                                        controller.acceptRejectDeleteCashFlowApiCall(
-                                                          cashFlowId: data.cashFlowId ?? "",
-                                                          isAccept: true,
+                                                  ///Accept
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      showDeleteDialog(
+                                                        ctx: context,
+                                                        onPressed: () {
+                                                          Get.back();
+                                                          controller.acceptRejectDeleteCashFlowApiCall(
+                                                            cashFlowId: data.cashFlowId ?? "",
+                                                            isAccept: true,
+                                                          );
+                                                        },
+                                                        agreeText: AppStrings.yesSure.tr,
+                                                        title: AppStrings.areYouSureYouWantToAcceptThisDeletionRequest.tr,
+                                                      );
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: AppColors.DARK_GREEN_COLOR,
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                      padding: EdgeInsets.zero,
+                                                      maximumSize: Size.square(8.w),
+                                                      minimumSize: Size.square(8.w),
+                                                      elevation: 4,
+                                                    ),
+                                                    child: Obx(() {
+                                                      if (controller.acceptDeletingId.value == data.cashFlowId) {
+                                                        return SizedBox.square(
+                                                          dimension: 3.5.w,
+                                                          child: CircularProgressIndicator(
+                                                            color: AppColors.PRIMARY_COLOR,
+                                                            strokeWidth: 1.5,
+                                                          ),
                                                         );
-                                                      },
-                                                      agreeText: AppStrings.yesSure.tr,
-                                                      title: AppStrings.areYouSureYouWantToAcceptThisDeletionRequest.tr,
-                                                    );
-                                                  },
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: AppColors.DARK_GREEN_COLOR,
-                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    padding: EdgeInsets.zero,
-                                                    maximumSize: Size.square(8.w),
-                                                    minimumSize: Size.square(8.w),
-                                                    elevation: 4,
-                                                  ),
-                                                  child: Obx(() {
-                                                    if (controller.acceptDeletingId.value == data.cashFlowId) {
-                                                      return SizedBox.square(
-                                                        dimension: 3.5.w,
-                                                        child: CircularProgressIndicator(
+                                                      } else {
+                                                        return Icon(
+                                                          Icons.check_rounded,
                                                           color: AppColors.PRIMARY_COLOR,
-                                                          strokeWidth: 1.5,
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return Icon(
-                                                        Icons.check_rounded,
-                                                        color: AppColors.PRIMARY_COLOR,
-                                                        size: 5.w,
-                                                      );
-                                                    }
-                                                  }),
-                                                ),
+                                                          size: 5.w,
+                                                        );
+                                                      }
+                                                    }),
+                                                  ),
+                                                ],
                                               ],
                                             ),
                                           ],
@@ -735,13 +839,13 @@ class CashFlowView extends GetView<CashFlowController> {
     );
   }
 
-  Future<void> showExportBottomSheet({
+  Future<void> showBottomSheetMonthlyCashbook({
     required BuildContext ctx,
   }) async {
     await showBottomSheetWidget(
       context: ctx,
       builder: (context) {
-        return CashFlowPdfView(
+        return MonthlyCashbookWidget(
           controller: controller,
         );
       },

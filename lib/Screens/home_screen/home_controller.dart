@@ -7,6 +7,7 @@ import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/auth_models/get_latest_version_model.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/account_view.dart';
+import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_view.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
@@ -121,10 +122,12 @@ class HomeController extends GetxController {
     scaffoldKey.currentState?.closeDrawer();
     drawerIndex.value = index;
     getLatestVersionApiCall();
-    if (index == listOfImages.indexOf(AppAssets.recycleBinIcon)) {
+    if (isRecycleBinSelected) {
       Get.find<RecycleBinController>().getOrdersApi(isLoading: Get.find<RecycleBinController>().isGetOrdersLoading.isTrue);
-    } else if (index == listOfImages.indexOf(AppAssets.notesIcon)) {
+    } else if (isNotesSelected) {
       Get.find<NotesController>().getNotesApi(isLoading: false);
+    } else if (isCashFlowSelected) {
+      Get.find<CashFlowController>().getCashFlowApiCall(isRefresh: true);
     }
     pageController.jumpToPage(drawerIndex.value);
   }

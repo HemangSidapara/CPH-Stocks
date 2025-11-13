@@ -294,4 +294,12 @@ Map<String, String> enIN = <String, String>{
   AppStrings.totalEntries: "Total Entries",
   AppStrings.inWord: "In 🠕",
   AppStrings.out: "Out 🠗",
+  AppStrings.searchCashType: "Search Cash Type",
+  AppStrings.filterByCashType: "Filter by cash type",
+  AppStrings.clearAllFilters: "Clear all filters",
+  AppStrings.exportCashFlowReportInPdf: "Export cash flow report in PDF",
+  AppStrings.filterASummeryByPaymentMode: "Filter a summery by payment mode",
+  AppStrings.partyPayment: "Party Payment",
+  AppStrings.monthlyCashbook: "Monthly cashbook",
+  AppStrings.accepted: "Accepted",
 };

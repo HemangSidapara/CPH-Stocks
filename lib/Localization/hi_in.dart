@@ -292,4 +292,12 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.totalEntries: "कुल प्रविष्टियाँ",
   AppStrings.inWord: "आवक 🠕",
   AppStrings.out: "जावक 🠗",
+  AppStrings.searchCashType: "कैश प्रकार खोजें",
+  AppStrings.filterByCashType: "कैश प्रकार के अनुसार फ़िल्टर करें",
+  AppStrings.clearAllFilters: "सभी फ़िल्टर साफ़ करें",
+  AppStrings.exportCashFlowReportInPdf: "कैश फ्लो रिपोर्ट को PDF में निर्यात करें",
+  AppStrings.filterASummeryByPaymentMode: "भुगतान मोड के अनुसार सारांश फ़िल्टर करें",
+  AppStrings.partyPayment: "पार्टी भुगतान",
+  AppStrings.monthlyCashbook: "मासिक कैशबुक",
+  AppStrings.accepted: "स्वीकृत",
 };
