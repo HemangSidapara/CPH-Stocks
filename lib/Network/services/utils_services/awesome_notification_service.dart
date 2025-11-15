@@ -4,8 +4,12 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
+import 'package:cph_stocks/Routes/app_pages.dart';
+import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 class AwesomeNotificationService {
   static ReceivedAction? initialAction;
@@ -95,6 +99,15 @@ class AwesomeNotificationService {
   static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     if (kDebugMode) {
       print('Notification action received: ${receivedAction.buttonKeyPressed}');
+    }
+
+    while (Get.currentRoute != Routes.homeScreen) {
+      log("🚫 Removed Route: ${Get.currentRoute}");
+      Get.back(closeOverlays: true);
+    }
+    HomeController? homeController = Get.isRegistered<HomeController>() ? Get.find<HomeController>() : null;
+    if (homeController != null) {
+      homeController.onDrawerItemChange(index: homeController.listOfImages.indexOf(AppAssets.cashFlowIcon));
     }
   }
 

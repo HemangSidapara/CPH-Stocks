@@ -244,6 +244,8 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
     required get_cash_flow.Summary summary,
   }) async {
     try {
+      cashFlowList = cashFlowList.reversed.toList();
+
       final pdf = pw.Document();
 
       final dateFormat = DateFormat('dd MMM yyyy');

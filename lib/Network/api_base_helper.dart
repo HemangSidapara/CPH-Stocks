@@ -43,7 +43,7 @@ class ApiBaseHelper {
       ..interceptors.add(
         InterceptorsWrapper(
           onRequest: (RequestOptions options, handler) async {
-            if (Get.isSnackbarOpen) {
+            if (showProgressDialog && Get.isSnackbarOpen) {
               await Get.closeCurrentSnackbar();
             }
             if (showProgressDialog) Get.put(ProgressDialog()).showProgressDialog(true);
@@ -51,7 +51,7 @@ class ApiBaseHelper {
             return requestInterceptor(options, handler);
           },
           onResponse: (response, handler) async {
-            if (Get.isSnackbarOpen) {
+            if (showProgressDialog && Get.isSnackbarOpen) {
               await Get.closeCurrentSnackbar();
             }
             Get.put(ProgressDialog()).showProgressDialog(false);
@@ -67,7 +67,7 @@ class ApiBaseHelper {
             return handler.next(response);
           },
           onError: (DioException e, handler) async {
-            if (Get.isSnackbarOpen) {
+            if (showProgressDialog && Get.isSnackbarOpen) {
               await Get.closeCurrentSnackbar();
             }
             Get.put(ProgressDialog()).showProgressDialog(false);

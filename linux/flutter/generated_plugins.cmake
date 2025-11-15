@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   awesome_notifications_core
   file_selector_linux
   printing
+  quill_native_bridge_linux
   syncfusion_pdfviewer_linux
   url_launcher_linux
 )

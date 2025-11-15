@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
@@ -37,7 +40,20 @@ void main() async {
     return true;
   };
   runApp(const MyApp());
+  await onInitialNotification();
   Utils.setAppVersion();
+}
+
+Future<void> onInitialNotification() async {
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
+    ReceivedAction? receivedAction = await AwesomeNotifications().getInitialNotificationAction();
+    if (receivedAction != null) {
+      log('Awesome Notification Terminated Interacted Message: ${receivedAction.toMap()}');
+      setData(AppConstance.gotoCashFlowFromTerminated, true);
+    }
+  } else {
+    await FirebaseService.setupTerminatedInteractedMessage();
+  }
 }
 
 class MyApp extends StatefulWidget {

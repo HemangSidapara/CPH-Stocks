@@ -108,6 +108,10 @@ class HomeController extends GetxController {
     );
 
     await checkTokenApiCall();
+    if (getData(AppConstance.gotoCashFlowFromTerminated) == true) {
+      onDrawerItemChange(index: listOfImages.indexOf(AppAssets.cashFlowIcon));
+      setData(AppConstance.gotoCashFlowFromTerminated, false);
+    }
   }
 
   bool get isRecycleBinSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.recycleBinIcon);

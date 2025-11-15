@@ -1,8 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cph_stocks/Constants/app_assets.dart';
+import 'package:cph_stocks/Constants/app_constance.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/services/utils_services/awesome_notification_service.dart';
+import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -78,7 +83,7 @@ class FirebaseService {
 
     await firebaseMessagingForegroundHandler();
 
-    await setupInteractedMessage();
+    await setupBackgroundInteractedMessage();
   }
 
   /// Show notification
@@ -103,18 +108,36 @@ class FirebaseService {
   }
 
   /// Interacted Message from Terminal -> Open App
-  static Future<void> setupInteractedMessage() async {
-    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-
-    if (initialMessage != null) {
-      _handleMessage(initialMessage);
-    }
-
+  static Future<void> setupBackgroundInteractedMessage() async {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
+  /// Interacted Message from Terminal -> Open App
+  static Future<void> setupTerminatedInteractedMessage() async {
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      log('Firebase Terminated Interacted Message: ${initialMessage.toMap()}');
+      setData(AppConstance.gotoCashFlowFromTerminated, true);
+    }
+  }
+
   /// Message/Notification Handle Method
-  static void _handleMessage(RemoteMessage message) {}
+  static void _handleMessage(RemoteMessage message) {
+    if (kDebugMode) {
+      print('Firebase Notification action received: ${message.toMap()}');
+    }
+    if (message.notification == null) return;
+
+    while (Get.currentRoute.isNotEmpty && Get.currentRoute != Routes.homeScreen) {
+      log("🚫 Removed Route: ${Get.currentRoute}");
+      Get.back(closeOverlays: true);
+    }
+    HomeController? homeController = Get.isRegistered<HomeController>() ? Get.find<HomeController>() : null;
+    if (homeController != null) {
+      homeController.onDrawerItemChange(index: homeController.listOfImages.indexOf(AppAssets.cashFlowIcon));
+    }
+  }
 }
 
 @pragma('vm:entry-point')
@@ -126,7 +149,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   log("\x1B[32m✅ Message Received:\x1B[0m 📩 ${message.toMap()}");
   log("\x1B[34m🔔 Notification Object:\x1B[0m 📢 ${message.notification?.toMap()}");
 
-  _handleMethodWhenNotificationReceived();
   if (defaultTargetPlatform != TargetPlatform.android) {
     FirebaseService.showFlutterNotification(message);
   }
