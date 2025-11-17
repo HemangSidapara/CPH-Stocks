@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:cph_stocks/Constants/app_constance.dart';
-import 'package:cph_stocks/Utils/loading_view.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart' hide MultipartFile;
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -58,14 +56,6 @@ class ImagePickerService {
           print("filePath ::: ${file.path}");
         }
 
-        if (isShowLoader) {
-          Get.dialog(LoadingProgressBar(isDisMissile: false), barrierDismissible: false);
-        }
-
-        if (isShowLoader) {
-          Get.back();
-        }
-
         return (file.path, file);
       }
     }
@@ -93,14 +83,6 @@ class ImagePickerService {
 
         if (kDebugMode) {
           print("filePath ::: ${fileList.length}");
-        }
-
-        if (isShowLoader) {
-          Get.dialog(LoadingProgressBar(isDisMissile: false), barrierDismissible: false);
-        }
-
-        if (isShowLoader) {
-          Get.back();
         }
 
         return fileList.map((e) => e.path).toList();
