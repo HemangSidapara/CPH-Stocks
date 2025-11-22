@@ -21,4 +21,5 @@ class Routes {
   static const reportsScreen = '/reportsScreen';
   static const employeeInMonthScreen = '/employeeInMonthScreen';
   static const categoriesScreen = '/categoriesScreen';
+  static const partiesScreen = '/partiesScreen';
 }

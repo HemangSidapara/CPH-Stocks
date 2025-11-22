@@ -28,6 +28,7 @@ import 'package:cph_stocks/Screens/home_screen/dashboard_screen/order_sequence_s
 import 'package:cph_stocks/Screens/home_screen/home_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/home_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_bindings.dart';
+import 'package:cph_stocks/Screens/home_screen/parties_screen/parties_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_bindings.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_view.dart';
@@ -72,6 +73,7 @@ class AppPages {
         RecycleBinBindings(),
         NotesBindings(),
         CashFlowBindings(),
+        PartiesBindings(),
         SettingsBindings(),
       ],
       transition: Transition.rightToLeftWithFade,

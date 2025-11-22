@@ -27,6 +27,9 @@ class ApiUrls {
   static const String getOrderSequenceApi = '${_apiPath}getOrderSequence';
 
   /// Party APIs
+  static const String createPartyApi = '${_apiPath}createParty';
+  static const String editPartyApi = '${_apiPath}editParty';
+  static const String getPartyApi = '${_apiPath}getParty&search=';
   static const String getPartiesApi = '${_apiPath}getParties';
   static const String updatePartyApi = '${_apiPath}updateParty';
   static const String deletePartyApi = '${_apiPath}deleteParty';

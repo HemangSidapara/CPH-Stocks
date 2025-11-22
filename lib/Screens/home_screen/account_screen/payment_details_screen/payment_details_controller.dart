@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/app_validators.dart';
@@ -9,6 +11,7 @@ import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class PaymentDetailsController extends GetxController with GetSingleTickerProviderStateMixin {
   late TabController tabController;
@@ -23,7 +26,9 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
 
   TextEditingController partyNameController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+  TextEditingController discountController = TextEditingController();
   TextEditingController paymentModeController = TextEditingController();
+  RxString base64Image = "".obs;
   RxInt selectedPaymentMode = 0.obs;
 
   RxList<get_payments.PartyPaymentData> paymentList = RxList();
@@ -70,6 +75,13 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
       return AppStrings.pleaseEnterAmount.tr;
     } else if (!AppValidators.doubleValidator.hasMatch(value)) {
       return AppStrings.pleaseEnterValidaAmount.tr;
+    }
+    return null;
+  }
+
+  String? validateDiscount(String? value) {
+    if (value != null && value.isNotEmpty && !AppValidators.doubleValidator.hasMatch(value)) {
+      return AppStrings.pleaseEnterValidDiscount.tr;
     }
     return null;
   }
@@ -172,6 +184,8 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
         final response = await AccountServices.createPartyPaymentService(
           partyId: selectedParty.value,
           amount: amountController.text.trim(),
+          discount: discountController.text.trim(),
+          paymentImage: base64Image.value,
           paymentMode: paymentModeList[selectedPaymentMode.value],
           paymentDate: paymentDateController.text.trim().isNotEmpty ? DateFormat("yyyy-MM-dd").format(DateFormat("dd/MM/yyyy").parse(paymentDateController.text.trim())) : DateFormat("yyyy-MM-dd").format(DateTime.now()),
         );
@@ -189,14 +203,18 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
   Future<void> editPaymentApiCall({
     required String partyPaymentMetaId,
     required String amount,
+    required String discount,
     required String paymentMode,
     required String paymentDate,
+    required String paymentImage,
   }) async {
     final response = await AccountServices.editPartyPaymentService(
       partyPaymentMetaId: partyPaymentMetaId,
       amount: amount,
+      discount: discount,
       paymentMode: paymentMode,
       paymentDate: paymentDate,
+      paymentImage: paymentImage,
     );
 
     if (response.isSuccess) {
@@ -204,5 +222,127 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
       await getPartyPaymentApiCall(isRefresh: true);
       Utils.handleMessage(message: response.message);
     }
+  }
+
+  Future<void> showItemImageDialog({
+    required String itemName,
+    required String itemImage,
+  }) async {
+    await showGeneralDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      barrierColor: AppColors.SECONDARY_COLOR,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return SafeArea(
+          child: Material(
+            color: AppColors.SECONDARY_COLOR,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+              child: Column(
+                children: [
+                  ///ItemName
+                  Flexible(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            itemName,
+                            style: TextStyle(
+                              color: AppColors.PRIMARY_COLOR,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20.sp,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 2.w),
+                        IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          style: IconButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,
+                          ),
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: AppColors.PRIMARY_COLOR,
+                            size: 7.w,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  ///Item Image
+                  Center(
+                    child: SizedBox(
+                      height: 80.h,
+                      child: InteractiveViewer(
+                        maxScale: 5.0,
+                        child: CachedNetworkImage(
+                          imageUrl: itemImage,
+                          fit: BoxFit.contain,
+                          cacheKey: itemImage,
+                          progressIndicatorBuilder: (context, url, progress) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.SECONDARY_COLOR,
+                                value: progress.progress,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          },
+                          errorWidget: (context, error, stackTrace) {
+                            return SizedBox(
+                              height: 15.h,
+                              width: double.maxFinite,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.error_rounded,
+                                    size: 6.w,
+                                    color: AppColors.ERROR_COLOR,
+                                  ),
+                                  Text(
+                                    error.toString().replaceAll('Exception: ', ''),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: AppColors.SECONDARY_COLOR,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOut,
+          ),
+          child: FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
+            ),
+            child: child,
+          ),
+        );
+      },
+    );
   }
 }

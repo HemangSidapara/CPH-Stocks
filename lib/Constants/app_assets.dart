@@ -9,6 +9,7 @@ class AppAssets {
   static const String cloudAnim = "assets/animations/cloud_animation.json";
   static const String accountAnim = "assets/animations/account_animation.gif";
   static const String cashFlowAnim = "assets/animations/cash_flow_animation.gif";
+  static const String partiesAnim = "assets/animations/parties_animation.gif";
 
   ///Images
   static const String splashImage = "assets/images/splash_image.webp";
@@ -39,6 +40,7 @@ class AppAssets {
   static const String categoriesIcon = "assets/icons/categories_icon.png";
   static const String gstIcon = "assets/icons/gst_icon.png";
   static const String cashFlowIcon = "assets/icons/cash_flow_icon.png";
+  static const String partiesIcon = "assets/icons/parties_icon.png";
 
   ///Fonts
   static const String robotoRegular = "assets/fonts/Roboto/Roboto-Regular.ttf";

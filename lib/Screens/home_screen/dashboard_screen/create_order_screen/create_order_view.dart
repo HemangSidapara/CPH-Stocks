@@ -325,19 +325,9 @@ class CreateOrderView extends GetView<CreateOrderController> {
   }
 
   Future<void> showSelectImageBottomSheet({required int index}) async {
-    await showModalBottomSheet(
+    await showBottomSheetWidget(
       context: Get.context!,
-      constraints: BoxConstraints(maxWidth: 100.w, minWidth: 100.w, maxHeight: 90.h, minHeight: 0.h),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      clipBehavior: Clip.hardEdge,
-      backgroundColor: AppColors.WHITE_COLOR,
+      backgroundColor: AppColors.PRIMARY_COLOR,
       builder: (context) {
         return DecoratedBox(
           decoration: BoxDecoration(
@@ -427,11 +417,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             SizedBox(height: 1.h),
                             Text(
                               AppStrings.gallery.tr,
-                              style: TextStyle(
-                                color: AppColors.SECONDARY_COLOR,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
                             ),
                           ],
                         ),
@@ -477,11 +463,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             SizedBox(height: 1.h),
                             Text(
                               AppStrings.camera.tr,
-                              style: TextStyle(
-                                color: AppColors.SECONDARY_COLOR,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
                             ),
                           ],
                         ),

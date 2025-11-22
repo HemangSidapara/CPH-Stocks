@@ -38,6 +38,8 @@ class PartyPaymentData {
   String? partyId;
   String? partyName;
   String? amount;
+  String? discount;
+  String? paymentImage;
   String? paymentMode;
   String? createdDate;
   String? createdTime;
@@ -48,6 +50,8 @@ class PartyPaymentData {
     this.partyId,
     this.partyName,
     this.amount,
+    this.discount,
+    this.paymentImage,
     this.paymentMode,
     this.createdDate,
     this.createdTime,
@@ -63,6 +67,8 @@ class PartyPaymentData {
     String? partyId,
     String? partyName,
     String? amount,
+    String? discount,
+    String? paymentImage,
     String? paymentMode,
     String? createdDate,
     String? createdTime,
@@ -73,6 +79,8 @@ class PartyPaymentData {
       partyId: partyId ?? this.partyId,
       partyName: partyName ?? this.partyName,
       amount: amount ?? this.amount,
+      discount: discount ?? this.discount,
+      paymentImage: paymentImage ?? this.paymentImage,
       paymentMode: paymentMode ?? this.paymentMode,
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,

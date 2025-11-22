@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 extension GetArgs on BuildContext {
@@ -93,4 +98,74 @@ extension NotContainsAndAddSubString on String {
 
 extension CleanFileName on String? {
   String? get cleanFileName => this?.replaceAll("/", "_").replaceAll(" ", "_").replaceAll(RegExp(r'[\\:*?"<>|]'), "");
+}
+
+extension IsBase64Image on String? {
+  bool _isValidImageHeader(String header) {
+    return header.startsWith('ffd8') || // JPEG
+        header.startsWith('89504e47') || // PNG
+        header.startsWith('47494638') || // GIF
+        header.startsWith('424d') || // BMP
+        header.startsWith('52494646'); // WEBP
+  }
+
+  bool get isBase64Image {
+    if (this == null) return false;
+    if (this?.getMimeType()?.replaceAll("/", ".").isImageFileName == true) return true;
+    if (this!.isEmpty || this!.pureBase64.length % 4 != 0) return false;
+    final pattern = RegExp(r'^[A-Za-z0-9+/]*={0,2}$');
+    if (!pattern.hasMatch(this!.pureBase64)) return false;
+
+    try {
+      Uint8List bytes = base64.decode(this!.pureBase64);
+
+      // Check common image headers (PNG, JPG, GIF, BMP, WEBP)
+      if (bytes.length > 4) {
+        String header = bytes.sublist(0, 4).map((e) => e.toRadixString(16).padLeft(2, '0')).join();
+        return _isValidImageHeader(header);
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+}
+
+extension StringWithBase64 on String {
+  String get pureBase64 {
+    return split(",").last;
+  }
+
+  Uint8List? get decodeBase64 {
+    try {
+      return base64Decode(pureBase64);
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error decoding Base64: $e");
+      }
+      return null;
+    }
+  }
+
+  /// Convert FilePath to Uint8List
+  String? encodeBase64({String? mimeType}) {
+    final file = File(this);
+    String base64 = base64Encode(file.readAsBytesSync());
+    String base64WithMime = "data:$mimeType;base64,$base64";
+    if (!file.existsSync()) return null;
+    return mimeType != null ? base64WithMime : base64;
+  }
+
+  /// Extracts the MIME type from a Base64 string (e.g., "image/png", "application/pdf").
+  String? getMimeType() {
+    final RegExp regex = RegExp(r"data:([\w\/\-\+]+);base64,");
+    final Match? match = regex.firstMatch(this);
+    return match?.group(1);
+  }
+
+  /// Extracts the file extension from a Base64 string (e.g., "png", "pdf").
+  String? getFileExtension() {
+    String? mimeType = getMimeType();
+    return mimeType?.split('/').last;
+  }
 }

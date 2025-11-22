@@ -36,7 +36,7 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
   Rx<get_cash_flow.Summary> cashSummeryData = Rx(get_cash_flow.Summary());
   Rx<get_cash_flow.Summary> onlineSummeryData = Rx(get_cash_flow.Summary());
 
-  Rx<DateTimeRange<DateTime>?> filterDateRange = Rx(DateTimeRange<DateTime>(start: DateTime.now().subtract(7.days), end: DateTime.now()));
+  Rx<DateTimeRange<DateTime>?> filterDateRange = Rx(null);
 
   RxString deletingId = "".obs;
   RxString acceptDeletingId = "".obs;
@@ -115,8 +115,8 @@ class CashFlowController extends GetxController with GetTickerProviderStateMixin
 
   Future<(List<get_cash_flow.CashFlowData>, List<get_cash_flow.CashFlowData>, List<get_cash_flow.CashFlowData>, get_cash_flow.Summary, get_cash_flow.Summary, get_cash_flow.Summary)> getCashFlowExportApiCall({required DateTimeRange<DateTime> dateRange}) async {
     final response = await CashFlowServices.getCashFlowService(
-      startDate: dateRange.start.toLocal().toString().split(" ").first ?? "",
-      endDate: dateRange.end.toLocal().toString().split(" ").first ?? "",
+      startDate: dateRange.start.toLocal().toString().split(" ").firstOrNull ?? "",
+      endDate: dateRange.end.toLocal().toString().split(" ").firstOrNull ?? "",
       transactionType: "",
     );
     if (response.isSuccess) {

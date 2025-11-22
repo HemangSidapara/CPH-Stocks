@@ -49,4 +49,8 @@ class ApiKeys {
   static const modeOfPayment = "modeOfPayment";
   static const fcmToken = "fcmToken";
   static const cashFlowId = "cashFlowId";
+  static const discount = "discount";
+  static const paymentImage = "paymentImage";
+  static const paymentType = "paymentType";
+  static const pendingBalance = "pendingBalance";
 }

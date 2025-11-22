@@ -35,14 +35,18 @@ class GetPartyPaymentModel {
 class PartyPaymentData {
   String? partyPaymentMetaId;
   String? amount;
+  String? discount;
   String? paymentMode;
+  String? paymentImage;
   String? createdDate;
   String? createdTime;
 
   PartyPaymentData({
     this.partyPaymentMetaId,
     this.amount,
+    this.discount,
     this.paymentMode,
+    this.paymentImage,
     this.createdDate,
     this.createdTime,
   });
@@ -54,14 +58,18 @@ class PartyPaymentData {
   PartyPaymentData copyWith({
     String? partyPaymentMetaId,
     String? amount,
+    String? discount,
     String? paymentMode,
+    String? paymentImage,
     String? createdDate,
     String? createdTime,
   }) {
     return PartyPaymentData(
       partyPaymentMetaId: partyPaymentMetaId ?? this.partyPaymentMetaId,
       amount: amount ?? this.amount,
+      discount: discount ?? this.discount,
       paymentMode: paymentMode ?? this.paymentMode,
+      paymentImage: paymentImage ?? this.paymentImage,
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,
     );

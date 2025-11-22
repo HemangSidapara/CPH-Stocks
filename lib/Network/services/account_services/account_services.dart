@@ -114,7 +114,9 @@ class AccountServices {
   static Future<ResponseModel> createPartyPaymentService({
     required String partyId,
     required String amount,
+    required String discount,
     required String paymentMode,
+    required String paymentImage,
 
     /// Format: yyyy-MM-dd
     required String paymentDate,
@@ -122,7 +124,9 @@ class AccountServices {
     final params = {
       ApiKeys.partyId: partyId,
       ApiKeys.amount: amount,
+      ApiKeys.discount: discount,
       ApiKeys.paymentMode: paymentMode,
+      ApiKeys.paymentImage: paymentImage,
       ApiKeys.paymentDate: paymentDate,
     };
     final response = await ApiBaseHelper.postHTTP(
@@ -155,16 +159,20 @@ class AccountServices {
   static Future<ResponseModel> editPartyPaymentService({
     required String partyPaymentMetaId,
     required String amount,
+    required String discount,
     required String paymentMode,
 
     /// Format: yyyy-MM-dd
     required String paymentDate,
+    required String paymentImage,
   }) async {
     final params = {
       ApiKeys.partyPaymentMetaId: partyPaymentMetaId,
       ApiKeys.amount: amount,
+      ApiKeys.discount: discount,
       ApiKeys.paymentMode: paymentMode,
       ApiKeys.paymentDate: paymentDate,
+      ApiKeys.paymentImage: paymentImage,
     };
     final response = await ApiBaseHelper.postHTTP(
       ApiUrls.editPartyPaymentApi,

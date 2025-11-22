@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 Future<void> showBottomSheetWidget({
   required BuildContext context,
   required Widget Function(BuildContext context) builder,
+  Color? backgroundColor,
 }) async {
   await showModalBottomSheet(
     context: context,
@@ -15,7 +16,7 @@ Future<void> showBottomSheetWidget({
     isScrollControlled: true,
     useRootNavigator: true,
     clipBehavior: Clip.hardEdge,
-    backgroundColor: AppColors.SECONDARY_COLOR,
+    backgroundColor: backgroundColor ?? AppColors.SECONDARY_COLOR,
     builder: builder,
   );
 }

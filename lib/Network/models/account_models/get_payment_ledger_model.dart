@@ -99,11 +99,13 @@ class LedgerSummary {
 @JsonSerializable()
 class LedgerPayment {
   double? amount;
+  double? discount;
   String? paymentMode;
   String? createdDate;
 
   LedgerPayment({
     this.amount,
+    this.discount,
     this.paymentMode,
     this.createdDate,
   });
@@ -114,11 +116,13 @@ class LedgerPayment {
 
   LedgerPayment copyWith({
     double? amount,
+    double? discount,
     String? paymentMode,
     String? createdDate,
   }) {
     return LedgerPayment(
       amount: amount ?? this.amount,
+      discount: discount ?? this.discount,
       paymentMode: paymentMode ?? this.paymentMode,
       createdDate: createdDate ?? this.createdDate,
     );

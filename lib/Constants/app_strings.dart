@@ -306,4 +306,9 @@ class AppStrings {
   static const String partyPayment = "Party Payment";
   static const String monthlyCashbook = "Monthly cashbook";
   static const String accepted = "Accepted";
+  static const String discount = "Discount";
+  static const String enterDiscount = "Enter Discount";
+  static const String pleaseEnterValidDiscount = "Please enter valid amount";
+  static const String paymentImage = "Payment Image";
+  static const String parties = "Parties";
 }

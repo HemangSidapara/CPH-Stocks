@@ -12,6 +12,7 @@ import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_view.da
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/dashboard_view.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_view.dart';
+import 'package:cph_stocks/Screens/home_screen/parties_screen/parties_view.dart';
 import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_view.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_view.dart';
@@ -37,6 +38,7 @@ class HomeController extends GetxController {
     AppAssets.recycleBinAnim,
     if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesAnim,
     if ([AppConstance.admin].contains(getData(AppConstance.role))) AppAssets.cashFlowAnim,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) AppAssets.partiesAnim,
     AppAssets.settingsAnim,
   ].obs;
 
@@ -45,6 +47,7 @@ class HomeController extends GetxController {
     if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) 10.5.w,
     8.5.w,
     if (getData(AppConstance.role) != AppConstance.customer) 8.5.w,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
     if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
     7.w,
   ].obs;
@@ -55,6 +58,7 @@ class HomeController extends GetxController {
     AppColors.SECONDARY_COLOR,
     if (getData(AppConstance.role) != AppConstance.customer) null,
     if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
     null,
   ].obs;
 
@@ -64,6 +68,7 @@ class HomeController extends GetxController {
     AppStrings.recycleBin,
     if (getData(AppConstance.role) != AppConstance.customer) AppStrings.notes,
     if ([AppConstance.admin].contains(getData(AppConstance.role))) AppStrings.cashFlow,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) AppStrings.parties,
     AppStrings.settings,
   ].obs;
 
@@ -73,6 +78,7 @@ class HomeController extends GetxController {
     AppAssets.recycleBinIcon,
     if (getData(AppConstance.role) != AppConstance.customer) AppAssets.notesIcon,
     if ([AppConstance.admin].contains(getData(AppConstance.role))) AppAssets.cashFlowIcon,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) AppAssets.partiesIcon,
     AppAssets.settingsIcon,
   ].obs;
 
@@ -81,6 +87,7 @@ class HomeController extends GetxController {
     if ([AppConstance.admin, AppConstance.accountant].contains(getData(AppConstance.role))) 4.3.w,
     6.w,
     if (getData(AppConstance.role) != AppConstance.customer) 6.w,
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
     if ([AppConstance.admin].contains(getData(AppConstance.role))) null,
     null,
   ].obs;
@@ -91,6 +98,7 @@ class HomeController extends GetxController {
     const RecycleBinView(),
     if (getData(AppConstance.role) != AppConstance.customer) const NotesView(),
     if ([AppConstance.admin].contains(getData(AppConstance.role))) const CashFlowView(),
+    if ([AppConstance.admin].contains(getData(AppConstance.role))) const PartiesView(),
     const SettingsView(),
   ].obs;
 
@@ -119,6 +127,8 @@ class HomeController extends GetxController {
   bool get isNotesSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.notesIcon);
 
   bool get isCashFlowSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.cashFlowIcon);
+
+  bool get isPartiesSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.partiesIcon);
 
   bool get isSettingsSelected => drawerIndex.value == listOfImages.indexOf(AppAssets.settingsIcon);
 

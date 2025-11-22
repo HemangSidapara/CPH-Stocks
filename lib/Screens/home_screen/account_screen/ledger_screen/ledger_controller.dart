@@ -1237,6 +1237,37 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                     ],
                   ),
 
+                  ///Discount
+                  if (data.payments?[rowIndex].discount != null && data.payments?[rowIndex].discount != 0.0) ...[
+                    pw.TableRow(
+                      children: [
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          height: 3,
+                        ),
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          height: 3,
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                          child: pw.Text(
+                            "${data.payments?[rowIndex].discount?.toString() ?? "0.0"} off",
+                            textAlign: pw.TextAlign.center,
+                            style: size14Font,
+                          ),
+                        ),
+                        pw.SizedBox(
+                          width: pdfPageTheme.pageFormat.width / 2,
+                        ),
+                      ],
+                    ),
+                  ],
+
                   pw.TableRow(
                     children: [
                       pw.SizedBox(
