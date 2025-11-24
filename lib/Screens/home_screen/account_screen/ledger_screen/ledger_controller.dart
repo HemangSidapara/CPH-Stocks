@@ -1256,7 +1256,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                         pw.SizedBox(
                           width: pdfPageTheme.pageFormat.width / 2,
                           child: pw.Text(
-                            "${data.payments?[rowIndex].discount?.toString() ?? "0.0"} off",
+                            "${data.payments?[rowIndex].discount?.toString() ?? "0.0"} ${AppStrings.discount.tr.toLowerCase()}",
                             textAlign: pw.TextAlign.center,
                             style: size14Font,
                           ),

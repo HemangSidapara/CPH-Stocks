@@ -291,7 +291,7 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                                                     ),
                                                                     if (data.discount != null && data.discount?.toTryDouble() != 0.0) ...[
                                                                       Text(
-                                                                        "${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.discount?.toTryDouble() ?? 0.0)} off",
+                                                                        "${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.discount?.toTryDouble() ?? 0.0)} ${AppStrings.disc.tr}",
                                                                         style: AppStyles.size14w600.copyWith(color: AppColors.DARK_RED_COLOR),
                                                                       ),
                                                                     ],
@@ -762,7 +762,7 @@ class PaymentDetailsView extends GetView<PaymentDetailsController> {
                                                                   if (data.discount != null && data.discount?.toTryDouble() != 0.0) ...[
                                                                     Flexible(
                                                                       child: Text(
-                                                                        " (${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.discount?.toTryDouble() ?? 0.0)} off)",
+                                                                        " (${NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.discount?.toTryDouble() ?? 0.0)} ${AppStrings.disc.tr})",
                                                                         style: AppStyles.size14w600.copyWith(color: AppColors.DARK_RED_COLOR),
                                                                       ),
                                                                     ),

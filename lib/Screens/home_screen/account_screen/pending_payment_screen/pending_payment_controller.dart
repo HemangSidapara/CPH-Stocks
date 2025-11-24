@@ -2,6 +2,7 @@ import 'package:cph_stocks/Network/models/account_models/get_pending_payments_mo
 import 'package:cph_stocks/Network/services/account_services/account_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class PendingPaymentController extends GetxController {
   RxBool isLoading = false.obs;
@@ -13,7 +14,7 @@ class PendingPaymentController extends GetxController {
 
   RxDouble totalPendingAmount = 0.0.obs;
 
-  Rx<DateTimeRange<DateTime>?> filterDateRange = Rx(null);
+  RxString endDate = "".obs;
 
   @override
   void onInit() {
@@ -25,8 +26,7 @@ class PendingPaymentController extends GetxController {
     try {
       isLoading(!isRefresh);
       final response = await AccountServices.getPendingPaymentsService(
-        startDate: filterDateRange.value?.start.toLocal().toIso8601String(),
-        endDate: filterDateRange.value?.end.toLocal().toIso8601String(),
+        endDate: endDate.value.isNotEmpty ? DateFormat('yyyy-MM-dd').format(DateFormat("dd/MM/yyyy").parse(endDate.value)) : "",
       );
 
       if (response.isSuccess) {

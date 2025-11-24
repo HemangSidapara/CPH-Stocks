@@ -326,11 +326,10 @@ class AccountServices {
 
   /// Get Pending Payments Service
   static Future<ResponseModel> getPendingPaymentsService({
-    String? startDate,
     String? endDate,
   }) async {
     final response = await ApiBaseHelper.getHTTP(
-      "${ApiUrls.getPendingPaymentsApi}&startDate=$startDate&endDate=$endDate",
+      "${ApiUrls.getPendingPaymentsApi}&endDate=$endDate",
       showProgress: false,
       onError: (dioExceptions) {
         if (kDebugMode) {

@@ -319,4 +319,5 @@ class AppStrings {
   static const String pleaseSelectPaymentType = "Please select payment type";
   static const String pendingBalance = "Pending Balance";
   static const String pleaseEnterPendingBalance = "Please enter pending balance";
+  static const String disc = "disc.";
 }
