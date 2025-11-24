@@ -9,6 +9,7 @@ import 'package:cph_stocks/Screens/home_screen/cash_flow_scren/cash_flow_control
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/hand_shaken_animation.dart';
 import 'package:cph_stocks/Screens/home_screen/home_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/notes_screen/notes_controller.dart';
+import 'package:cph_stocks/Screens/home_screen/parties_screen/add_edit_party_widget.dart';
 import 'package:cph_stocks/Screens/home_screen/recycle_bin_screen/recycle_bin_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/settings_screen/settings_controller.dart';
 import 'package:cph_stocks/Utils/in_app_update_dialog_widget.dart';
@@ -18,6 +19,8 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
+import 'parties_screen/parties_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -178,6 +181,29 @@ class HomeView extends GetView<HomeController> {
                           }),
                         );
                       }),
+                    ),
+                  ],
+                  if (controller.isPartiesSelected) ...[
+                    Padding(
+                      padding: EdgeInsets.only(right: 5.w),
+                      child: IconButton(
+                        onPressed: () async {
+                          await showBottomSheetAddEditParty(
+                            ctx: context,
+                            controller: Get.find<PartiesController>(),
+                          );
+                        },
+                        style: IconButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: EdgeInsets.zero,
+                        ),
+                        tooltip: AppStrings.addParty.tr,
+                        icon: Icon(
+                          Icons.add_circle_rounded,
+                          color: AppColors.PRIMARY_COLOR,
+                          size: 8.w,
+                        ),
+                      ),
                     ),
                   ],
                   if (controller.isNotesSelected) ...[

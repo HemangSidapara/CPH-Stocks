@@ -200,7 +200,7 @@ class AppStrings {
   static const String onlineKevin = "Online (Kevin)";
   static const String enterAmount = "Enter amount";
   static const String pleaseEnterAmount = "Please enter amount";
-  static const String pleaseEnterValidaAmount = "Please enter valid amount";
+  static const String pleaseEnterValidAmount = "Please enter valid amount";
   static const String paymentMode = "Payment Mode";
   static const String selectPaymentMode = "Select payment mode";
   static const String pleaseSelectPaymentMode = "Please select payment mode";
@@ -311,4 +311,12 @@ class AppStrings {
   static const String pleaseEnterValidDiscount = "Please enter valid amount";
   static const String paymentImage = "Payment Image";
   static const String parties = "Parties";
+  static const String areYouSureYouWantToDeleteThisParty = "Are you sure? You want to delete this party?";
+  static const String addParty = "Add Party";
+  static const String paymentOptions = "Payment Options";
+  static const String gst18 = "GST (18%)";
+  static const String gst9 = "GST (9%)";
+  static const String pleaseSelectPaymentType = "Please select payment type";
+  static const String pendingBalance = "Pending Balance";
+  static const String pleaseEnterPendingBalance = "Please enter pending balance";
 }

@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Network/models/parties_models/get_party_model.dart' as get_party;
+import 'package:cph_stocks/Network/response_model.dart';
+import 'package:cph_stocks/Network/services/order_services/order_services.dart';
 import 'package:cph_stocks/Network/services/parties_services/parties_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +14,10 @@ class PartiesController extends GetxController {
   TextEditingController searchController = TextEditingController();
 
   RxList<get_party.PartyData> partyList = <get_party.PartyData>[].obs;
+
+  RxString deletingId = "".obs;
+
+  Timer? debounce;
 
   @override
   void onInit() {
@@ -31,7 +39,7 @@ class PartiesController extends GetxController {
     }
   }
 
-  Future<void> createPartyApiCall({
+  Future<ResponseModel> createPartyApiCall({
     required String partyName,
     required String contactNumber,
     required String paymentType,
@@ -49,9 +57,10 @@ class PartiesController extends GetxController {
       Get.back();
       Utils.handleMessage(message: response.message);
     }
+    return response;
   }
 
-  Future<void> editPartyApiCall({
+  Future<ResponseModel> editPartyApiCall({
     required String orderId,
     required String partyName,
     required String contactNumber,
@@ -69,6 +78,20 @@ class PartiesController extends GetxController {
       await getPartyApiCall();
       Get.back();
       Utils.handleMessage(message: response.message);
+    }
+    return response;
+  }
+
+  Future<void> deletePartyApiCall({required String orderId}) async {
+    try {
+      deletingId(orderId);
+      final response = await OrderServices.deletePartyService(orderId: orderId);
+      if (response.isSuccess) {
+        await getPartyApiCall();
+        Utils.handleMessage(message: response.message);
+      }
+    } finally {
+      deletingId("");
     }
   }
 }

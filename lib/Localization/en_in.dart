@@ -197,7 +197,7 @@ Map<String, String> enIN = <String, String>{
   AppStrings.onlineKevin: "Online (Kevin)",
   AppStrings.enterAmount: "Enter amount",
   AppStrings.pleaseEnterAmount: "Please enter amount",
-  AppStrings.pleaseEnterValidaAmount: "Please enter valid amount",
+  AppStrings.pleaseEnterValidAmount: "Please enter valid amount",
   AppStrings.paymentMode: "Payment Mode",
   AppStrings.selectPaymentMode: "Select payment mode",
   AppStrings.pleaseSelectPaymentMode: "Please select payment mode",

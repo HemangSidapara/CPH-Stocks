@@ -6,8 +6,9 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/app_validators.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/order_models/get_categories_model.dart' as get_categories;
-import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
+import 'package:cph_stocks/Network/models/parties_models/get_party_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/order_services/order_services.dart';
+import 'package:cph_stocks/Network/services/parties_services/parties_services.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,6 @@ class CreateOrderController extends GetxController {
   GlobalKey<FormState> createOrderFormKey = GlobalKey<FormState>();
 
   TextEditingController partyNameController = TextEditingController();
-  TextEditingController contactNumberController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   RxList<TextEditingController> itemNameControllerList = RxList<TextEditingController>();
   RxList<TextEditingController> pvdColorControllerList = RxList<TextEditingController>();
@@ -41,12 +41,10 @@ class CreateOrderController extends GetxController {
   RxList<int> selectedPvdColorList = RxList();
 
   RxBool isGetPartiesLoading = true.obs;
-  RxList<get_parties.Data> partyList = RxList();
+  RxList<get_parties.PartyData> partyList = RxList();
   RxString selectedParty = "".obs;
   RxBool isCreateOrderLoading = false.obs;
   RxList<bool> isImageSelectedList = RxList();
-
-  RxBool withGST = false.obs;
 
   @override
   void onInit() async {
@@ -67,7 +65,7 @@ class CreateOrderController extends GetxController {
     return null;
   }
 
-  String? validatePartyList(get_parties.Data? value) {
+  String? validatePartyList(get_parties.PartyData? value) {
     if (value == null && partyNameController.text.isEmpty) {
       return AppStrings.pleaseSelectParty.tr;
     }
@@ -134,12 +132,12 @@ class CreateOrderController extends GetxController {
     return null;
   }
 
-  Future<List<get_parties.Data>> getPartiesApi() async {
+  Future<List<get_parties.PartyData>> getPartiesApi() async {
     try {
       isGetPartiesLoading(true);
-      final response = await OrderServices.getPartiesService();
+      final response = await PartiesServices.getPartyService();
       if (response.isSuccess) {
-        get_parties.GetPartiesModel getPartiesModel = get_parties.GetPartiesModel.fromJson(response.response?.data);
+        get_parties.GetPartyModel getPartiesModel = get_parties.GetPartyModel.fromJson(response.response?.data ?? {});
         partyList.clear();
         partyList.addAll(getPartiesModel.data ?? []);
       }
@@ -179,9 +177,7 @@ class CreateOrderController extends GetxController {
           }
           final response = await OrderServices.createOrderService(
             partyId: selectedParty.isNotEmpty ? selectedParty.value : null,
-            partyName: partyNameController.text.trim(),
-            contactNumber: contactNumberController.text.trim(),
-            isGst: withGST.isTrue,
+            orderId: selectedParty.value,
             description: descriptionController.text.trim(),
             meta: tempMetaList,
           );
@@ -206,8 +202,6 @@ class CreateOrderController extends GetxController {
     if (data.isNotEmpty) {
       partyNameController.text = data[ApiKeys.partyName] ?? '';
       selectedParty.value = partyList.firstWhereOrNull((element) => element.partyName == data[ApiKeys.partyName])?.orderId ?? "";
-      contactNumberController.text = data[ApiKeys.contactNumber] ?? '';
-      withGST(data[ApiKeys.isGst] ?? false);
       descriptionController.text = data[ApiKeys.description] ?? '';
 
       for (int i = 0; i < (data[ApiKeys.meta]?.length ?? 0); i++) {
@@ -248,8 +242,6 @@ class CreateOrderController extends GetxController {
     Map<String, dynamic> data = {};
 
     data[ApiKeys.partyName] = partyNameController.text.trim();
-    data[ApiKeys.contactNumber] = contactNumberController.text.trim();
-    data[ApiKeys.isGst] = withGST.isTrue;
     data[ApiKeys.description] = descriptionController.text.trim();
     data[ApiKeys.meta] = [];
 

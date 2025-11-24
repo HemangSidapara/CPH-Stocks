@@ -195,7 +195,7 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.onlineKevin: "ऑनलाइन (केविन)",
   AppStrings.enterAmount: "राशि दर्ज करें",
   AppStrings.pleaseEnterAmount: "कृपया राशि दर्ज करें",
-  AppStrings.pleaseEnterValidaAmount: "कृपया मान्य राशि दर्ज करें",
+  AppStrings.pleaseEnterValidAmount: "कृपया मान्य राशि दर्ज करें",
   AppStrings.paymentMode: "भुगतान का तरीका",
   AppStrings.selectPaymentMode: "भुगतान का तरीका चुनें",
   AppStrings.pleaseSelectPaymentMode: "कृपया भुगतान का तरीका चुनें",

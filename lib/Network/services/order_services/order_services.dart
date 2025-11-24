@@ -6,44 +6,16 @@ import 'package:cph_stocks/Network/response_model.dart';
 import 'package:flutter/foundation.dart';
 
 class OrderServices {
-  /// Get Parties
-  static Future<ResponseModel> getPartiesService() async {
-    final response = await ApiBaseHelper.getHTTP(
-      ApiUrls.getPartiesApi,
-      showProgress: false,
-      onError: (dioExceptions) {
-        Utils.handleMessage(message: dioExceptions.message, isError: true);
-      },
-      onSuccess: (res) {
-        if (res.isSuccess) {
-          if (kDebugMode) {
-            print("getPartiesApi success :: ${res.message}");
-          }
-        } else {
-          if (kDebugMode) {
-            print("getPartiesApi error :: ${res.message}");
-          }
-          Utils.handleMessage(message: res.message, isError: true);
-        }
-      },
-    );
-    return response;
-  }
-
   /// Create Order
   static Future<ResponseModel> createOrderService({
-    required String partyName,
-    required String contactNumber,
+    required String orderId,
     required List<Map<String, dynamic>> meta,
     required String description,
-    required bool isGst,
     String? partyId,
   }) async {
     final params = {
       ApiKeys.partyId: partyId,
-      ApiKeys.partyName: partyName,
-      ApiKeys.contactNumber: contactNumber,
-      ApiKeys.isGst: isGst,
+      ApiKeys.orderId: orderId,
       ApiKeys.description: description,
       ApiKeys.meta: meta,
     };
@@ -185,42 +157,6 @@ class OrderServices {
         } else {
           if (kDebugMode) {
             print("deleteOrderCycleApi error :: ${res.message}");
-          }
-          Utils.handleMessage(message: res.message, isError: true);
-        }
-      },
-    );
-    return response;
-  }
-
-  /// Update Party
-  static Future<ResponseModel> updatePartyService({
-    required String orderId,
-    required String partyName,
-    required String contactNumber,
-    required bool isGst,
-  }) async {
-    final params = {
-      ApiKeys.orderId: orderId,
-      ApiKeys.partyName: partyName,
-      ApiKeys.contactNumber: contactNumber,
-      ApiKeys.isGst: isGst,
-    };
-    final response = await ApiBaseHelper.postHTTP(
-      ApiUrls.updatePartyApi,
-      params: params,
-      showProgress: false,
-      onError: (dioExceptions) {
-        Utils.handleMessage(message: dioExceptions.message, isError: true);
-      },
-      onSuccess: (res) {
-        if (res.isSuccess) {
-          if (kDebugMode) {
-            print("updatePartyApi success :: ${res.message}");
-          }
-        } else {
-          if (kDebugMode) {
-            print("updatePartyApi error :: ${res.message}");
           }
           Utils.handleMessage(message: res.message, isError: true);
         }

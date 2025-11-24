@@ -197,7 +197,7 @@ Map<String, String> guIN = <String, String>{
   AppStrings.onlineKevin: "ઓનલાઇન (કેવિન)",
   AppStrings.enterAmount: "રકમ દાખલ કરો",
   AppStrings.pleaseEnterAmount: "કૃપા કરીને રકમ દાખલ કરો",
-  AppStrings.pleaseEnterValidaAmount: "કૃપા કરીને માન્ય રકમ દાખલ કરો",
+  AppStrings.pleaseEnterValidAmount: "કૃપા કરીને માન્ય રકમ દાખલ કરો",
   AppStrings.paymentMode: "ચુકવણી રીત",
   AppStrings.selectPaymentMode: "ચુકવણી રીત પસંદ કરો",
   AppStrings.pleaseSelectPaymentMode: "કૃપા કરીને ચુકવણી રીત પસંદ કરો",

@@ -10,9 +10,9 @@ import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_in
 import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_payment_model.dart' as get_automatic_ledger;
 import 'package:cph_stocks/Network/models/account_models/get_payment_ledger_model.dart' as get_payment_ledger;
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
-import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
+import 'package:cph_stocks/Network/models/parties_models/get_party_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/account_services/account_services.dart';
-import 'package:cph_stocks/Network/services/order_services/order_services.dart';
+import 'package:cph_stocks/Network/services/parties_services/parties_services.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_invoice_view.dart';
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/pending_payments_pdf_view.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -33,7 +33,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
 
   RxBool isGenerateLoading = false.obs;
 
-  RxList<get_parties.Data> partyList = <get_parties.Data>[].obs;
+  RxList<get_parties.PartyData> partyList = <get_parties.PartyData>[].obs;
   RxString selectedParty = "".obs;
 
   TextEditingController startDateController = TextEditingController();
@@ -94,10 +94,10 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
     if (cleanedBase64 != null) upiQrImage = base64Decode(cleanedBase64);
   }
 
-  Future<RxList<get_parties.Data>> getPartiesApi() async {
-    final response = await OrderServices.getPartiesService();
+  Future<RxList<get_parties.PartyData>> getPartiesApi() async {
+    final response = await PartiesServices.getPartyService();
     if (response.isSuccess) {
-      get_parties.GetPartiesModel getPartiesModel = get_parties.GetPartiesModel.fromJson(response.response?.data);
+      get_parties.GetPartyModel getPartiesModel = get_parties.GetPartyModel.fromJson(response.response?.data ?? {});
       partyList.clear();
       partyList.addAll(getPartiesModel.data ?? []);
     }

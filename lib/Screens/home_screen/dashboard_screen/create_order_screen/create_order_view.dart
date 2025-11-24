@@ -8,7 +8,7 @@ import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/get_storage.dart';
 import 'package:cph_stocks/Network/models/order_models/get_categories_model.dart' as get_categories;
-import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
+import 'package:cph_stocks/Network/models/parties_models/get_party_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/utils_services/image_picker_service.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_controller.dart';
 import 'package:cph_stocks/Utils/app_formatter.dart';
@@ -24,6 +24,7 @@ import 'package:cph_stocks/Widgets/unfocus_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -95,7 +96,6 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                   IconButton(
                                     onPressed: () {
                                       controller.partyNameController.clear();
-                                      controller.contactNumberController.clear();
                                       controller.selectedParty("");
                                       controller.storeOrderDetails();
                                     },
@@ -133,6 +133,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                       searchHint: AppStrings.searchParty.tr,
                                       selectedId: controller.selectedParty.isNotEmpty ? controller.selectedParty.value.toInt() : -1,
                                       controller: controller.partyNameController,
+                                      selectOnly: true,
                                       onInit: () async {
                                         return await controller.getPartiesApi();
                                       },
@@ -141,137 +142,68 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                           controller.selectedParty.value = id == -1 ? "" : id.toString();
                                           final selectedParty = controller.partyList.firstWhereOrNull((element) => element.orderId == controller.selectedParty.value);
                                           controller.partyNameController.text = selectedParty?.partyName ?? controller.partyNameController.text;
-                                          controller.contactNumberController.text = selectedParty?.contactNumber ?? controller.contactNumberController.text;
-                                          controller.withGST(selectedParty?.isGst ?? false);
                                           controller.storeOrderDetails();
                                         });
+                                      },
+                                      itemWidget: (data) {
+                                        data as get_parties.PartyData;
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              data.partyName ?? "",
+                                              style: AppStyles.size16w600,
+                                            ),
+                                            SizedBox(height: 0.5.h),
+                                            Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  WidgetSpan(
+                                                    child: Icon(
+                                                      Icons.call_rounded,
+                                                      color: AppColors.PRIMARY_COLOR,
+                                                      size: 4.w,
+                                                    ),
+                                                  ),
+                                                  WidgetSpan(
+                                                    child: SizedBox(width: 1.w),
+                                                  ),
+                                                  TextSpan(
+                                                    text: data.contactNumber ?? "",
+                                                    style: AppStyles.size15w600,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 0.5.h),
+                                            Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  WidgetSpan(
+                                                    child: FaIcon(
+                                                      FontAwesomeIcons.coins,
+                                                      color: AppColors.PRIMARY_COLOR,
+                                                      size: 4.w,
+                                                    ),
+                                                  ),
+                                                  WidgetSpan(
+                                                    child: SizedBox(width: 1.w),
+                                                  ),
+                                                  TextSpan(
+                                                    text: data.paymentType ?? "",
+                                                    style: AppStyles.size15w600,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        );
                                       },
                                     );
                                   },
                                 );
                               },
                             ),
-                            SizedBox(height: 2.h),
-
-                            ///Contact Number
-                            TextFieldWidget(
-                              controller: controller.contactNumberController,
-                              title: AppStrings.contactNumber.tr,
-                              hintText: AppStrings.enterContactNumber.tr,
-                              validator: controller.validateContactNumber,
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                TextInputFormatter.withFunction((oldValue, newValue) {
-                                  if (!newValue.text.isNumericOnly && newValue.text.isNotEmpty) {
-                                    return oldValue;
-                                  } else {
-                                    return newValue;
-                                  }
-                                }),
-                              ],
-                              onChanged: (value) {
-                                controller.storeOrderDetails();
-                              },
-                              maxLength: 10,
-                            ),
-                            SizedBox(height: 2.h),
-
-                            ///With GST
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 2.w),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  AppStrings.gstOptions.tr,
-                                  style: AppStyles.size16w600,
-                                ),
-                              ),
-                            ),
-                            DividerWidget(),
-                            SizedBox(height: 0.7.h),
-                            Obx(() {
-                              return IgnorePointer(
-                                ignoring: controller.selectedParty.isNotEmpty && controller.partyNameController.text.isNotEmpty,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    controller.withGST.toggle();
-                                  },
-                                  behavior: HitTestBehavior.opaque,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      ///With GST
-                                      Flexible(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Obx(() {
-                                              return AnimatedContainer(
-                                                duration: 375.milliseconds,
-                                                padding: EdgeInsets.all(0.7.w),
-                                                decoration: BoxDecoration(
-                                                  color: controller.withGST.isTrue ? AppColors.PRIMARY_COLOR : AppColors.SECONDARY_COLOR,
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: AppColors.PRIMARY_COLOR,
-                                                    width: 1.2,
-                                                  ),
-                                                ),
-                                                child: Icon(
-                                                  Icons.check_rounded,
-                                                  color: AppColors.SECONDARY_COLOR,
-                                                  size: 4.w,
-                                                ),
-                                              );
-                                            }),
-                                            SizedBox(width: 2.w),
-                                            Text(
-                                              AppStrings.withKey.tr,
-                                              style: AppStyles.size16w600,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 2.w),
-
-                                      ///Without GST
-                                      Flexible(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Obx(() {
-                                              return AnimatedContainer(
-                                                duration: 375.milliseconds,
-                                                padding: EdgeInsets.all(0.7.w),
-                                                decoration: BoxDecoration(
-                                                  color: controller.withGST.isTrue ? AppColors.SECONDARY_COLOR : AppColors.PRIMARY_COLOR,
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: AppColors.PRIMARY_COLOR,
-                                                    width: 1.2,
-                                                  ),
-                                                ),
-                                                child: Icon(
-                                                  Icons.check_rounded,
-                                                  color: AppColors.SECONDARY_COLOR,
-                                                  size: 4.w,
-                                                ),
-                                              );
-                                            }),
-                                            SizedBox(width: 2.w),
-                                            Text(
-                                              AppStrings.without.tr,
-                                              style: AppStyles.size16w600,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
                             SizedBox(height: 2.h),
 
                             ///Description
@@ -823,6 +755,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
     bool selectOnly = false,
     TextEditingController? controller,
     required Function(int id) onSelect,
+    Widget Function(dynamic data)? itemWidget,
   }) async {
     RxBool isSearch = true.obs;
     RxList itemsList = items.obs;
@@ -850,7 +783,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
       if (value.isNotEmpty) {
         searchItemsList.addAll(
           itemsList.where(
-            (element) => element is get_parties.Data
+            (element) => element is get_parties.PartyData
                 ? element.partyName?.toLowerCase().contains(value.toLowerCase()) == true
                 : element is get_categories.CategoryData
                 ? element.categoryName?.toLowerCase().contains(value.toLowerCase()) == true
@@ -891,7 +824,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                             controller?.text = newController.text;
                             onSelect.call(-1);
                           } else if (selectedIndex.value != -1) {
-                            controller?.text = itemsList.firstOrNull is get_parties.Data
+                            controller?.text = itemsList.firstOrNull is get_parties.PartyData
                                 ? (searchItemsList.firstWhereOrNull((element) => element.orderId == selectedIndex.value.toString())?.partyName ?? "")
                                 : itemsList.firstOrNull is get_categories.CategoryData
                                 ? (searchItemsList.firstWhereOrNull((element) => element.categoryId == selectedIndex.value.toString())?.categoryName ?? "")
@@ -985,7 +918,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              if (searchItemsList[index] is get_parties.Data) {
+                              if (searchItemsList[index] is get_parties.PartyData) {
                                 if (selectedIndex.value.toString() != searchItemsList[index].orderId) {
                                   selectedIndex(searchItemsList[index].orderId.toString().toInt());
                                 } else {
@@ -1013,16 +946,18 @@ class CreateOrderView extends GetView<CreateOrderController> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      (searchItemsList[index] is get_parties.Data
-                                              ? searchItemsList[index].partyName
-                                              : searchItemsList[index] is get_categories.CategoryData
-                                              ? searchItemsList[index].categoryName
-                                              : searchItemsList[index])
-                                          .toString()
-                                          .tr,
-                                      style: AppStyles.size16w600.copyWith(fontSize: 16.sp),
-                                    ),
+                                    child:
+                                        itemWidget?.call(searchItemsList[index]) ??
+                                        Text(
+                                          (searchItemsList[index] is get_parties.PartyData
+                                                  ? searchItemsList[index].partyName
+                                                  : searchItemsList[index] is get_categories.CategoryData
+                                                  ? searchItemsList[index].categoryName
+                                                  : searchItemsList[index])
+                                              .toString()
+                                              .tr,
+                                          style: AppStyles.size16w600,
+                                        ),
                                   ),
                                   SizedBox(width: 2.w),
                                   Obx(() {
@@ -1030,7 +965,7 @@ class CreateOrderView extends GetView<CreateOrderController> {
                                       duration: 375.milliseconds,
                                       decoration: BoxDecoration(
                                         color:
-                                            (searchItemsList[index] is get_parties.Data
+                                            (searchItemsList[index] is get_parties.PartyData
                                                 ? searchItemsList[index].orderId == selectedIndex.value.toString()
                                                 : searchItemsList[index] is get_categories.CategoryData
                                                 ? searchItemsList[index].categoryId == selectedIndex.value.toString()

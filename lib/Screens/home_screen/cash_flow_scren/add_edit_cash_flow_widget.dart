@@ -227,7 +227,7 @@ class _AddEditCashFlowWidgetState extends State<AddEditCashFlowWidget> {
                           if (value == null || value.isEmpty) {
                             return AppStrings.pleaseEnterAmount.tr;
                           } else if (!value.isNum) {
-                            return AppStrings.pleaseEnterValidaAmount.tr;
+                            return AppStrings.pleaseEnterValidAmount.tr;
                           }
                           return null;
                         },

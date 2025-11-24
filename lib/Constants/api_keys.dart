@@ -53,4 +53,8 @@ class ApiKeys {
   static const paymentImage = "paymentImage";
   static const paymentType = "paymentType";
   static const pendingBalance = "pendingBalance";
+  static const cash = "CASH";
+  static const gst18 = "GST (18%)";
+  static const without = "WITHOUT";
+  static const gst9 = "GST (9%)";
 }

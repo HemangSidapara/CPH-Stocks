@@ -178,42 +178,6 @@ class OrderDetailsController extends GetxController with GetTickerProviderStateM
     return [];
   }
 
-  Future<void> updatePartyApi({
-    required String orderId,
-    required String partyName,
-    required String contactNumber,
-    required bool isGst,
-  }) async {
-    final isValidate = editPartyFormKey.currentState?.validate();
-
-    if (isValidate == true) {
-      final response = await OrderServices.updatePartyService(
-        orderId: orderId,
-        partyName: partyName,
-        contactNumber: contactNumber,
-        isGst: isGst,
-      );
-
-      if (response.isSuccess) {
-        Get.back();
-        await getOrdersApi(isLoading: false).then((value) => Utils.handleMessage(message: response.message));
-      }
-    }
-  }
-
-  Future<void> deletePartyApi({
-    required String orderId,
-  }) async {
-    final response = await OrderServices.deletePartyService(
-      orderId: orderId,
-    );
-
-    if (response.isSuccess) {
-      Get.back();
-      await getOrdersApi(isLoading: false).then((value) => Utils.handleMessage(message: response.message));
-    }
-  }
-
   Future<void> deleteOrderApi({
     required List<String> orderMetaId,
   }) async {

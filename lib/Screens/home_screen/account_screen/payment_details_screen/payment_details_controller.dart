@@ -5,9 +5,9 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Constants/app_validators.dart';
 import 'package:cph_stocks/Network/models/account_models/get_all_payments_model.dart' as get_all_payments;
 import 'package:cph_stocks/Network/models/account_models/get_party_payment_model.dart' as get_payments;
-import 'package:cph_stocks/Network/models/order_models/get_parties_model.dart' as get_parties;
+import 'package:cph_stocks/Network/models/parties_models/get_party_model.dart' as get_parties;
 import 'package:cph_stocks/Network/services/account_services/account_services.dart';
-import 'package:cph_stocks/Network/services/order_services/order_services.dart';
+import 'package:cph_stocks/Network/services/parties_services/parties_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +19,7 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
 
   RxBool isLoading = false.obs;
 
-  RxList<get_parties.Data> partyList = <get_parties.Data>[].obs;
+  RxList<get_parties.PartyData> partyList = <get_parties.PartyData>[].obs;
   RxString selectedParty = "".obs;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -74,7 +74,7 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
     if (value == null || value.isEmpty == true) {
       return AppStrings.pleaseEnterAmount.tr;
     } else if (!AppValidators.doubleValidator.hasMatch(value)) {
-      return AppStrings.pleaseEnterValidaAmount.tr;
+      return AppStrings.pleaseEnterValidAmount.tr;
     }
     return null;
   }
@@ -100,10 +100,10 @@ class PaymentDetailsController extends GetxController with GetSingleTickerProvid
     return null;
   }
 
-  Future<RxList<get_parties.Data>> getPartiesApi() async {
-    final response = await OrderServices.getPartiesService();
+  Future<RxList<get_parties.PartyData>> getPartiesApi() async {
+    final response = await PartiesServices.getPartyService();
     if (response.isSuccess) {
-      get_parties.GetPartiesModel getPartiesModel = get_parties.GetPartiesModel.fromJson(response.response?.data);
+      get_parties.GetPartyModel getPartiesModel = get_parties.GetPartyModel.fromJson(response.response?.data ?? {});
       partyList.clear();
       partyList.addAll(getPartiesModel.data ?? []);
     }
