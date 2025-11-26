@@ -44,6 +44,8 @@ class PartiesController extends GetxController {
     required String contactNumber,
     required String paymentType,
     required String pendingBalance,
+    required String referenceName,
+    required String referenceNumber,
   }) async {
     isLoading(true);
     final response = await PartiesServices.createPartyService(
@@ -51,6 +53,8 @@ class PartiesController extends GetxController {
       contactNumber: contactNumber,
       paymentType: paymentType,
       pendingBalance: pendingBalance,
+      referenceName: referenceName,
+      referenceNumber: referenceNumber,
     );
     if (response.isSuccess) {
       await getPartyApiCall();
@@ -66,6 +70,8 @@ class PartiesController extends GetxController {
     required String contactNumber,
     required String paymentType,
     required String pendingBalance,
+    required String referenceName,
+    required String referenceNumber,
   }) async {
     final response = await PartiesServices.editPartyService(
       orderId: orderId,
@@ -73,6 +79,8 @@ class PartiesController extends GetxController {
       contactNumber: contactNumber,
       paymentType: paymentType,
       pendingBalance: pendingBalance,
+      referenceName: referenceName,
+      referenceNumber: referenceNumber,
     );
     if (response.isSuccess) {
       await getPartyApiCall();

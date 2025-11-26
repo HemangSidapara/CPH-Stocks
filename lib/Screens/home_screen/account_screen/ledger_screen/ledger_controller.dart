@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cph_stocks/Constants/api_keys.dart';
 import 'package:cph_stocks/Constants/app_assets.dart';
 import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_constance.dart';
@@ -26,7 +27,7 @@ import 'package:pdf/pdf.dart' as pdf;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
 
-class LedgerController extends GetxController with GetSingleTickerProviderStateMixin {
+class LedgerController extends GetxController with GetTickerProviderStateMixin {
   GlobalKey<FormState> ledgerFormKey = GlobalKey<FormState>();
 
   TextEditingController partyNameController = TextEditingController();
@@ -46,26 +47,38 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   RxList<get_automatic_ledger_invoice.GetPartyData> automaticLedgerInvoiceList = RxList();
   RxList<get_automatic_ledger_invoice.GetPartyData> searchAutomaticLedgerInvoiceList = RxList();
   late TabController tabController;
+  late TabController paymentTabController;
   RxInt tabIndex = 0.obs;
 
   RxBool isGstFilteredParties = false.obs;
 
   Uint8List? upiQrImage;
 
+  List<String> paymentType = [
+    ApiKeys.cash,
+    ApiKeys.gst18,
+    ApiKeys.without,
+    ApiKeys.gst9,
+  ];
+
   @override
   void onInit() {
     super.onInit();
-    setQrImage();
-    getPartiesApi();
-    getAutomaticLedgerInvoiceApiCall();
-    if (Get.arguments == true) {
-      getAutomaticLedgerPaymentApiCall();
-    }
-
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
       tabIndex(tabController.index);
     });
+    setQrImage();
+    getPartiesApi();
+    getAutomaticLedgerInvoiceApiCall();
+
+    if (Get.arguments == true) {
+      paymentTabController = TabController(length: paymentType.length, vsync: this);
+      paymentTabController.addListener(() {
+        getAutomaticLedgerPaymentApiCall();
+      });
+      getAutomaticLedgerPaymentApiCall();
+    }
   }
 
   String? validatePartyName(String? value) {
@@ -107,7 +120,10 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
   Future<void> getAutomaticLedgerPaymentApiCall({bool isRefresh = false}) async {
     try {
       isMonthlyLedgerLoading(true);
-      final response = await AccountServices.getAutomaticLedgerPaymentService();
+      searchPartyNameController.clear();
+      final response = await AccountServices.getAutomaticLedgerPaymentService(
+        paymentType: paymentType[paymentTabController.index],
+      );
       if (response.isSuccess) {
         get_automatic_ledger.GetAutomaticLedgerPaymentModel ledgerPaymentModel = get_automatic_ledger.GetAutomaticLedgerPaymentModel.fromJson(response.response?.data);
         automaticLedgerList.clear();
@@ -1238,7 +1254,7 @@ class LedgerController extends GetxController with GetSingleTickerProviderStateM
                   ),
 
                   ///Discount
-                  if (data.payments?[rowIndex].discount != null && data.payments?[rowIndex].discount != 0.0) ...[
+                  if (rowIndex < (data.payments?.length ?? 0) && data.payments?[rowIndex].discount != null && data.payments?[rowIndex].discount != 0.0) ...[
                     pw.TableRow(
                       children: [
                         pw.SizedBox(

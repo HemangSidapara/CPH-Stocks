@@ -3,8 +3,6 @@ import 'package:cph_stocks/Constants/app_colors.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
 import 'package:cph_stocks/Constants/app_styles.dart';
 import 'package:cph_stocks/Constants/app_utils.dart';
-import 'package:cph_stocks/Network/models/account_models/get_automatic_ledger_invoice_model.dart';
-import 'package:cph_stocks/Network/models/account_models/get_payment_ledger_model.dart';
 import 'package:cph_stocks/Network/models/challan_models/get_invoices_model.dart' as get_invoices;
 import 'package:cph_stocks/Screens/home_screen/account_screen/ledger_screen/ledger_controller.dart';
 import 'package:cph_stocks/Screens/home_screen/dashboard_screen/create_order_screen/create_order_view.dart';
@@ -107,87 +105,372 @@ class LedgerView extends GetView<LedgerController> {
                   child: TabBarView(
                     controller: controller.tabController,
                     children: [
-                      ///Automatic Ledger
-                      RefreshIndicatorWidget(
-                        onRefresh: () async {
-                          if (isPaymentLedger) {
-                            await controller.getAutomaticLedgerPaymentApiCall(isRefresh: true);
-                          } else {
-                            await controller.getAutomaticLedgerInvoiceApiCall(isRefresh: true);
-                          }
-                        },
-                        child: Column(
+                      if (isPaymentLedger) ...[
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
+                            TabBar(
+                              controller: controller.paymentTabController,
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              tabAlignment: TabAlignment.start,
+                              isScrollable: true,
+                              labelPadding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+                              indicatorPadding: EdgeInsets.zero,
+                              indicatorColor: AppColors.TERTIARY_COLOR,
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              indicatorWeight: 2.5,
+                              indicator: UnderlineTabIndicator(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: AppColors.TERTIARY_COLOR,
+                                  width: 2.5,
+                                ),
+                              ),
+                              dividerColor: AppColors.TRANSPARENT,
+                              tabs: [
+                                Text(
+                                  AppStrings.cash.tr,
+                                  style: TextStyle(
+                                    color: AppColors.WHITE_COLOR,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                Text(
+                                  AppStrings.gst18.tr,
+                                  style: TextStyle(
+                                    color: AppColors.WHITE_COLOR,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                Text(
+                                  AppStrings.without.tr,
+                                  style: TextStyle(
+                                    color: AppColors.WHITE_COLOR,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                Text(
+                                  AppStrings.gst9.tr,
+                                  style: TextStyle(
+                                    color: AppColors.WHITE_COLOR,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
                             SizedBox(height: 1.h),
 
-                            ///Search Party & Filter
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5.w),
-                              child: Row(
+                            Expanded(
+                              child: TabBarView(
+                                controller: controller.paymentTabController,
                                 children: [
-                                  ///Search
-                                  Expanded(
-                                    child: TextFieldWidget(
-                                      prefixIcon: Icon(
-                                        Icons.search_rounded,
-                                        color: AppColors.SECONDARY_COLOR,
-                                        size: 5.w,
+                                  for (int i = 0; i < controller.paymentType.length; i++) ...[
+                                    ///Automatic Ledger
+                                    RefreshIndicatorWidget(
+                                      onRefresh: () async {
+                                        await controller.getAutomaticLedgerPaymentApiCall(isRefresh: true);
+                                      },
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 1.h),
+
+                                          ///Search Party & Filter
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                            child: Row(
+                                              children: [
+                                                ///Search
+                                                Expanded(
+                                                  child: TextFieldWidget(
+                                                    prefixIcon: Icon(
+                                                      Icons.search_rounded,
+                                                      color: AppColors.SECONDARY_COLOR,
+                                                      size: 5.w,
+                                                    ),
+                                                    prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
+                                                    suffixIcon: InkWell(
+                                                      onTap: () {
+                                                        Utils.unfocus();
+                                                        controller.searchPartyNameController.clear();
+                                                        controller.searchParty(controller.searchPartyNameController.text);
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close_rounded,
+                                                        color: AppColors.SECONDARY_COLOR,
+                                                        size: 5.w,
+                                                      ),
+                                                    ),
+                                                    suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
+                                                    hintText: AppStrings.searchParty.tr,
+                                                    controller: controller.searchPartyNameController,
+                                                    onChanged: (value) {
+                                                      controller.searchParty(value);
+                                                    },
+                                                  ),
+                                                ),
+
+                                                if (Get.arguments == true) ...[
+                                                  SizedBox(width: 2.w),
+
+                                                  ///Pending Payments Pdf
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      controller.showPendingPdfBottomSheet(ctx: context);
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: AppColors.BRONZE_COLOR,
+                                                      elevation: 4,
+                                                      maximumSize: Size.square(8.w),
+                                                      minimumSize: Size.square(8.w),
+                                                      padding: EdgeInsets.zero,
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    ),
+                                                    child: Image.asset(
+                                                      AppAssets.pendingPaymentIcon,
+                                                      width: 5.w,
+                                                      height: 5.w,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 1.h),
+
+                                          Expanded(
+                                            child: Obx(() {
+                                              if (controller.isMonthlyLedgerLoading.isTrue) {
+                                                return LoadingWidget();
+                                              } else if (controller.searchAutomaticLedgerList.isEmpty) {
+                                                return Center(
+                                                  child: SingleChildScrollView(
+                                                    child: NoDataFoundWidget(
+                                                      subtitle: AppStrings.noDataFound.tr,
+                                                      onPressed: () {
+                                                        Utils.unfocus();
+                                                        controller.searchPartyNameController.clear();
+                                                        controller.getAutomaticLedgerPaymentApiCall();
+                                                      },
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                return AnimationLimiter(
+                                                  child: ListView.separated(
+                                                    itemCount: controller.searchAutomaticLedgerList.length,
+                                                    shrinkWrap: true,
+                                                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h).copyWith(top: 1.h),
+                                                    itemBuilder: (context, index) {
+                                                      final data = controller.searchAutomaticLedgerList[index];
+
+                                                      return AnimationConfiguration.staggeredList(
+                                                        position: index,
+                                                        duration: const Duration(milliseconds: 375),
+                                                        child: SlideAnimation(
+                                                          verticalOffset: 50.0,
+                                                          child: FadeInAnimation(
+                                                            child: Card(
+                                                              color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                              clipBehavior: Clip.antiAlias,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                              ),
+                                                              child: ExpansionTile(
+                                                                title: Row(
+                                                                  children: [
+                                                                    ///Party Name
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        data.partyName ?? "",
+                                                                        style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 2.w),
+                                                                  ],
+                                                                ),
+                                                                tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
+                                                                trailing: ElevatedButton(
+                                                                  onPressed: () {
+                                                                    List<get_invoices.OrderInvoice> ledgerInvoiceData = [];
+                                                                    ledgerInvoiceData = controller.automaticLedgerInvoiceList.firstWhereOrNull((element) => element.partyId == data.partyId)?.invoices ?? [];
+                                                                    controller.showInvoiceBottomSheet(
+                                                                      ctx: context,
+                                                                      ledgerInvoiceData: ledgerInvoiceData,
+                                                                      paymentLedgerInvoiceData: data,
+                                                                      isPaymentLedger: isPaymentLedger,
+                                                                      startDate: data.startDate,
+                                                                      endDate: data.endDate,
+                                                                    );
+                                                                  },
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    backgroundColor: AppColors.WARNING_COLOR,
+                                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                    padding: EdgeInsets.zero,
+                                                                    maximumSize: Size.square(8.w),
+                                                                    minimumSize: Size.square(8.w),
+                                                                    elevation: 4,
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons.visibility_rounded,
+                                                                    size: 5.w,
+                                                                    color: AppColors.PRIMARY_COLOR,
+                                                                  ),
+                                                                ),
+                                                                dense: true,
+                                                                collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                                backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                                iconColor: AppColors.SECONDARY_COLOR,
+                                                                collapsedShape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  side: BorderSide.none,
+                                                                ),
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  side: BorderSide.none,
+                                                                ),
+                                                                childrenPadding: EdgeInsets.only(bottom: 2.h),
+                                                                enabled: isPaymentLedger,
+                                                                children: isPaymentLedger
+                                                                    ? [
+                                                                        DividerWidget(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.35)),
+
+                                                                        ///Total Invoice Amount
+                                                                        Padding(
+                                                                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                                                          child: Row(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(
+                                                                                "${AppStrings.totalInvoiceAmount.tr}: ",
+                                                                                style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                              ),
+                                                                              Text(
+                                                                                data.summary?.totalInvoiceAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.summary?.totalInvoiceAmount) : "",
+                                                                                style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+
+                                                                        ///Total Payment Amount
+                                                                        Padding(
+                                                                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                                                          child: Row(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(
+                                                                                "${AppStrings.totalPaymentAmount.tr}: ",
+                                                                                style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                              ),
+                                                                              Text(
+                                                                                data.summary?.totalPaymentAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.summary?.totalPaymentAmount) : "",
+                                                                                style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+
+                                                                        ///Pending Amount
+                                                                        Padding(
+                                                                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                                                          child: Row(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(
+                                                                                "${AppStrings.pendingAmount.tr}: ",
+                                                                                style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                              ),
+                                                                              Text(
+                                                                                data.summary?.pendingAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.summary?.pendingAmount) : "",
+                                                                                style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ]
+                                                                    : [],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    separatorBuilder: (context, index) {
+                                                      return SizedBox(height: 1.5.h);
+                                                    },
+                                                  ),
+                                                );
+                                              }
+                                            }),
+                                          ),
+                                        ],
                                       ),
-                                      prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
-                                      suffixIcon: InkWell(
-                                        onTap: () {
-                                          Utils.unfocus();
-                                          controller.searchPartyNameController.clear();
-                                          controller.searchParty(controller.searchPartyNameController.text);
-                                        },
-                                        child: Icon(
-                                          Icons.close_rounded,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        ///Automatic Ledger
+                        RefreshIndicatorWidget(
+                          onRefresh: () async {
+                            await controller.getAutomaticLedgerInvoiceApiCall(isRefresh: true);
+                          },
+                          child: Column(
+                            children: [
+                              SizedBox(height: 1.h),
+
+                              ///Search Party & Filter
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                child: Row(
+                                  children: [
+                                    ///Search
+                                    Expanded(
+                                      child: TextFieldWidget(
+                                        prefixIcon: Icon(
+                                          Icons.search_rounded,
                                           color: AppColors.SECONDARY_COLOR,
                                           size: 5.w,
                                         ),
-                                      ),
-                                      suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
-                                      hintText: AppStrings.searchParty.tr,
-                                      controller: controller.searchPartyNameController,
-                                      onChanged: (value) {
-                                        controller.searchParty(value);
-                                      },
-                                    ),
-                                  ),
-
-                                  if (Get.arguments == true) ...[
-                                    SizedBox(width: 2.w),
-
-                                    ///Pending Payments Pdf
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        controller.showPendingPdfBottomSheet(ctx: context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.BRONZE_COLOR,
-                                        elevation: 4,
-                                        maximumSize: Size.square(8.w),
-                                        minimumSize: Size.square(8.w),
-                                        padding: EdgeInsets.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                      child: Image.asset(
-                                        AppAssets.pendingPaymentIcon,
-                                        width: 5.w,
-                                        height: 5.w,
+                                        prefixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 8.w, minWidth: 8.w),
+                                        suffixIcon: InkWell(
+                                          onTap: () {
+                                            Utils.unfocus();
+                                            controller.searchPartyNameController.clear();
+                                            controller.searchParty(controller.searchPartyNameController.text);
+                                          },
+                                          child: Icon(
+                                            Icons.close_rounded,
+                                            color: AppColors.SECONDARY_COLOR,
+                                            size: 5.w,
+                                          ),
+                                        ),
+                                        suffixIconConstraints: BoxConstraints(maxHeight: 5.h, maxWidth: 12.w, minWidth: 12.w),
+                                        hintText: AppStrings.searchParty.tr,
+                                        controller: controller.searchPartyNameController,
+                                        onChanged: (value) {
+                                          controller.searchParty(value);
+                                        },
                                       ),
                                     ),
-                                    SizedBox(width: 2.w),
 
-                                    ///GST Filter
-                                    Obx(() {
-                                      return ElevatedButton(
+                                    if (Get.arguments == true) ...[
+                                      SizedBox(width: 2.w),
+
+                                      ///Pending Payments Pdf
+                                      ElevatedButton(
                                         onPressed: () {
-                                          controller.isGstFilteredParties.toggle();
-                                          controller.searchParty(controller.searchPartyNameController.text);
+                                          controller.showPendingPdfBottomSheet(ctx: context);
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: controller.isGstFilteredParties.isTrue ? AppColors.DARK_GREEN_COLOR : AppColors.WARNING_COLOR,
+                                          backgroundColor: AppColors.BRONZE_COLOR,
                                           elevation: 4,
                                           maximumSize: Size.square(8.w),
                                           minimumSize: Size.square(8.w),
@@ -195,196 +478,172 @@ class LedgerView extends GetView<LedgerController> {
                                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         ),
                                         child: Image.asset(
-                                          AppAssets.gstIcon,
+                                          AppAssets.pendingPaymentIcon,
                                           width: 5.w,
                                           height: 5.w,
-                                          color: AppColors.PRIMARY_COLOR,
                                         ),
-                                      );
-                                    }),
-                                  ],
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 1.h),
-
-                            Expanded(
-                              child: Obx(() {
-                                if (controller.isMonthlyLedgerLoading.isTrue) {
-                                  return LoadingWidget();
-                                } else if (isPaymentLedger ? controller.searchAutomaticLedgerList.isEmpty : controller.searchAutomaticLedgerInvoiceList.isEmpty) {
-                                  return Center(
-                                    child: SingleChildScrollView(
-                                      child: NoDataFoundWidget(
-                                        subtitle: AppStrings.noDataFound.tr,
-                                        onPressed: () {
-                                          Utils.unfocus();
-                                          controller.searchPartyNameController.clear();
-                                          if (isPaymentLedger) {
-                                            controller.getAutomaticLedgerPaymentApiCall();
-                                          } else {
-                                            controller.getAutomaticLedgerInvoiceApiCall();
-                                          }
-                                        },
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  return AnimationLimiter(
-                                    child: ListView.separated(
-                                      itemCount: isPaymentLedger ? controller.searchAutomaticLedgerList.length : controller.searchAutomaticLedgerInvoiceList.length,
-                                      shrinkWrap: true,
-                                      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h).copyWith(top: 1.h),
-                                      itemBuilder: (context, index) {
-                                        final data = isPaymentLedger ? controller.searchAutomaticLedgerList[index] : controller.searchAutomaticLedgerInvoiceList[index];
+                                    ],
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
 
-                                        return AnimationConfiguration.staggeredList(
-                                          position: index,
-                                          duration: const Duration(milliseconds: 375),
-                                          child: SlideAnimation(
-                                            verticalOffset: 50.0,
-                                            child: FadeInAnimation(
-                                              child: Card(
-                                                color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                                clipBehavior: Clip.antiAlias,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                child: ExpansionTile(
-                                                  title: Row(
-                                                    children: [
-                                                      ///Party Name
-                                                      Expanded(
-                                                        child: Text(
-                                                          isPaymentLedger ? (data as GetPaymentLedgerModel).partyName ?? "" : (data as GetPartyData).partyName ?? "",
-                                                          style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 2.w),
-                                                    ],
-                                                  ),
-                                                  tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
-                                                  trailing: ElevatedButton(
-                                                    onPressed: () {
-                                                      List<get_invoices.OrderInvoice> ledgerInvoiceData = [];
-                                                      if (isPaymentLedger) {
-                                                        ledgerInvoiceData = controller.automaticLedgerInvoiceList.firstWhereOrNull((element) => element.partyId == (data as GetPaymentLedgerModel).partyId)?.invoices ?? [];
-                                                      } else {
-                                                        ledgerInvoiceData = (data as GetPartyData).invoices ?? [];
-                                                      }
-                                                      controller.showInvoiceBottomSheet(
-                                                        ctx: context,
-                                                        ledgerInvoiceData: ledgerInvoiceData,
-                                                        paymentLedgerInvoiceData: isPaymentLedger ? (data as GetPaymentLedgerModel) : null,
-                                                        isPaymentLedger: isPaymentLedger,
-                                                        startDate: !isPaymentLedger ? ((data as GetPartyData).startDate) : (data as GetPaymentLedgerModel).startDate,
-                                                        endDate: !isPaymentLedger ? ((data as GetPartyData).endDate) : (data as GetPaymentLedgerModel).endDate,
-                                                      );
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: AppColors.WARNING_COLOR,
-                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                      padding: EdgeInsets.zero,
-                                                      maximumSize: Size.square(8.w),
-                                                      minimumSize: Size.square(8.w),
-                                                      elevation: 4,
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.visibility_rounded,
-                                                      size: 5.w,
-                                                      color: AppColors.PRIMARY_COLOR,
-                                                    ),
-                                                  ),
-                                                  dense: true,
-                                                  collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                                  backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
-                                                  iconColor: AppColors.SECONDARY_COLOR,
-                                                  collapsedShape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    side: BorderSide.none,
-                                                  ),
+                              Expanded(
+                                child: Obx(() {
+                                  if (controller.isMonthlyLedgerLoading.isTrue) {
+                                    return LoadingWidget();
+                                  } else if (controller.searchAutomaticLedgerInvoiceList.isEmpty) {
+                                    return Center(
+                                      child: SingleChildScrollView(
+                                        child: NoDataFoundWidget(
+                                          subtitle: AppStrings.noDataFound.tr,
+                                          onPressed: () {
+                                            Utils.unfocus();
+                                            controller.searchPartyNameController.clear();
+                                            controller.getAutomaticLedgerInvoiceApiCall();
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return AnimationLimiter(
+                                      child: ListView.separated(
+                                        itemCount: controller.searchAutomaticLedgerInvoiceList.length,
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h).copyWith(top: 1.h),
+                                        itemBuilder: (context, index) {
+                                          final data = controller.searchAutomaticLedgerInvoiceList[index];
+
+                                          return AnimationConfiguration.staggeredList(
+                                            position: index,
+                                            duration: const Duration(milliseconds: 375),
+                                            child: SlideAnimation(
+                                              verticalOffset: 50.0,
+                                              child: FadeInAnimation(
+                                                child: Card(
+                                                  color: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                  clipBehavior: Clip.antiAlias,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(10),
-                                                    side: BorderSide.none,
                                                   ),
-                                                  childrenPadding: EdgeInsets.only(bottom: 2.h),
-                                                  enabled: isPaymentLedger,
-                                                  children: isPaymentLedger
-                                                      ? [
-                                                          DividerWidget(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.35)),
-
-                                                          ///Total Invoice Amount
-                                                          Padding(
-                                                            padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                                            child: Row(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  "${AppStrings.totalInvoiceAmount.tr}: ",
-                                                                  style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                                ),
-                                                                Text(
-                                                                  isPaymentLedger ? ((data as GetPaymentLedgerModel).summary?.totalInvoiceAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.summary?.totalInvoiceAmount) : "") : "",
-                                                                  style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                                ),
-                                                              ],
-                                                            ),
+                                                  child: ExpansionTile(
+                                                    title: Row(
+                                                      children: [
+                                                        ///Party Name
+                                                        Expanded(
+                                                          child: Text(
+                                                            data.partyName ?? "",
+                                                            style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
                                                           ),
+                                                        ),
+                                                        SizedBox(width: 2.w),
+                                                      ],
+                                                    ),
+                                                    tilePadding: EdgeInsets.only(left: 3.w, right: 2.w),
+                                                    trailing: ElevatedButton(
+                                                      onPressed: () {
+                                                        controller.showInvoiceBottomSheet(
+                                                          ctx: context,
+                                                          ledgerInvoiceData: data.invoices ?? [],
+                                                          isPaymentLedger: isPaymentLedger,
+                                                          startDate: data.startDate,
+                                                          endDate: data.endDate,
+                                                        );
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: AppColors.WARNING_COLOR,
+                                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                        padding: EdgeInsets.zero,
+                                                        maximumSize: Size.square(8.w),
+                                                        minimumSize: Size.square(8.w),
+                                                        elevation: 4,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.visibility_rounded,
+                                                        size: 5.w,
+                                                        color: AppColors.PRIMARY_COLOR,
+                                                      ),
+                                                    ),
+                                                    dense: true,
+                                                    collapsedBackgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                    backgroundColor: AppColors.LIGHT_SECONDARY_COLOR.withValues(alpha: 0.7),
+                                                    iconColor: AppColors.SECONDARY_COLOR,
+                                                    collapsedShape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      side: BorderSide.none,
+                                                    ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      side: BorderSide.none,
+                                                    ),
+                                                    childrenPadding: EdgeInsets.only(bottom: 2.h),
+                                                    enabled: isPaymentLedger,
+                                                    children: isPaymentLedger
+                                                        ? [
+                                                            DividerWidget(color: AppColors.SECONDARY_COLOR.withValues(alpha: 0.35)),
 
-                                                          ///Total Payment Amount
-                                                          Padding(
-                                                            padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                                            child: Row(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  "${AppStrings.totalPaymentAmount.tr}: ",
-                                                                  style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                                ),
-                                                                Text(
-                                                                  isPaymentLedger ? ((data as GetPaymentLedgerModel).summary?.totalPaymentAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.summary?.totalPaymentAmount) : "") : "",
-                                                                  style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                                ),
-                                                              ],
+                                                            ///Total Invoice Amount
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                                              child: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    "${AppStrings.totalInvoiceAmount.tr}: ",
+                                                                    style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
 
-                                                          ///Pending Amount
-                                                          Padding(
-                                                            padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                                            child: Row(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  "${AppStrings.pendingAmount.tr}: ",
-                                                                  style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                                ),
-                                                                Text(
-                                                                  isPaymentLedger ? ((data as GetPaymentLedgerModel).summary?.pendingAmount != null ? NumberFormat.currency(locale: "hi_IN", symbol: "₹ ").format(data.summary?.pendingAmount) : "") : "",
-                                                                  style: AppStyles.size16w600.copyWith(color: AppColors.SECONDARY_COLOR),
-                                                                ),
-                                                              ],
+                                                            ///Total Payment Amount
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                                              child: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    "${AppStrings.totalPaymentAmount.tr}: ",
+                                                                    style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ]
-                                                      : [],
+
+                                                            ///Pending Amount
+                                                            Padding(
+                                                              padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                                              child: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    "${AppStrings.pendingAmount.tr}: ",
+                                                                    style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ]
+                                                        : [],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return SizedBox(height: 1.5.h);
-                                      },
-                                    ),
-                                  );
-                                }
-                              }),
-                            ),
-                          ],
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return SizedBox(height: 1.5.h);
+                                        },
+                                      ),
+                                    );
+                                  }
+                                }),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
 
                       ///Custom Ledger
                       CustomLedgerView(ctx: context),

@@ -234,9 +234,9 @@ class AccountServices {
   }
 
   /// Get Automatic Ledger Payment Service
-  static Future<ResponseModel> getAutomaticLedgerPaymentService() async {
+  static Future<ResponseModel> getAutomaticLedgerPaymentService({required String paymentType}) async {
     final response = await ApiBaseHelper.getHTTP(
-      ApiUrls.getAutomaticLedgerPaymentApi,
+      ApiUrls.getAutomaticLedgerPaymentApi + paymentType,
       showProgress: false,
       onError: (dioExceptions) {
         if (kDebugMode) {

@@ -51,6 +51,8 @@ class _AddEditPartyState extends State<_AddEditParty> {
   TextEditingController partyNameController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
   TextEditingController pendingBalanceController = TextEditingController(text: "0.0");
+  TextEditingController referenceNameController = TextEditingController();
+  TextEditingController referenceNumberController = TextEditingController();
   RxString paymentType = "".obs;
 
   RxBool isSaving = false.obs;
@@ -64,6 +66,8 @@ class _AddEditPartyState extends State<_AddEditParty> {
       contactNumberController.text = partyData?.contactNumber ?? "";
       paymentType.value = partyData?.paymentType ?? "";
       pendingBalanceController.text = partyData?.pendingBalance?.toString() ?? "0.0";
+      referenceNameController.text = partyData?.referenceName ?? "";
+      referenceNumberController.text = partyData?.referenceNumber ?? "";
     }
   }
 
@@ -79,6 +83,13 @@ class _AddEditPartyState extends State<_AddEditParty> {
       return AppStrings.pleaseEnterContactNumber.tr;
     } else if (value.length < 10) {
       return AppStrings.pleaseEnterValidPhoneNumber.tr;
+    }
+    return null;
+  }
+
+  String? validateReferenceNumber(String? value) {
+    if (value != null && value.isNotEmpty && value.length < 10) {
+      return AppStrings.pleaseEnterValidReferenceNumber.tr;
     }
     return null;
   }
@@ -137,6 +148,8 @@ class _AddEditPartyState extends State<_AddEditParty> {
                                   contactNumber: contactNumberController.text.trim(),
                                   pendingBalance: pendingBalanceController.text.trim(),
                                   paymentType: paymentType.value,
+                                  referenceName: referenceNameController.text.trim(),
+                                  referenceNumber: referenceNumberController.text.trim(),
                                 );
                               } else {
                                 response = await widget.controller.editPartyApiCall(
@@ -145,6 +158,8 @@ class _AddEditPartyState extends State<_AddEditParty> {
                                   contactNumber: contactNumberController.text.trim(),
                                   pendingBalance: pendingBalanceController.text.trim(),
                                   paymentType: paymentType.value,
+                                  referenceName: referenceNameController.text.trim(),
+                                  referenceNumber: referenceNumberController.text.trim(),
                                 );
                               }
                               if (response.isSuccess) {
@@ -235,6 +250,36 @@ class _AddEditPartyState extends State<_AddEditParty> {
                           inputFormatters: [
                             TextInputFormatter.withFunction((oldValue, newValue) {
                               if ((!newValue.text.isNum || (newValue.text.toTryDouble() ?? 0.0) < 0.0) && newValue.text.isNotEmpty) {
+                                return oldValue;
+                              } else {
+                                return newValue;
+                              }
+                            }),
+                          ],
+                          maxLength: 10,
+                        ),
+                        SizedBox(height: 2.h),
+
+                        ///Reference Name
+                        TextFieldWidget(
+                          controller: referenceNameController,
+                          title: AppStrings.referenceName.tr,
+                          hintText: AppStrings.enterReferenceName.tr,
+                          textInputAction: TextInputAction.next,
+                        ),
+                        SizedBox(height: 2.h),
+
+                        ///Reference Number
+                        TextFieldWidget(
+                          controller: referenceNumberController,
+                          title: AppStrings.referenceNumber.tr,
+                          hintText: AppStrings.enterReferenceNumber.tr,
+                          validator: validateReferenceNumber,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            TextInputFormatter.withFunction((oldValue, newValue) {
+                              if (!newValue.text.isNumericOnly && newValue.text.isNotEmpty) {
                                 return oldValue;
                               } else {
                                 return newValue;

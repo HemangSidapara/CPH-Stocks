@@ -2,7 +2,7 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.2.7+77
+version: 2.2.8+78
 
 environment:
   sdk: ^3.10.1
@@ -23,7 +23,7 @@ dependencies:
   lottie: ^3.3.2
 
   # State Management Lib
-  get: ^4.7.2
+  get: ^4.7.3
 
   # Network Libs
   dio: ^5.9.0
@@ -54,9 +54,9 @@ dependencies:
   # Printing Libs
   pdf: ^3.11.3
   printing: ^5.14.2
-  syncfusion_flutter_core: ^31.2.12
-  syncfusion_flutter_pdfviewer: ^31.2.12
-  syncfusion_flutter_charts: ^31.2.12
+  syncfusion_flutter_core: ^31.2.15
+  syncfusion_flutter_pdfviewer: ^31.2.15
+  syncfusion_flutter_charts: ^31.2.15
 
   # Firebase Libs
   firebase_core: ^4.2.1
@@ -73,10 +73,6 @@ dependency_overrides:
       path: pdf/
       ref: 313-column-span
   meta: ^1.17.0
-  get:
-    git:
-      url: https://github.com/luis901101/getx_fork.git
-      ref: old-4.7.0
 
 dev_dependencies:
   flutter_test:

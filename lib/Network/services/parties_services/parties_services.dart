@@ -34,12 +34,16 @@ class PartiesServices {
     required String contactNumber,
     required String paymentType,
     required String pendingBalance,
+    required String referenceName,
+    required String referenceNumber,
   }) async {
     final params = {
       ApiKeys.partyName: partyName,
       ApiKeys.contactNumber: contactNumber,
       ApiKeys.paymentType: paymentType,
       ApiKeys.pendingBalance: pendingBalance,
+      ApiKeys.referenceName: referenceName,
+      ApiKeys.referenceNumber: referenceNumber,
     };
 
     final response = await ApiBaseHelper.postHTTP(
@@ -71,6 +75,8 @@ class PartiesServices {
     required String contactNumber,
     required String paymentType,
     required String pendingBalance,
+    required String referenceName,
+    required String referenceNumber,
   }) async {
     final params = {
       ApiKeys.orderId: orderId,
@@ -78,6 +84,8 @@ class PartiesServices {
       ApiKeys.contactNumber: contactNumber,
       ApiKeys.paymentType: paymentType,
       ApiKeys.pendingBalance: pendingBalance,
+      ApiKeys.referenceName: referenceName,
+      ApiKeys.referenceNumber: referenceNumber,
     };
 
     final response = await ApiBaseHelper.postHTTP(

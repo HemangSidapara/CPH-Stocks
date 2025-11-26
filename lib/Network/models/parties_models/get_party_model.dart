@@ -32,6 +32,8 @@ class PartyData {
   String? contactNumber;
   num? pendingBalance;
   bool? isGst;
+  String? referenceName;
+  String? referenceNumber;
   String? paymentType;
   String? createdDate;
   String? createdTime;
@@ -42,6 +44,8 @@ class PartyData {
     this.contactNumber,
     this.pendingBalance,
     this.isGst,
+    this.referenceName,
+    this.referenceNumber,
     this.paymentType,
     this.createdDate,
     this.createdTime,
@@ -57,6 +61,8 @@ class PartyData {
     String? contactNumber,
     num? pendingBalance,
     bool? isGst,
+    String? referenceName,
+    String? referenceNumber,
     String? paymentType,
     String? createdDate,
     String? createdTime,
@@ -67,6 +73,8 @@ class PartyData {
       contactNumber: contactNumber ?? this.contactNumber,
       pendingBalance: pendingBalance ?? this.pendingBalance,
       isGst: isGst ?? this.isGst,
+      referenceName: referenceName ?? this.referenceName,
+      referenceNumber: referenceNumber ?? this.referenceNumber,
       paymentType: paymentType ?? this.paymentType,
       createdDate: createdDate ?? this.createdDate,
       createdTime: createdTime ?? this.createdTime,

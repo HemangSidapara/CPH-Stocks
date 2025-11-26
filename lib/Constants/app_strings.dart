@@ -320,4 +320,9 @@ class AppStrings {
   static const String pendingBalance = "Pending Balance";
   static const String pleaseEnterPendingBalance = "Please enter pending balance";
   static const String disc = "disc.";
+  static const String referenceName = "Reference Name";
+  static const String enterReferenceName = "Enter Reference Name";
+  static const String referenceNumber = "Reference Number";
+  static const String enterReferenceNumber = "Enter Reference Number";
+  static const String pleaseEnterValidReferenceNumber = "Please enter valid reference number";
 }
