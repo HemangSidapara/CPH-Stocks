@@ -302,4 +302,10 @@ Map<String, String> guIN = <String, String>{
   AppStrings.partyPayment: "પાર્ટી પેમેન્ટ",
   AppStrings.monthlyCashbook: "માસિક કેશબુક",
   AppStrings.accepted: "સ્વીકારેલ",
+  AppStrings.verifyOtp: "OTP ચકાસો",
+  AppStrings.pleaseEnterOTP: "કૃપા કરીને OTP દાખલ કરો",
+  AppStrings.pleaseEnterValidOTP: "કૃપા કરીને માન્ય OTP દાખલ કરો",
+  AppStrings.verify: "ચકાસો",
+  AppStrings.resendOtp: "OTP ફરી મોકલો",
+  AppStrings.otpVerifiedSuccessfully: "OTP સફળતાપૂર્વક ચકાસાયો",
 };

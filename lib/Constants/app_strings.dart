@@ -325,4 +325,10 @@ class AppStrings {
   static const String referenceNumber = "Reference Number";
   static const String enterReferenceNumber = "Enter Reference Number";
   static const String pleaseEnterValidReferenceNumber = "Please enter valid reference number";
+  static const String verifyOtp = "Verify OTP";
+  static const String pleaseEnterOTP = "Please enter otp";
+  static const String pleaseEnterValidOTP = "Please enter valid otp";
+  static const String verify = "Verify";
+  static const String resendOtp = "Resend OTP";
+  static const String otpVerifiedSuccessfully = "OTP verified successfully";
 }

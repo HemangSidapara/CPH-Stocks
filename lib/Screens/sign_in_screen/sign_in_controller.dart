@@ -1,4 +1,8 @@
+import 'package:cph_stocks/Constants/app_constance.dart';
 import 'package:cph_stocks/Constants/app_strings.dart';
+import 'package:cph_stocks/Constants/app_utils.dart';
+import 'package:cph_stocks/Constants/get_storage.dart';
+import 'package:cph_stocks/Network/models/auth_models/login_model.dart';
 import 'package:cph_stocks/Network/services/auth_services/auth_services.dart';
 import 'package:cph_stocks/Routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,10 +43,21 @@ class SignInController extends GetxController {
         );
 
         if (response.isSuccess) {
-          if (response.response?.data['role'] == null) {
+          LoginModel loginModel = LoginModel.fromJson(response.response?.data ?? {});
+          if (loginModel.role == null) {
             return;
           } else {
-            Get.offAllNamed(Routes.homeScreen);
+            if ([AppConstance.admin].contains(loginModel.role)) {
+              await clearData();
+              loginModel = loginModel.copyWith(phone: phoneController.text);
+              Get.toNamed(
+                Routes.verifyOtpScreen,
+                arguments: loginModel.toJson(),
+              );
+            } else {
+              Utils.handleMessage(message: response.response?.data['msg']);
+              Get.offAllNamed(Routes.homeScreen);
+            }
           }
         }
       }

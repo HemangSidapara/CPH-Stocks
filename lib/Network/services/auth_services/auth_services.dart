@@ -67,7 +67,6 @@ class AuthServices {
           if (kDebugMode) {
             print("loginApi success :: ${loginModel.msg}");
           }
-          Utils.handleMessage(message: loginModel.msg);
         } else {
           if (kDebugMode) {
             print("loginApi error :: ${res.message}");

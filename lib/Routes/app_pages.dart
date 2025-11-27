@@ -36,6 +36,8 @@ import 'package:cph_stocks/Screens/sign_in_screen/sign_in_bindings.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_view.dart';
 import 'package:cph_stocks/Screens/splash_screen/splash_bindings.dart';
 import 'package:cph_stocks/Screens/splash_screen/splash_view.dart';
+import 'package:cph_stocks/Screens/verify_otp_screen/verify_otp_bindings.dart';
+import 'package:cph_stocks/Screens/verify_otp_screen/verify_otp_view.dart';
 import 'package:get/get.dart';
 
 part 'app_routes.dart';
@@ -202,6 +204,15 @@ class AppPages {
       name: Routes.categoriesScreen,
       page: () => const CategoriesView(),
       binding: CategoriesBindings(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: transitionDuration,
+    ),
+
+    ///Verify OTP Screen
+    GetPage(
+      name: Routes.verifyOtpScreen,
+      page: () => const VerifyOtpView(),
+      binding: VerifyOtpBindings(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: transitionDuration,
     ),

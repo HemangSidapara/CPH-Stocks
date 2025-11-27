@@ -302,4 +302,10 @@ Map<String, String> enIN = <String, String>{
   AppStrings.partyPayment: "Party Payment",
   AppStrings.monthlyCashbook: "Monthly cashbook",
   AppStrings.accepted: "Accepted",
+  AppStrings.verifyOtp: "Verify OTP",
+  AppStrings.pleaseEnterOTP: "Please enter otp",
+  AppStrings.pleaseEnterValidOTP: "Please enter valid otp",
+  AppStrings.verify: "Verify",
+  AppStrings.resendOtp: "Resend OTP",
+  AppStrings.otpVerifiedSuccessfully: "OTP verified successfully",
 };

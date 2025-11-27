@@ -2,7 +2,7 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.2.8+78
+version: 2.2.9+79
 
 environment:
   sdk: ^3.10.1
@@ -21,6 +21,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   flutter_native_splash: ^2.4.7
   lottie: ^3.3.2
+  pinput: ^6.0.1
 
   # State Management Lib
   get: ^4.7.3
@@ -60,6 +61,7 @@ dependencies:
 
   # Firebase Libs
   firebase_core: ^4.2.1
+  firebase_auth: ^6.1.2
   firebase_messaging: ^16.0.4
   firebase_crashlytics: ^5.0.5
   awesome_notifications: ^0.10.1

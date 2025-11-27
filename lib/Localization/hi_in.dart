@@ -300,4 +300,10 @@ Map<String, String> hiIN = <String, String>{
   AppStrings.partyPayment: "पार्टी भुगतान",
   AppStrings.monthlyCashbook: "मासिक कैशबुक",
   AppStrings.accepted: "स्वीकृत",
+  AppStrings.verifyOtp: "OTP ચકાસો",
+  AppStrings.pleaseEnterOTP: "કૃપા કરીને OTP દાખલ કરો",
+  AppStrings.pleaseEnterValidOTP: "કૃપા કરીને માન્ય OTP દાખલ કરો",
+  AppStrings.verify: "ચકાસો",
+  AppStrings.resendOtp: "OTP ફરી મોકલો",
+  AppStrings.otpVerifiedSuccessfully: "OTP સફળતાપૂર્વક ચકાસાયો",
 };

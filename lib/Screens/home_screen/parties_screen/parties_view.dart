@@ -165,6 +165,56 @@ class PartiesView extends GetView<PartiesController> {
                                           ],
                                         ),
                                       ),
+
+                                      if (data.referenceName?.isNotEmpty == true || data.referenceNumber?.isNotEmpty == true) ...[
+                                        SizedBox(height: 0.5.h),
+                                        if (data.referenceName?.isNotEmpty == true) ...[
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                WidgetSpan(
+                                                  child: Icon(
+                                                    Icons.person_4_rounded,
+                                                    color: AppColors.SECONDARY_COLOR,
+                                                    size: 4.w,
+                                                  ),
+                                                ),
+                                                WidgetSpan(
+                                                  child: SizedBox(width: 1.w),
+                                                ),
+                                                TextSpan(
+                                                  text: data.referenceName ?? "",
+                                                  style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+
+                                        if (data.referenceNumber?.isNotEmpty == true) ...[
+                                          SizedBox(height: 0.5.h),
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                WidgetSpan(
+                                                  child: Icon(
+                                                    Icons.support_agent_rounded,
+                                                    color: AppColors.SECONDARY_COLOR,
+                                                    size: 4.w,
+                                                  ),
+                                                ),
+                                                WidgetSpan(
+                                                  child: SizedBox(width: 1.w),
+                                                ),
+                                                TextSpan(
+                                                  text: data.referenceNumber ?? "",
+                                                  style: AppStyles.size15w600.copyWith(color: AppColors.SECONDARY_COLOR),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ],
                                   ),
                                   tilePadding: EdgeInsets.only(left: 3.w, right: 1.5.w),

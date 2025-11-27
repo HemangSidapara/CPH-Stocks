@@ -5,6 +5,7 @@ import 'package:cph_stocks/Constants/app_utils.dart';
 import 'package:cph_stocks/Screens/sign_in_screen/sign_in_controller.dart';
 import 'package:cph_stocks/Widgets/button_widget.dart';
 import 'package:cph_stocks/Widgets/textfield_widget.dart';
+import 'package:cph_stocks/Widgets/unfocus_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -15,8 +16,7 @@ class SignInView extends GetView<SignInController> {
   @override
   Widget build(BuildContext context) {
     final keyboardPadding = MediaQuery.viewInsetsOf(context).bottom;
-    return GestureDetector(
-      onTap: () => Utils.unfocus(),
+    return UnfocusWidget(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size(100.w, 10.h),

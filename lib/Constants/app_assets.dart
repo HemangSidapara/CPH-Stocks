@@ -17,6 +17,7 @@ class AppAssets {
   static const String createOrderImage = "assets/images/create_order_image.webp";
   static const String nativeSplashImage = "assets/images/native_splash_image.png";
   static const String nativeSplash2Image = "assets/images/native_splash_2_image.webp";
+  static const String otpImage = "assets/images/otp_image.webp";
 
   ///Icons
   static const String backIcon = "assets/icons/back_icon.png";

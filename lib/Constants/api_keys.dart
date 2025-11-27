@@ -59,4 +59,5 @@ class ApiKeys {
   static const gst9 = "GST (9%)";
   static const referenceName = "referenceName";
   static const referenceNumber = "referenceNumber";
+  static const role = "role";
 }
