@@ -397,6 +397,11 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
       return catModel;
     }
 
+    final tableBorder = pw.BorderSide(
+      color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
+      width: 1,
+    );
+
     pw.PageTheme? pdfPageTheme = pw.PageTheme(
       pageFormat: pdf.PdfPageFormat.a4,
       margin: pw.EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -415,6 +420,7 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
     pdfDoc.addPage(
       pw.MultiPage(
         pageTheme: pdfPageTheme,
+        maxPages: 1000,
         build: (context) {
           return <pw.Widget>[
             /// Ledger Title
@@ -700,6 +706,7 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
     pdfDoc.addPage(
       pw.MultiPage(
         pageTheme: pdfPageTheme,
+        maxPages: 1000,
         build: (context) {
           return <pw.Widget>[
             /// Mega Total Title
@@ -729,13 +736,21 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
             if (data.isNotEmpty) ...[
               pw.Table(
                 defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
-                border: pw.TableBorder.all(
-                  color: pdf.PdfColor.fromInt(AppColors.SECONDARY_COLOR.toARGB32()),
-                  width: 1,
+                border: pw.TableBorder(
+                  top: tableBorder,
+                  right: tableBorder,
+                  bottom: tableBorder,
+                  left: tableBorder,
+                  verticalInside: tableBorder,
                 ),
                 children: [
                   /// Heading
                   pw.TableRow(
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border(
+                        bottom: tableBorder,
+                      ),
+                    ),
                     children: [
                       /// Challan Number
                       TableCell(title: AppStrings.challanNumber.tr),
@@ -758,25 +773,48 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
                     if (!showAmount) ...[
                       for (int catIndex = 0; catIndex < getCategoryList(data[i].invoiceMeta ?? []).length; catIndex++) ...[
                         (() {
-                          final category = getCategoryList(data[i].invoiceMeta ?? [])[catIndex];
+                          final categoryList = getCategoryList(data[i].invoiceMeta ?? []);
+                          final category = categoryList[catIndex];
                           return pw.TableRow(
+                            decoration: catIndex == categoryList.length - 1
+                                ? pw.BoxDecoration(
+                                    border: pw.Border(
+                                      bottom: tableBorder,
+                                    ),
+                                  )
+                                : null,
                             children: [
                               /// Challan Number
-                              if (catIndex == 0) ...[
-                                pw.TableCell(
-                                  rowSpan: getCategoryList(data[i].invoiceMeta ?? []).length,
-                                  child: TableCell(title: data[i].challanNumber ?? ""),
-                                ),
-                              ],
+                              pw.TableCell(
+                                child: TableCell(title: catIndex == 0 ? data[i].challanNumber ?? "" : ""),
+                              ),
 
                               /// Category Name
-                              TableCell(
-                                title: category.categoryName ?? "",
+                              pw.DecoratedBox(
+                                decoration: pw.BoxDecoration(
+                                  border: categoryList.length > 1 && catIndex < categoryList.length - 1
+                                      ? pw.Border(
+                                          bottom: tableBorder.copyWith(width: 2),
+                                        )
+                                      : null,
+                                ),
+                                child: TableCell(
+                                  title: category.categoryName ?? "",
+                                ),
                               ),
 
                               /// Mega Total Inch
-                              TableCell(
-                                title: category.totalInch ?? "",
+                              pw.DecoratedBox(
+                                decoration: pw.BoxDecoration(
+                                  border: categoryList.length > 1 && catIndex < categoryList.length - 1
+                                      ? pw.Border(
+                                          bottom: tableBorder,
+                                        )
+                                      : null,
+                                ),
+                                child: TableCell(
+                                  title: category.totalInch ?? "",
+                                ),
                               ),
                             ],
                           );
@@ -786,12 +824,30 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
                       pw.TableRow(
                         children: [
                           /// Challan Number
-                          TableCell(title: data[i].challanNumber ?? ""),
+                          pw.DecoratedBox(
+                            decoration: pw.BoxDecoration(
+                              border: i < data.length - 1
+                                  ? pw.Border(
+                                      bottom: tableBorder,
+                                    )
+                                  : null,
+                            ),
+                            child: TableCell(title: data[i].challanNumber ?? ""),
+                          ),
 
                           /// Mega Total Amount
-                          TableCell(
-                            title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
-                              totalAmountCount(data[i].invoiceMeta ?? []),
+                          pw.DecoratedBox(
+                            decoration: pw.BoxDecoration(
+                              border: i < data.length - 1
+                                  ? pw.Border(
+                                      bottom: tableBorder,
+                                    )
+                                  : null,
+                            ),
+                            child: TableCell(
+                              title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
+                                totalAmountCount(data[i].invoiceMeta ?? []),
+                              ),
                             ),
                           ),
                         ],
@@ -803,13 +859,14 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
                   if (!showAmount) ...[
                     for (int catIndex = 0; catIndex < totalCategoriesOfLedger().length; catIndex++) ...[
                       (() {
-                        final category = totalCategoriesOfLedger()[catIndex];
+                        final categoryList = totalCategoriesOfLedger();
+                        final category = categoryList[catIndex];
                         return pw.TableRow(
                           children: [
                             /// Total Inch Categories
                             if (catIndex == 0) ...[
                               pw.TableCell(
-                                rowSpan: totalCategoriesOfLedger().length,
+                                rowSpan: categoryList.length,
                                 child: TableCell(
                                   title: AppStrings.totalInchCategories.tr,
                                 ),
@@ -817,20 +874,47 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
                             ],
 
                             /// Category Name
-                            TableCell(
-                              title: category.categoryName ?? "",
+                            pw.DecoratedBox(
+                              decoration: pw.BoxDecoration(
+                                border: categoryList.length > 1 && catIndex < categoryList.length - 1
+                                    ? pw.Border(
+                                        bottom: tableBorder,
+                                      )
+                                    : null,
+                              ),
+                              child: TableCell(
+                                title: category.categoryName ?? "",
+                              ),
                             ),
 
                             /// Mega Total Inch
-                            TableCell(
-                              title: category.totalInch ?? "",
+                            pw.DecoratedBox(
+                              decoration: pw.BoxDecoration(
+                                border: categoryList.length > 1 && catIndex < categoryList.length - 1
+                                    ? pw.Border(
+                                        bottom: tableBorder,
+                                      )
+                                    : null,
+                              ),
+                              child: TableCell(
+                                title: category.totalInch ?? "",
+                              ),
                             ),
 
                             /// Mega Total Amount
                             if (showAmount)
-                              TableCell(
-                                title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
-                                  category.totalAmount?.toDouble() ?? 0.0,
+                              pw.DecoratedBox(
+                                decoration: pw.BoxDecoration(
+                                  border: categoryList.length > 1 && catIndex < categoryList.length - 1
+                                      ? pw.Border(
+                                          bottom: tableBorder,
+                                        )
+                                      : null,
+                                ),
+                                child: TableCell(
+                                  title: NumberFormat.currency(locale: "hi_IN", symbol: "₹").format(
+                                    category.totalAmount?.toDouble() ?? 0.0,
+                                  ),
                                 ),
                               ),
                           ],
@@ -839,6 +923,11 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
                     ],
                   ] else ...[
                     pw.TableRow(
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border(
+                          top: tableBorder,
+                        ),
+                      ),
                       children: [
                         /// Total Amount
                         TableCell(
