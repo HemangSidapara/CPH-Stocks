@@ -87,6 +87,7 @@ class SplashController extends GetxController {
     if (kDebugMode) {
       print("token value ::: ${getData(AppConstance.authorizationToken)}");
     }
+    // setData(AppConstance.authorizationToken, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjUiLCJwaG9uZSI6IjEyMTIxMjEyMTIiLCJEYXRlVGltZSI6IjA1LTEyLTIwMjUgMTM6MTM6NTkifQ.0a40d04d5e38270f00115b9c7e316852433c8facdbbbaa4dace60874cec2671e");
     if (getData(AppConstance.authorizationToken) == null || getData(AppConstance.role) == null) {
       Get.offAllNamed(Routes.signInScreen);
     } else {

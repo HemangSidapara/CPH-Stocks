@@ -2,7 +2,7 @@ name: cph_stocks
 description: "Stocks handle of CPH."
 publish_to: 'none'
 
-version: 2.2.10+80
+version: 2.2.11+81
 
 environment:
   sdk: ^3.10.1
@@ -55,9 +55,9 @@ dependencies:
   # Printing Libs
   pdf: ^3.11.3
   printing: ^5.14.2
-  syncfusion_flutter_core: ^31.2.15
-  syncfusion_flutter_pdfviewer: ^31.2.15
-  syncfusion_flutter_charts: ^31.2.15
+  syncfusion_flutter_core: ^31.2.16
+  syncfusion_flutter_pdfviewer: ^31.2.16
+  syncfusion_flutter_charts: ^31.2.16
 
   # Firebase Libs
   firebase_core: ^4.2.1

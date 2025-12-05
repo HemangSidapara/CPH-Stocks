@@ -100,19 +100,19 @@ class FirebaseService {
     }
   }
 
-  /// Interacted Message from Terminal -> Open App
+  /// Interacted Message from Foreground -> Open App
   static Future<void> firebaseMessagingForegroundHandler() async {
     if (_isForegroundListenerAdded) return; // Prevent duplicate registration
     _isForegroundListenerAdded = true;
     FirebaseMessaging.onMessage.listen(showFlutterNotification);
   }
 
-  /// Interacted Message from Terminal -> Open App
+  /// Interacted Message from Background -> Open App
   static Future<void> setupBackgroundInteractedMessage() async {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
-  /// Interacted Message from Terminal -> Open App
+  /// Interacted Message from Terminated -> Open App
   static Future<void> setupTerminatedInteractedMessage() async {
     RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
 

@@ -862,16 +862,20 @@ class LedgerController extends GetxController with GetTickerProviderStateMixin {
                         final categoryList = totalCategoriesOfLedger();
                         final category = categoryList[catIndex];
                         return pw.TableRow(
+                          decoration: catIndex == categoryList.length - 1
+                              ? pw.BoxDecoration(
+                                  border: pw.Border(
+                                    bottom: tableBorder,
+                                  ),
+                                )
+                              : null,
                           children: [
                             /// Total Inch Categories
-                            if (catIndex == 0) ...[
-                              pw.TableCell(
-                                rowSpan: categoryList.length,
-                                child: TableCell(
-                                  title: AppStrings.totalInchCategories.tr,
-                                ),
+                            pw.TableCell(
+                              child: TableCell(
+                                title: catIndex == 0 ? AppStrings.totalInchCategories.tr : "",
                               ),
-                            ],
+                            ),
 
                             /// Category Name
                             pw.DecoratedBox(
